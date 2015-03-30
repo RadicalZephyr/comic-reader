@@ -1,7 +1,15 @@
 (ns comic-reader.core
-  (:gen-class))
+  (:gen-class)
+  (:require [ring.util.response :as response]
+            [ring.middleware.params :refer [wrap-params]]
+            [compojure.core  :as c]
+            [compojure.route :as route]))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
+(c/defroutes routes
+  (c/GET "/" [] "Hello World!")
+  (c/context "/api/v1" []
+    (c/GET "/comic/:name" [name]
+      (str "Hello comic" name)))
+  (route/resources "/"))
+
+(def app (wrap-params routes))
