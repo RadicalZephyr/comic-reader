@@ -11,13 +11,14 @@
                      {url :href} :attrs}]
                  {:name name
                   :url url})}
-   {:name "Manga Reader"
-    :url "http://www.mangareader.net/alphabetical"
-    :selector [:div.series_alpha :ul :li :a]
-    :normalize (fn [{[name] :content
-                     {url :href} :attrs}]
-                 {:name (trim name)
-                  :url url})}])
+   (let [canonical-url "http://www.mangareader.net/"]
+     {:name "Manga Reader"
+      :url (str canonical-url "alphabetical")
+      :selector [:div.series_alpha :ul :li :a]
+      :normalize (fn [{[name] :content
+                       {url :href} :attrs}]
+                   {:name (trim name)
+                    :url (str canonical-url url)})})])
 
 (defn fetch-url [url]
   (html/html-resource (java.net.URL. url)))
