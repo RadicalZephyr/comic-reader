@@ -8,6 +8,8 @@
 (c/defroutes routes
   (c/GET "/" [] "Hello World!")
   (c/context "/api/v1" []
+    (c/GET "/comics" []
+      "All the comics.")
     (c/GET "/comic/:name" [name]
       (str "Hello comic" name)))
   (route/resources "/"))
