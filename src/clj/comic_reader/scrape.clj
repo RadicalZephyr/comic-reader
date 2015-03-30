@@ -1,6 +1,7 @@
 (ns comic-reader.scrape
   (:require [clojure.string :refer [trim]]
-            [net.cgrand.enlive-html :as html]))
+            [net.cgrand.enlive-html :as html])
+  (:import java.net.URL))
 
 (def sites
   {"Manga Fox" {:url "http://mangafox.me/manga/"
@@ -19,4 +20,5 @@
 (defn fetch-url [url]
   (html/html-resource (java.net.URL. url)))
 
-(defn fetch-site-list [{:keys [url selector normalize]}])
+(defn fetch-site-list [{:keys [url selector normalize]}]
+  (map normalize (html/select (fetch-url url) selector)))
