@@ -1,6 +1,6 @@
-# comic-reader
+# Comic-Reader
 
-FIXME: description
+An app for reading comics/manga on or offline
 
 ## Installation
 
