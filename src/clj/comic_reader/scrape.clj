@@ -20,6 +20,9 @@
                    {:name (trim name)
                     :url (str canonical-url url)})})])
 
+(defn fetch-feed [url]
+  (html/xml-resource (java.net.URL. url)))
+
 (defn fetch-url [url]
   (html/html-resource (java.net.URL. url)))
 
