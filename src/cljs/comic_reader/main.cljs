@@ -68,4 +68,3 @@
                                (.-body js/document)))))
 
 (init!)
-(hook-browser-navigation!)
