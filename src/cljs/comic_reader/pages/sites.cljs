@@ -8,10 +8,8 @@
   [:li
    [:input {:type "button"
             :value (:name site-data)
-            :on-click #(.log js/console
-                        (str "You clicked the "
-                             (:id site-data)
-                             " button!"))}]])
+            :on-click #(dispatch!
+                        (str "/site/" (:id site-data)))}]])
 
 (defn site-list [sites]
   [:div
