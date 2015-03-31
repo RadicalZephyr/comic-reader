@@ -38,7 +38,7 @@
                (apply dom/ul nil
                       (map (fn [{:keys [name url]}]
                              (dom/li nil
-                                     (dom/a #js {:href url} name)))
+                                     (dom/a nil name)))
                            (:sites data)))))))
  app-state
  {:target (. js/document (getElementById "main-area"))})
