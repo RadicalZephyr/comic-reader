@@ -15,12 +15,12 @@
   (c/GET "/" [] (response/redirect "/index.html"))
   (c/context "/api/v1" []
     (c/GET "/sites" []
-      (edn-response (vec (map #(select-keys % [:name :url])
+      (edn-response (vec (map #(select-keys % [:id :name :url])
                               scrape/sites))))
     (c/GET "/comics/:site" [site]
       (->> scrape/sites
            (some (fn [s]
-                   (when (= (:name s)
+                   (when (= (:id s)
                             site)
                      s)))
            (scrape/fetch-comic-list site)
