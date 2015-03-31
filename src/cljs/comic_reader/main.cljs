@@ -10,6 +10,7 @@
 
 (enable-console-print!)
 
+;; TODO: Put figwheel setups into some kind of dev namespace
 (fw/start {
            ;; configure a websocket url if you are using your own server
            :websocket-url "ws://localhost:3449/figwheel-ws"
