@@ -23,7 +23,9 @@
   :clean-targets ^{:protect false} ["resources/public/js/compiled"]
 
   :hooks [leiningen.cljsbuild]
-  :ring  {:handler comic-reader.core/app}
+  :ring  {:handler comic-reader.core/app
+          :nrepl {:start? true :port 4500}
+          :port 8090}
   :cljsbuild {:builds [{:id "dev"
                         :source-paths ["src/cljs"]
                         :compiler {:output-to  "resources/public/js/compiled/main.js"
