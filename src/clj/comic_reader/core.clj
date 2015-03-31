@@ -18,7 +18,13 @@
       (edn-response (vec (map #(select-keys % [:name :url])
                               scrape/sites))))
     (c/GET "/comics/:site" [site]
-      "All the comics.")
+      (->> scrape/sites
+           (some (fn [s]
+                   (when (= (:name s)
+                            site)
+                     s)))
+           (scrape/fetch-comic-list site)
+           edn-response))
     (c/GET "/comic/:name" [name]
       (str "Hello comic" name)))
   (route/resources "/"))
