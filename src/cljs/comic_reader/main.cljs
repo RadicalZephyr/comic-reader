@@ -1,5 +1,6 @@
 (ns comic-reader.main
   (:require [figwheel.client :as fw]
+            [reagent.core :as reagent :refer [atom]]
             [ajax.core :refer [GET POST]]))
 
 (enable-console-print!)
@@ -40,6 +41,10 @@
 ;;                            (:sites data)))))))
 ;;  app-state
 ;;  {:target (. js/document (getElementById "main-area"))})
+
+(defn mountit []
+  (reagent/render-component []
+                            (.-body js/document)))
 
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happened: " status " " status-text)))
