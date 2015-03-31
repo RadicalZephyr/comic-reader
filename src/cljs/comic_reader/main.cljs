@@ -27,13 +27,17 @@
            ;; the client to focus on
            :build-id "dev"})
 
-(defonce app-state (atom {:text "Om..."}))
+(defonce app-state (atom {:heading "Comic Sites"}))
 
 (om/root
  (fn [data owner]
-   (reify om/IRender
-     (render [_]
-       (dom/h1 nil (:text data)))))
+   (om/component
+    (dom/div nil
+     (dom/h1 nil (:heading data))
+     (apply dom/ul nil
+            (map (fn [{:keys [name url]}]
+                   (dom/li (dom/a #js {:href url} name)))
+                 (:sites data))))))
  app-state
  {:target (. js/document (getElementById "main-area"))})
 
