@@ -4,7 +4,7 @@
             [secretary.core :refer [dispatch!]]))
 
 (defn manga-site [site-data]
-  [:li (:name site-data)])
+  ^{:key (:id site-data)} [:li (:name site-data)])
 
 (defn site-list [sites]
   [:div
