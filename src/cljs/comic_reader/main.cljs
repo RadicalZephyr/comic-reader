@@ -1,5 +1,7 @@
 (ns comic-reader.main
-  (:require [figwheel.client :as fw]))
+  (:require [figwheel.client :as fw]
+            [om.core :as om :include-macros true]
+            [om.dom :as dom :include-macros true]))
 
 (enable-console-print!)
 
@@ -23,3 +25,13 @@
            ;; it can be helpful to specify a build id for
            ;; the client to focus on
            :build-id "dev"})
+
+(defonce app-state (atom {:text "Om..."}))
+
+(om/root
+ (fn [data owner]
+   (reify om/IRender
+     (render [_]
+       (dom/h1 nil (:text data)))))
+ app-state
+ {:target (. js/document (getElementById "main-area"))})
