@@ -29,6 +29,7 @@
                         :compiler {:output-to  "resources/public/js/compiled/main.js"
                                    :output-dir "resources/public/js/compiled/out"
                                    :main comic-reader.main
+                                   :asset-path "js/compiled/out"
                                    :source-map true
                                    :source-map-timestamp true
                                    :cache-analysis true
