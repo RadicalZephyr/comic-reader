@@ -40,7 +40,9 @@
            :build-id "dev"})
 
 (defn hook-browser-navigation! []
-  (doto (History.)
+  (doto (History. false
+                  "/blank"
+                  (.getElementById js/document "history_state"))
     (events/listen
         EventType/NAVIGATE
         (fn [event]
@@ -67,4 +69,5 @@
      (reagent/render-component [page data]
                                (.-body js/document)))))
 
+(hook-browser-navigation!)
 (init!)

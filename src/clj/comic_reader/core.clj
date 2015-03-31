@@ -13,6 +13,7 @@
 
 (c/defroutes routes
   (c/GET "/" [] (response/redirect "/index.html"))
+  (c/GET "/blank" [] "")
   (c/context "/api/v1" []
     (c/GET "/sites" []
       (edn-response (vec (map #(select-keys % [:id :name :url])
