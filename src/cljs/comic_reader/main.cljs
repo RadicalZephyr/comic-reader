@@ -5,7 +5,7 @@
 
 (fw/start {
            ;; configure a websocket url if you are using your own server
-           ;; :websocket-url "ws://localhost:3449/figwheel-ws"
+           :websocket-url "ws://localhost:3449/figwheel-ws"
 
            ;; optional callback
            :on-jsload (fn [] (print "reloaded"))
