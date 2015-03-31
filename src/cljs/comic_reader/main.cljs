@@ -48,11 +48,10 @@
 (defroute "/" []
   (session/put! :current-page site-list))
 
-(defroute "/site/:site" []
+(defroute "/site/:site" [site]
   (session/put! :current-page comic-list))
 
-(defroute "/comic/:comic/:volume/:page"
-  {:keys [comic volume page]}
+(defroute "/comic/:comic/:volume/:page" [comic volume page]
   (session/put! :current-page comic-viewer))
 
 (defn page []
