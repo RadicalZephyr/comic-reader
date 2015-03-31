@@ -56,8 +56,8 @@
 (defroute "/comic/:comic/:volume/:page" [comic volume page]
   (session/put! :current-page comic-viewer))
 
-(defn page []
-  [(session/get :current-page)])
+(defn page [data]
+  [(session/get :current-page) data])
 
 (defn init! []
   (secretary/set-config! :prefix "#")
