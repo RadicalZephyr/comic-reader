@@ -1,9 +1,12 @@
 (ns comic-reader.main
   (:require [figwheel.client :as fw]
             [comic-reader.session :as session]
-            [comic-reader.pages.sites :as sites]
-            [comic-reader.pages.comics :as comics]
-            [comic-reader.pages.reader :as reader]
+            [comic-reader.pages.sites
+             :refer [site-list]]
+            [comic-reader.pages.comics
+             :refer [comic-list]]
+            [comic-reader.pages.viewer
+             :refer [comic-viewer]]
             [reagent.core :as reagent :refer [atom]]
             [secretary.core :as secretary
              :include-macros true :refer [defroute]]))
@@ -31,3 +34,13 @@
            ;; it can be helpful to specify a build id for
            ;; the client to focus on
            :build-id "dev"})
+
+(defroute "/" []
+  (session/put! :current-page site-list))
+
+(defroute "/site/:site" []
+  (session/put! :current-page comic-list))
+
+(defroute "/comic/:comic/:volume/:page"
+  {:keys [comic volume page]}
+  (session/put! :current-page comic-viewer))
