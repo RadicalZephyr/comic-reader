@@ -40,7 +40,9 @@
                                    :main comic-reader.main
                                    :optimizations :advanced
                                    :pretty-print false}}]}
-  :figwheel {:nrepl-port 7888}
+  :figwheel {:http-server-root "public"
+             :css-dirs ["resources/public/css"] ;; watch and update CSS
+             :nrepl-port 7888}
 
   :main ^:skip-aot comic-reader.core
   :target-path "target/%s"
