@@ -5,6 +5,11 @@
             [compojure.core  :as c]
             [compojure.route :as route]))
 
+(defn edn-response [data & [status]]
+  {:status (or status 200)
+   :headers {"Content-Type" "application/edn"}
+   :body (pr-str data)})
+
 (c/defroutes routes
   (c/GET "/" [] "Hello World!")
   (c/context "/api/v1" []
