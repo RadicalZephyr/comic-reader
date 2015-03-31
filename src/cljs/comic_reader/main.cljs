@@ -1,5 +1,6 @@
 (ns comic-reader.main
   (:require [figwheel.client :as fw]
+            [comic-reader.api :as api]
             [comic-reader.session :as session]
             [comic-reader.pages.sites
              :refer [site-list]]
@@ -61,8 +62,10 @@
 (defn init! []
   (secretary/set-config! :prefix "#")
   (session/put! :current-page site-list)
-  (reagent/render-component [page]
-                            (.-body js/document)))
+  (api/get-sites
+   (fn [data]
+     (reagent/render-component [page data]
+                               (.-body js/document)))))
 
 (init!)
 (hook-browser-navigation!)
