@@ -32,21 +32,6 @@
            ;; the client to focus on
            :build-id "dev"})
 
-(defonce app-state (atom {:heading "Comic Sites"}))
-
-(defn manga-site [site-data]
-  [:li (:name site-data)])
-
-(defn site-list [data]
-  (let [data @data]
-    [:div
-     [:h1 (:heading data)]
-     [:ul (map manga-site (:sites data))]]))
-
-(defn mountit []
-  (reagent/render-component [site-list app-state]
-                            (.-body js/document)))
-
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happened: " status " " status-text)))
 
@@ -54,5 +39,3 @@
                                  (swap! app-state assoc :sites sites))
                       :error-handler error-handler
                       :response-format :edn})
-
-(mountit)
