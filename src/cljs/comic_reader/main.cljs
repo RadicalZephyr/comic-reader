@@ -26,20 +26,6 @@
            ;; the client to focus on
            :build-id "dev"})
 
-;; (om/root
-;;  (fn [data owner]
-;;    (om/component
-;;     (dom/div nil
-;;              (dom/h1 nil (:heading data))
-;;              (when (:sites data)
-;;                (apply dom/ul nil
-;;                       (map (fn [{:keys [name url]}]
-;;                              (dom/li nil
-;;                                      (dom/a nil name)))
-;;                            (:sites data)))))))
-;;  app-state
-;;  {:target (. js/document (getElementById "main-area"))})
-
 (defonce app-state (atom {:heading "Comic Sites"}))
 
 (defn manga-site [site-data]
