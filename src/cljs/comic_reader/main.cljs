@@ -22,5 +22,4 @@
            ;; if figwheel is watching more than one build
            ;; it can be helpful to specify a build id for
            ;; the client to focus on
-           ;; :build-id "example"
-           })
+           :build-id "dev"})
