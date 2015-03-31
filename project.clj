@@ -14,7 +14,7 @@
                  [org.clojure/clojurescript "0.0-2850"]
                  [figwheel "0.2.5-SNAPSHOT"]
                  [org.omcljs/om "0.8.8"]
-                 [cljs-ajax "0.3.3"]]
+                 [cljs-ajax "0.3.10"]]
 
   :plugins      [[lein-ring "0.8.13"]
                  [lein-cljsbuild "1.0.4"]
