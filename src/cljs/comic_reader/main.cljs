@@ -33,11 +33,12 @@
  (fn [data owner]
    (om/component
     (dom/div nil
-     (dom/h1 nil (:heading data))
-     (apply dom/ul nil
-            (map (fn [{:keys [name url]}]
-                   (dom/li (dom/a #js {:href url} name)))
-                 (:sites data))))))
+             (dom/h1 nil (:heading data))
+             (apply dom/ul nil
+                    (map (fn [{:keys [name url]}]
+                           (dom/li nil
+                                   (dom/a #js {:href url} name)))
+                         (:sites data))))))
  app-state
  {:target (. js/document (getElementById "main-area"))})
 
@@ -47,6 +48,7 @@
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happened: " status " " status-text)))
 
-(GET "/api/v1/sites" {:handler handler
+(GET "/api/v1/sites" {:handler (fn [sites]
+                                 (swap! app-state assoc :sites sites))
                       :error-handler error-handler
                       :response-format :edn})
