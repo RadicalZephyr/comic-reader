@@ -20,14 +20,26 @@
                  [lein-cljsbuild "1.0.4"]
                  [lein-figwheel "0.2.5-SNAPSHOT"]]
 
+  :clean-targets ^{:protect false} ["resources/public/js/compiled"]
+
   :hooks [leiningen.cljsbuild]
   :ring  {:handler comic-reader.core/app}
-  :cljsbuild {:builds [{:source-paths ["src/cljs"]
+  :cljsbuild {:builds [{:id "dev"
+                        :source-paths ["src/cljs"]
                         :compiler {:output-to  "resources/public/js/compiled/main.js"
                                    :output-dir "resources/public/js/compiled/out"
+                                   :main comic-reader.main
                                    :source-map true
+                                   :source-map-timestamp true
+                                   :cache-analysis true
                                    :optimizations :none
-                                   :pretty-print true}}]}
+                                   :pretty-print true}}
+                       {:id "min"
+                        :source-paths ["src/cljs"]
+                        :compiler {:output-to "resources/public/js/compiled/comic_reader.js"
+                                   :main comic-reader.main
+                                   :optimizations :advanced
+                                   :pretty-print false}}]}
   :figwheel {:nrepl-port 7888}
 
   :main ^:skip-aot comic-reader.core
