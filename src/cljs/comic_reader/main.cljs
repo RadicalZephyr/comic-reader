@@ -1,4 +1,4 @@
-(ns cljs.comic-reader.main
+(ns comic-reader.main
   (:require [figwheel.client :as fw]))
 
 (enable-console-print!)
