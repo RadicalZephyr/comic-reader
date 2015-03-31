@@ -1,6 +1,12 @@
 (ns comic-reader.main
   (:require [figwheel.client :as fw]
+            [comic-reader.session :as session]
+            [comic-reader.pages.sites :as sites]
+            [comic-reader.pages.comics :as comics]
+            [comic-reader.pages.reader :as reader]
             [reagent.core :as reagent :refer [atom]]
+            [secretary.core :as secretary
+             :include-macros true :refer [defroute]]
             [ajax.core :refer [GET POST]]))
 
 (enable-console-print!)
