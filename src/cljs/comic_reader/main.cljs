@@ -1,7 +1,8 @@
 (ns comic-reader.main
   (:require [figwheel.client :as fw]
             [om.core :as om :include-macros true]
-            [om.dom :as dom :include-macros true]))
+            [om.dom :as dom :include-macros true]
+            [ajax.core :refer [GET POST]]))
 
 (enable-console-print!)
 
@@ -35,3 +36,13 @@
        (dom/h1 nil (:text data)))))
  app-state
  {:target (. js/document (getElementById "main-area"))})
+
+(defn handler [response]
+  (.log js/console (str response)))
+
+(defn error-handler [{:keys [status status-text]}]
+  (.log js/console (str "something bad happened: " status " " status-text)))
+
+(GET "/api/v1/sites" {:handler handler
+                      :error-handler error-handler
+                      :response-format :edn})
