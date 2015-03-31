@@ -9,7 +9,7 @@
              :refer [comic-viewer]]
             [reagent.core :as reagent :refer [atom]]
             [secretary.core :as secretary
-             :include-macros true :refer [defroute]]
+             :refer-macros [defroute]]
             [goog.events :as events]
             [goog.history.EventType :as EventType]))
 
