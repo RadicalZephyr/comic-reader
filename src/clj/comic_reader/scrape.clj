@@ -7,7 +7,8 @@
   [(let [canonical-url "http://mangafox.me"
          manga-url (format "%s/manga/" canonical-url)
          manga-pattern (re-pattern (str manga-url "(.*?)/"))]
-     {:name "Manga Fox"
+     {:id :manga-fox
+      :name "Manga Fox"
       :url manga-url
       :selector [:div.manga_list :ul :li :a]
       :normalize (fn [{[name] :content
@@ -20,7 +21,8 @@
                             second
                             (format "%s/rss/%s.xml" canonical-url)))})
    (let [canonical-url "http://www.mangareader.net/"]
-     {:name "Manga Reader"
+     {:id :manga-reader
+      :name "Manga Reader"
       :url (str canonical-url "alphabetical")
       :selector [:div.series_alpha :ul :li :a]
       :normalize (fn [{[name] :content
