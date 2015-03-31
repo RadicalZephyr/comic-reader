@@ -1,6 +1,7 @@
 (ns comic-reader.core
   (:gen-class)
-  (:require [ring.util.response :as response]
+  (:require [comic-reader.scrape :as scrape]
+            [ring.util.response :as response]
             [ring.middleware.params :refer [wrap-params]]
             [compojure.core  :as c]
             [compojure.route :as route]))
@@ -13,7 +14,10 @@
 (c/defroutes routes
   (c/GET "/" [] "Hello World!")
   (c/context "/api/v1" []
-    (c/GET "/comics" []
+    (c/GET "/sites" []
+      (edn-response (vec (map #(select-keys % [:name :url])
+                              scrape/sites))))
+    (c/GET "/comics/:site" [site]
       "All the comics.")
     (c/GET "/comic/:name" [name]
       (str "Hello comic" name)))
