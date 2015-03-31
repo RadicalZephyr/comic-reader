@@ -6,8 +6,7 @@
 (defn manga-site [site-data]
   [:li (:name site-data)])
 
-(defn site-list [data]
-  (let [data @data]
-    [:div
-     [:h1 (:heading data)]
-     [:ul (map manga-site (:sites data))]]))
+(defn site-list [sites]
+  [:div
+   [:h1 "Comic Sources"]
+   [:ul (map manga-site sites)]])
