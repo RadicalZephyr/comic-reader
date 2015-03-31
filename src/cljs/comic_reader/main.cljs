@@ -6,8 +6,7 @@
             [comic-reader.pages.reader :as reader]
             [reagent.core :as reagent :refer [atom]]
             [secretary.core :as secretary
-             :include-macros true :refer [defroute]]
-            [ajax.core :refer [GET POST]]))
+             :include-macros true :refer [defroute]]))
 
 (enable-console-print!)
 
@@ -31,11 +30,3 @@
            ;; it can be helpful to specify a build id for
            ;; the client to focus on
            :build-id "dev"})
-
-(defn error-handler [{:keys [status status-text]}]
-  (.log js/console (str "something bad happened: " status " " status-text)))
-
-(GET "/api/v1/sites" {:handler (fn [sites]
-                                 (swap! app-state assoc :sites sites))
-                      :error-handler error-handler
-                      :response-format :edn})
