@@ -54,3 +54,14 @@
 (defroute "/comic/:comic/:volume/:page"
   {:keys [comic volume page]}
   (session/put! :current-page comic-viewer))
+
+(defn page []
+  [(session/get :current-page)])
+
+(defn init! []
+  (secretary/set-config! :prefix "#")
+  (session/put! :current-page site-list)
+  (reagent/render-component [page]
+                            (.-body js/document)))
+
+(init!)
