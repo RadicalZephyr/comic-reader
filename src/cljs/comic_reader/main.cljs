@@ -34,11 +34,12 @@
    (om/component
     (dom/div nil
              (dom/h1 nil (:heading data))
-             (apply dom/ul nil
-                    (map (fn [{:keys [name url]}]
-                           (dom/li nil
-                                   (dom/a #js {:href url} name)))
-                         (:sites data))))))
+             (when (:sites data)
+               (apply dom/ul nil
+                      (map (fn [{:keys [name url]}]
+                             (dom/li nil
+                                     (dom/a #js {:href url} name)))
+                           (:sites data)))))))
  app-state
  {:target (. js/document (getElementById "main-area"))})
 
