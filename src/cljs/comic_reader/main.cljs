@@ -9,7 +9,9 @@
              :refer [comic-viewer]]
             [reagent.core :as reagent :refer [atom]]
             [secretary.core :as secretary
-             :include-macros true :refer [defroute]]))
+             :include-macros true :refer [defroute]]
+            [goog.events :as events]
+            [goog.history.EventType :as EventType]))
 
 (enable-console-print!)
 
@@ -34,6 +36,14 @@
            ;; it can be helpful to specify a build id for
            ;; the client to focus on
            :build-id "dev"})
+
+(defn hook-browser-navigation! []
+  (doto (History.)
+    (events/listen
+        EventType/NAVIGATE
+        (fn [event]
+          (secretary/dispatch! (.-token event))))
+    (.setEnabled true)))
 
 (defroute "/" []
   (session/put! :current-page site-list))
