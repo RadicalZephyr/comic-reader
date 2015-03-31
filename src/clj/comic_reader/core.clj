@@ -12,7 +12,7 @@
    :body (pr-str data)})
 
 (c/defroutes routes
-  (c/GET "/" [] "Hello World!")
+  (c/GET "/" [] (response/redirect "/index.html"))
   (c/context "/api/v1" []
     (c/GET "/sites" []
       (edn-response (vec (map #(select-keys % [:name :url])
