@@ -1,7 +1,5 @@
 (ns comic-reader.main
   (:require [figwheel.client :as fw]
-            [om.core :as om :include-macros true]
-            [om.dom :as dom :include-macros true]
             [ajax.core :refer [GET POST]]))
 
 (enable-console-print!)
@@ -29,19 +27,19 @@
 
 (defonce app-state (atom {:heading "Comic Sites"}))
 
-(om/root
- (fn [data owner]
-   (om/component
-    (dom/div nil
-             (dom/h1 nil (:heading data))
-             (when (:sites data)
-               (apply dom/ul nil
-                      (map (fn [{:keys [name url]}]
-                             (dom/li nil
-                                     (dom/a nil name)))
-                           (:sites data)))))))
- app-state
- {:target (. js/document (getElementById "main-area"))})
+;; (om/root
+;;  (fn [data owner]
+;;    (om/component
+;;     (dom/div nil
+;;              (dom/h1 nil (:heading data))
+;;              (when (:sites data)
+;;                (apply dom/ul nil
+;;                       (map (fn [{:keys [name url]}]
+;;                              (dom/li nil
+;;                                      (dom/a nil name)))
+;;                            (:sites data)))))))
+;;  app-state
+;;  {:target (. js/document (getElementById "main-area"))})
 
 (defn error-handler [{:keys [status status-text]}]
   (.log js/console (str "something bad happened: " status " " status-text)))
