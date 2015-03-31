@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [get])
   (:require [reagent.core :as reagent :refer [atom]]))
 
-(def state (atom {}))
+(defonce state (atom {}))
 
 (defn get [k & [default]]
   (clojure.core/get @state k default))
