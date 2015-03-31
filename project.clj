@@ -11,7 +11,6 @@
                  [enlive "1.1.5"]
                  [ring "1.3.1"]
                  [compojure "1.2.1"]
-                 [fogus/ring-edn "0.2.0"]
                  [cljs-ajax "0.3.3"]]
 
   :plugins      [[lein-ring "0.8.13"]
