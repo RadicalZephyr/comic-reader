@@ -2,6 +2,7 @@
   (:require [figwheel.client :as fw]
             [comic-reader.api :as api]
             [comic-reader.session :as session]
+            [comic-reader.history :as history]
             [comic-reader.pages.sites
              :refer [site-list]]
             [comic-reader.pages.comics
@@ -10,10 +11,7 @@
              :refer [comic-viewer]]
             [reagent.core :as reagent :refer [atom]]
             [secretary.core :as secretary
-             :refer-macros [defroute]]
-            [goog.events :as events]
-            [goog.history.EventType :as EventType])
-  (:import goog.History))
+             :refer-macros [defroute]]))
 
 (enable-console-print!)
 
@@ -39,15 +37,6 @@
            ;; the client to focus on
            :build-id "dev"})
 
-(defn hook-browser-navigation! []
-  (doto (History. false
-                  "/blank"
-                  (.getElementById js/document "history_state"))
-    (events/listen
-        EventType/NAVIGATE
-        (fn [event]
-          (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
 
 (defroute "/" []
   (session/put! :current-page site-list))
@@ -69,5 +58,5 @@
      (reagent/render-component [page data]
                                (.-body js/document)))))
 
-(hook-browser-navigation!)
+(history/hook-browser-navigation!)
 (init!)
