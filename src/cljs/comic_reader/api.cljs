@@ -11,13 +11,13 @@
                         :response-format :edn}))
 
 (defn get-comics [site]
-  (GET (format "/api/v1/comics/%s" (pr-str site))
+  (GET (str "/api/v1/comics/" (pr-str site))
       {:handler #(dispatch [:comic-list %])
        :error-handler error-handler
        :response-format :edn}))
 
 (defn get-comic-urls [comic-name]
-  (GET (format "/api/v1/comic/%s" (pr-str comic-name))
+  (GET (str "/api/v1/comic/" (pr-str comic-name))
       {:handler #(dispatch [:comic-urls %])
        :error-handler error-handler
        :response-format :edn}))
