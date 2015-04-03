@@ -10,9 +10,13 @@
 
 (rf/register-handler
  :initialize
- (fn
-   [db _]
+ (fn [db _]
    (merge db initial-state)))
+
+(rf/register-handler
+ :navigate
+ (fn [db [_ page]]
+   db))
 
 (rf/register-sub
  :page
