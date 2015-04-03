@@ -29,27 +29,33 @@
   :ring  {:handler comic-reader.core/app
           :nrepl {:start? true :port 4500}
           :port 8090}
-  :cljsbuild {:builds [{:id "dev"
-                        :source-paths ["src/cljs"]
-                        :compiler {:output-to  "resources/public/js/compiled/main.js"
-                                   :output-dir "resources/public/js/compiled/out"
-                                   :main comic-reader.main
-                                   :asset-path "js/compiled/out"
-                                   :source-map true
-                                   :source-map-timestamp true
-                                   :cache-analysis true
-                                   :optimizations :none
-                                   :pretty-print true}}
-                       {:id "min"
-                        :source-paths ["src/cljs"]
-                        :compiler {:output-to "resources/public/js/compiled/comic_reader.js"
-                                   :main comic-reader.main
-                                   :optimizations :advanced
-                                   :pretty-print false}}]}
+
+  :profiles {:dev {:cljsbuild
+                   {:builds {:client {:source-paths ["devsrc"]
+                                      :compiler
+                                      {:main simpleexample.dev
+                                       :optimizations :none
+                                       :source-map true
+                                       :source-map-timestamp true}}}}}
+
+             :prod {:cljsbuild
+                    {:builds {:client {:compiler
+                                       {:optimizations :advanced
+                                        :elide-asserts true
+                                        :pretty-print false}}}}}
+             :uberjar {:aot :all}}
+
+  :cljsbuild {:builds
+              {:client
+               {:source-paths ["src/cljs"]
+                :compiler
+                {:output-to  "resources/public/js/compiled/main.js"
+                 :output-dir "resources/public/js/compiled/out"
+                 :asset-path "js/compiled/out"}}}}
+
   :figwheel {:http-server-root "public"
              :css-dirs ["resources/public/css"] ;; watch and update CSS
              :nrepl-port 7888}
 
   :main ^:skip-aot comic-reader.core
-  :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :target-path "target/%s")
