@@ -60,6 +60,6 @@
 
 (defn ^:export run []
   (rf/dispatch [:initialize])
-  (history/hook-browser-navigation!)
+  (history/setup-history!)
   (reagent/render [comic-reader]
                   (.-body js/document)))
