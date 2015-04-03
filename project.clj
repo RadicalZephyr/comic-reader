@@ -12,10 +12,12 @@
                  [compojure "1.2.1"]
 
                  [org.clojure/clojurescript "0.0-2850"]
-                 [figwheel "0.2.5-SNAPSHOT"]
-                 [reagent "0.5.0"]
-                 [secretary "1.2.3"]
-                 [cljs-ajax "0.3.10"]]
+                 [reagent "0.5.0-alpha3"]
+                 [re-frame "0.2.0"
+                  :exclusions [[org.clojure/clojurescript
+                                :extension "jar"]]]
+                 [cljs-ajax "0.3.10"]
+                 [figwheel "0.2.5-SNAPSHOT"]]
 
   :plugins      [[lein-ring "0.8.13"]
                  [lein-cljsbuild "1.0.4"]
