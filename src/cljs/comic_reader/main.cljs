@@ -14,6 +14,36 @@
    [db _]
    (merge db initial-state)))
 
+(rf/register-sub
+ :page
+ (fn [db _]
+   (reaction (get @db :page))))
+
+(rf/register-sub
+ :site-list
+ (fn [db _]
+   (reaction (get @db :site-list))))
+
+(rf/register-sub
+ :site
+ (fn [db _]
+   (reaction (get @db :site))))
+
+(rf/register-sub
+ :comic-list
+ (fn [db _]
+   (reaction (get @db :comic-list))))
+
+(rf/register-sub
+ :comic
+ (fn [db _]
+   (reaction (get @db :comic))))
+
+(rf/register-sub
+ :location
+ (fn [db _]
+   (reaction (get @db :location))))
+
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
     (fn []
