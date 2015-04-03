@@ -12,9 +12,6 @@
             [reagent.ratom :refer-macros [reaction]]
             [re-frame.core :as rf]))
 
-(defonce time-updater (js/setInterval
-                       #(rf/dispatch [:timer (js/Date.)]) 1000))
-
 (defonce initial-state
   {:page :sites})
 
