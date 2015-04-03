@@ -16,6 +16,7 @@
                  [re-frame "0.2.0"
                   :exclusions [[org.clojure/clojurescript
                                 :extension "jar"]]]
+                 [secretary "1.2.3"]
                  [cljs-ajax "0.3.10"]
                  [figwheel "0.2.5-SNAPSHOT"]]
 
