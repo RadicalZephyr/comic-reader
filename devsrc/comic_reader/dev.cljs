@@ -4,13 +4,13 @@
 
 (enable-console-print!)
 
-;; TODO: Put figwheel setups into some kind of dev namespace
 (fw/start {
-           ;; configure a websocket url if you are using your own server
+           ;; configure a websocket url if you are using your own
+           ;; server
            :websocket-url "ws://localhost:3449/figwheel-ws"
 
            ;; optional callback
-           :on-jsload (fn [] (.log js/console "Loaded figwheel!"))
+           :on-jsload main/run
 
            ;; The heads up display is enabled by default
            ;; to disable it:
