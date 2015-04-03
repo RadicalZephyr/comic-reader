@@ -40,7 +40,8 @@
 
              :prod {:cljsbuild
                     {:builds {:client {:compiler
-                                       {:optimizations :advanced
+                                       {:main comic-reader.main
+                                        :optimizations :advanced
                                         :elide-asserts true
                                         :pretty-print false}}}}}
              :uberjar {:aot :all}}
