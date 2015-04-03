@@ -6,7 +6,7 @@
 
 (defonce goog-history (atom nil))
 
-(defn hook-browser-navigation! []
+(defn setup-history! []
   (when (nil? @goog-history)
     (let [hist (History. false
                          "/blank"
