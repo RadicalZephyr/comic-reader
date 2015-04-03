@@ -12,10 +12,4 @@
                          "/blank"
                          (.getElementById js/document
                                           "history_state"))]
-      (reset! goog-history hist)
-      (doto hist
-        (events/listen
-            EventType/NAVIGATE
-            (fn [event]
-              (rf/dispatch [:navigate (.-token event)])))
-        (.setEnabled true)))))
+      (reset! goog-history hist))))
