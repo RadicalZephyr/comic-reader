@@ -11,10 +11,10 @@
 (defroute "/" []
   (rf/dispatch [:sites]))
 
-(defroute "/site/:site" [site]
+(defroute "/comics/:site" [site]
   (rf/dispatch [:comics site]))
 
-(defroute "/comic/:comic/:volume/:page" {:as location}
+(defroute "/read/:comic/:volume/:page" {:as location}
   (rf/dispatch [:read location]))
 
 
