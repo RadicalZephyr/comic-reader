@@ -3,7 +3,22 @@
             [comic-reader.history :as history]
             [reagent.core :as reagent :refer [atom]]
             [reagent.ratom :refer-macros [reaction]]
-            [re-frame.core :as rf]))
+            [re-frame.core :as rf]
+            [secretary.core :as secretary
+                            :refer-macros [defroute]]))
+
+;; Have secretary pull apart URL's and then dispatch with re-frame
+(defroute "/" []
+  (rf/dispatch [:sites]))
+
+(defroute "/site/:site" [site]
+  (rf/dispatch [:comics site]))
+
+(defroute "/comic/:comic/:volume/:page" {:as location}
+  (rf/dispatch [:read location]))
+
+
+;; Actual re-frame code
 
 (defonce initial-state
   {:page :sites})
@@ -14,9 +29,23 @@
    (merge db initial-state)))
 
 (rf/register-handler
- :navigate
- (fn [db [_ page]]
-   db))
+ :sites
+ (fn [db [page]]
+   (assoc db :page page)))
+
+(rf/register-handler
+ :comics
+ (fn [db [page site]]
+   (-> db
+       (assoc :page page)
+       (assoc :site site))))
+
+(rf/register-handler
+ :read
+ (fn [db [page location]]
+   (-> db
+       (assoc :page page)
+       (assoc :location location))))
 
 (rf/register-sub
  :page
