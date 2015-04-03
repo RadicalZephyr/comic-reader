@@ -1,15 +1,22 @@
 (ns comic-reader.history
   (:require [re-frame.core :as rf]
+            [secretary.core :refer [dispatch!]]
             [goog.events :as events]
             [goog.history.EventType :as EventType])
   (:import goog.History))
 
 (defonce goog-history (atom nil))
 
-(defn setup-history! []
+(defn hook-browser-navigation! []
   (when (nil? @goog-history)
     (let [hist (History. false
                          "/blank"
                          (.getElementById js/document
                                           "history_state"))]
-      (reset! goog-history hist))))
+      (reset! goog-history hist)
+      (doto hist
+        (events/listen
+            EventType/NAVIGATE
+            (fn [event]
+              (dispatch! (.-token event))))
+        (.setEnabled true)))))
