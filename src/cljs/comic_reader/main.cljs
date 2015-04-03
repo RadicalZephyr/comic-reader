@@ -56,5 +56,6 @@
 
 (defn ^:export run []
   (rf/dispatch [:initialize])
+  (history/hook-browser-navigation!)
   (reagent/render [comic-reader]
                   (.-body js/document)))
