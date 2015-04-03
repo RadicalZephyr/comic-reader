@@ -14,9 +14,9 @@
                          (.getElementById js/document
                                           "history_state"))]
       (reset! goog-history hist)
+      (events/listen hist
+          EventType/NAVIGATE
+        (fn [event]
+          (dispatch! (.-token event))))
       (doto hist
-        (events/listen
-            EventType/NAVIGATE
-            (fn [event]
-              (dispatch! (.-token event))))
         (.setEnabled true)))))
