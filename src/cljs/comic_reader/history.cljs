@@ -1,7 +1,6 @@
 (ns comic-reader.history
   (:require [goog.events :as events]
-            [goog.history.EventType :as EventType]
-            [secretary.core :as secretary])
+            [goog.history.EventType :as EventType])
   (:import goog.History))
 
 (defonce goog-history (atom nil))
@@ -17,5 +16,5 @@
         (events/listen
             EventType/NAVIGATE
             (fn [event]
-              (secretary/dispatch! (.-token event))))
+              nil))
         (.setEnabled true)))))
