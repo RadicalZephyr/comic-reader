@@ -10,7 +10,7 @@
            :websocket-url "ws://localhost:3449/figwheel-ws"
 
            ;; optional callback
-           :on-jsload main/init!
+           :on-jsload (fn [] (.log js/console "Loaded figwheel!"))
 
            ;; The heads up display is enabled by default
            ;; to disable it:
@@ -24,4 +24,4 @@
            ;; if figwheel is watching more than one build
            ;; it can be helpful to specify a build id for
            ;; the client to focus on
-           :build-id "dev"})
+           :build-id "client"})
