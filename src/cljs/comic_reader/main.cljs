@@ -8,4 +8,6 @@
              :refer [comic-list]]
             [comic-reader.pages.viewer
              :refer [comic-viewer]]
-            [reagent.core :as reagent :refer [atom]]))
+            [reagent.core :as reagent :refer [atom]]
+            [reagent.ratom :refer-macros [reaction]]
+            [re-frame.core :as rf]))
