@@ -1,6 +1,7 @@
 (ns comic-reader.core
   (:gen-class)
-  (:require [comic-reader.scrape :as scrape]
+  (:require [comic-reader.sites :as sites]
+            [comic-reader.scrape :as scrape]
             [ring.util.response :as response]
             [ring.middleware.params :refer [wrap-params]]
             [compojure.core  :as c]
@@ -17,9 +18,9 @@
   (c/context "/api/v1" []
     (c/GET "/sites" []
       (edn-response (vec (map #(select-keys % [:id :name :url])
-                              scrape/sites))))
+                              sites/list))))
     (c/GET "/comics/:site" [site]
-      (->> scrape/sites
+      (->> sites/list
            (some (fn [s]
                    (when (= (:id s)
                             site)
