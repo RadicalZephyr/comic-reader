@@ -8,13 +8,13 @@
                             :refer-macros [defroute]]))
 
 ;; Have secretary pull apart URL's and then dispatch with re-frame
-(defroute "/" []
+(defroute sites-path "/" []
   (rf/dispatch [:sites]))
 
-(defroute "/comics/:site" [site]
+(defroute comics-path "/comics/:site" [site]
   (rf/dispatch [:comics site]))
 
-(defroute "/read/:comic/:volume/:page" {:as location}
+(defroute read-path "/read/:comic/:volume/:page" {:as location}
   (rf/dispatch [:read location]))
 
 
