@@ -89,6 +89,9 @@
 
 (defn ^:export run []
   (rf/dispatch [:initialize])
-  (history/hook-browser-navigation!)
+  (try
+    (history/hook-browser-navigation!)
+    (catch js/Error e
+      nil))
   (reagent/render [comic-reader]
                   (.-body js/document)))
