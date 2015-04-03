@@ -1,5 +1,6 @@
 (ns comic-reader.history
-  (:require [goog.events :as events]
+  (:require [re-frame.core :as rf]
+            [goog.events :as events]
             [goog.history.EventType :as EventType])
   (:import goog.History))
 
@@ -16,5 +17,5 @@
         (events/listen
             EventType/NAVIGATE
             (fn [event]
-              nil))
+              (rf/dispatch [:navigate (.-token event)])))
         (.setEnabled true)))))
