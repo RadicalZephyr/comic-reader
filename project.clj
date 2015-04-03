@@ -33,7 +33,7 @@
   :profiles {:dev {:cljsbuild
                    {:builds {:client {:source-paths ["devsrc"]
                                       :compiler
-                                      {:main simpleexample.dev
+                                      {:main comic-reader.dev
                                        :optimizations :none
                                        :source-map true
                                        :source-map-timestamp true}}}}}
