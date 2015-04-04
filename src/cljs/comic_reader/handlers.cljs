@@ -1,15 +1,10 @@
 (ns comic-reader.handlers
-  (:require [re-frame.core :as rf]))
-
-(defonce initial-state
-  {:page :sites})
+  (:require [comic-reader.api :as api]
+            [comic-reader.history :as h]
+            [re-frame.core :as rf]
+            [secretary.core :as secretary]))
 
 (defn init-handlers! []
-  (rf/register-handler
-   :initialize
-   (fn [db _]
-     (merge db initial-state)))
-
   (rf/register-handler
    :unknown
    (fn [db [page]]
@@ -18,6 +13,7 @@
   (rf/register-handler
    :sites
    (fn [db [page]]
+     (api/get-sites)
      (assoc db :page page)))
 
   (rf/register-handler
