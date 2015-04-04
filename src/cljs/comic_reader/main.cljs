@@ -77,6 +77,11 @@
  (fn [db _]
    (reaction (get @db :location))))
 
+(defn four-oh-four []
+  [:div
+   [:h1 "Sorry!"]
+   "There's nothing to see here."])
+
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
     (fn []
@@ -85,7 +90,7 @@
          :sites "Display the sites."
          :comics "Display the comics available."
          :reading "Display the comic itself!"
-         "")])))
+         [four-oh-four])])))
 
 (defn ^:export run []
   (rf/dispatch [:initialize])
