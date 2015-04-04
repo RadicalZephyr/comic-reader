@@ -25,14 +25,24 @@
     (c/GET "/sites" []
       (edn-response (vec (map #(select-keys % [:id :name :url])
                               sites/list))))
-    (c/GET "/comics/:site" [site]
-      (->> sites/list
-           (some (fn [s]
-                   (when (= (:id s)
-                            site)
-                     s)))
-           scrape/fetch-comic-list
-           edn-response))
+
+    (c/GET "/comics/:site" [site :as r]
+      (let [site (keyword site)]
+       (if-let [comic-list (->> sites/list
+                                (some (fn [s]
+                                        (when (= (:id s)
+                                                 site)
+                                          s)))
+                                scrape/fetch-comic-list)]
+         (edn-response comic-list)
+         (let [error-data (->
+                           r
+                           (select-keys [:uri
+                                         :request-method
+                                         :params])
+                           (merge {:site site}))]
+           (edn-response error-data 404)))))
+
     (c/GET "/comic/:name" [name]
       (str "Hello comic" name)))
   (route/resources "/"))
