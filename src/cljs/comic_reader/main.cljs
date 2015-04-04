@@ -30,7 +30,7 @@
    "There's nothing to see here."
    [:a {:href "/#"}]])
 
-(defn manga-site [site]
+(defn btn-for-id-name [site]
   (let [{:keys [id name]} site]
    ^{:key id}
      [:li
@@ -45,17 +45,13 @@
   (let [site-list (rf/subscribe [:site-list])]
     (fn []
       (when-let [site-list @site-list]
-        [:ul (map manga-site site-list)]))))
-
-(defn comic-btn [comic]
-  ^{:key (:name comic)}
-  [:li (:name comic)])
+        [:ul (map btn-for-id-name site-list)]))))
 
 (defn comic-list []
   (let [comics-list (rf/subscribe [:comic-list])]
     (fn []
       (when-let [comic-list @comic-list]
-        [:ul (map comic-btn comic-list)]))))
+        [:ul (map btn-for-id-name comic-list)]))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
