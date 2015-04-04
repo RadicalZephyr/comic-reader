@@ -56,10 +56,9 @@
       (when-let [comic-list @comic-list]
         [:ul (map (comp
                    (id-btn-for-callback
-                    #(.log js/console
-                           (str "You clicked the "
-                                (:id %)
-                                " button!")))
+                    #(go-to (read-path {:comic (:name %)
+                                        :volume 1
+                                        :page 1})))
                    #(assoc % :id (:name %)))
                   comic-list)]))))
 
