@@ -21,5 +21,10 @@
       (doto hist
         (.setEnabled true)))))
 
+(defn get-token []
+  (when-let [h @goog-history]
+    (.getToken h)))
+
 (defn set-token [token]
-  (.setToken @goog-history (str token)))
+  (when-let [h @goog-history]
+    (.setToken h (str token))))
