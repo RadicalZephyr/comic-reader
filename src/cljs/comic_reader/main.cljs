@@ -89,7 +89,7 @@
        (case @page
          :sites "Display the sites."
          :comics "Display the comics available."
-         :reading "Display the comic itself!"
+         :read "Display the comic itself!"
          [four-oh-four])])))
 
 (defn ^:export run []
