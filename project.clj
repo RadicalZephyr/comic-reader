@@ -7,8 +7,9 @@
   :source-paths ["src/clj"]
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [ring "1.3.1"]
-                 [compojure "1.2.1"]
+                 [ring "1.3.2"]
+                 [ring/ring-defaults "0.1.4"]
+                 [compojure "1.3.2"]
                  [hiccup "1.0.5"]
                  [enlive "1.1.5"]
 
@@ -18,12 +19,10 @@
                   :exclusions [[org.clojure/clojurescript
                                 :extension "jar"]]]
                  [secretary "1.2.3"]
-                 [cljs-ajax "0.3.10"]
-                 [figwheel "0.2.5-SNAPSHOT"]]
+                 [cljs-ajax "0.3.10"]]
 
   :plugins      [[lein-ring "0.8.13"]
-                 [lein-cljsbuild "1.0.4"]
-                 [lein-figwheel "0.2.5-SNAPSHOT"]]
+                 [lein-cljsbuild "1.0.5"]]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled"]
 
@@ -32,7 +31,9 @@
           :nrepl {:start? true :port 4500}
           :port 8090}
 
-  :profiles {:dev {:cljsbuild
+  :profiles {:dev {:dependencies [[figwheel "0.2.5-SNAPSHOT"]]
+                   :plugins [[lein-figwheel "0.2.5-SNAPSHOT"]]
+                   :cljsbuild
                    {:builds {:client {:source-paths ["devsrc"]
                                       :compiler
                                       {:main comic-reader.dev
@@ -40,13 +41,14 @@
                                        :source-map true
                                        :source-map-timestamp true}}}}}
 
-             :prod {:cljsbuild
-                    {:builds {:client {:compiler
-                                       {:main comic-reader.main
-                                        :optimizations :advanced
-                                        :elide-asserts true
-                                        :pretty-print false}}}}}
-             :uberjar {:aot :all}}
+             :uberjar {:omit-source true
+                       :aot :all
+                       :cljsbuild
+                       {:builds {:client {:compiler
+                                          {:main comic-reader.main
+                                           :optimizations :advanced
+                                           :elide-asserts true
+                                           :pretty-print false}}}}}}
 
   :cljsbuild {:builds
               {:client
@@ -60,5 +62,4 @@
              :css-dirs ["resources/public/css"] ;; watch and update CSS
              :nrepl-port 7888}
 
-  :main ^:skip-aot comic-reader.server
-  :target-path "target/%s")
+  :target-path "comic-reader.jar")
