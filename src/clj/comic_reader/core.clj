@@ -5,7 +5,8 @@
             [ring.util.response :as response]
             [ring.middleware.params :refer [wrap-params]]
             [compojure.core  :as c]
-            [compojure.route :as route]))
+            [compojure.route :as route]
+            [hiccup.page :as hp]))
 
 (defn edn-response [data & [status]]
   {:status (or status 200)
@@ -13,6 +14,9 @@
    :body (pr-str data)})
 
 (c/defroutes routes
+  (c/GET "/" [] (hp/html5
+                 [:input#history_state {:type "hidden"}]
+                 (hp/include-js "js/compiled/main.js")))
   (c/GET "/blank" [] "")
   (c/context "/api/v1" []
     (c/GET "/sites" []
