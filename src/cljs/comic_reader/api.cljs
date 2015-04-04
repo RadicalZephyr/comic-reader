@@ -2,7 +2,11 @@
   (:require [re-frame.core :refer [dispatch]]
             [ajax.core :refer [GET POST]]))
 
-(defn error-handler [{:keys [status status-text]}]
+(def *last-error* (atom nil))
+
+(defn error-handler [{:keys [status status-text]
+                      :as error-response}]
+  (reset! *last-error* error-response)
   (.log js/console (str "something bad happened: " status " " status-text)))
 
 (defn get-sites []
