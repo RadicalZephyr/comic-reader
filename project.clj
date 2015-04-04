@@ -35,7 +35,9 @@
           :port 8090}
 
   :profiles {:dev {:dependencies [[figwheel "0.2.5-SNAPSHOT"]]
-                   :plugins [[lein-figwheel "0.2.5-SNAPSHOT"]]
+                   :plugins [[lein-figwheel "0.2.5-SNAPSHOT"
+                              :exclusions [[cider/cider-nrepl
+                                            :extensions "jar"]]]]
                    :cljsbuild
                    {:builds {:client {:source-paths ["devsrc"]
                                       :compiler
