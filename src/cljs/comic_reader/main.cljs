@@ -47,10 +47,7 @@
     (fn []
       (when-let [site-list @site-list]
         [:ul (map (btn-for-id-name
-                   #(.log js/console
-                          (str "You clicked the "
-                               (:id %)
-                               " button!"))) site-list)]))))
+                   #(go-to (comics-path {:site (:id %)}))) site-list)]))))
 
 (defn comic-list []
   (let [comics-list (rf/subscribe [:comic-list])]
