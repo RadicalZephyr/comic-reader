@@ -3,13 +3,13 @@
             [secretary.core :refer [dispatch!]]
             [goog.events :as events]
             [goog.history.EventType :as EventType])
-  (:import goog.History))
+  (:import goog.history.Html5History))
 
 (defonce goog-history (atom nil))
 
 (defn hook-browser-navigation! []
   (when (nil? @goog-history)
-    (let [hist (History. false
+    (let [hist (Html5History. false
                          "/blank"
                          (.getElementById js/document
                                           "history_state"))]
