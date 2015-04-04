@@ -47,13 +47,23 @@
       (when-let [site-list @site-list]
         [:ul (map manga-site site-list)]))))
 
+(defn comic-btn [comic]
+  ^{:key (:name comic)}
+  [:li (:name comic)])
+
+(defn comic-list []
+  (let [comics-list (rf/subscribe [:comic-list])]
+    (fn []
+      (when-let [comic-list @comic-list]
+        [:ul (map comic-btn comic-list)]))))
+
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
     (fn []
       [:div
        (case @page
          :sites [site-list]
-         :comics "Display the comics available."
+         :comics [comic-list]
          :read "Display the comic itself!"
          nil ""
          [four-oh-four])])))
