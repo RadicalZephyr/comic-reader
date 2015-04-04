@@ -14,6 +14,11 @@
                        {url :href} :attrs}]
                    {:name name
                     :url url})
+      :chapter-list-data (fn [chapter-url]
+                           {:url chapter-url
+                            :selector [:div#chapters :ul.chlist
+                                       :li :div :h3 :a]
+                            :normalize (fn [data] data)})
       :url->feed (fn [url]
                    (some->> url
                             (re-matches manga-pattern)
@@ -28,4 +33,8 @@
       :normalize (fn [{[name] :content
                        {url :href} :attrs}]
                    {:name (s/trim name)
-                    :url (str canonical-url url)})})])
+                    :url (str canonical-url url)})
+      :chapter-list-data (fn [chapter-url]
+                           {:url chapter-url
+                            :selector [:div#chapterlist :tr :td :a]
+                            :normalize (fn [data] data)})})])
