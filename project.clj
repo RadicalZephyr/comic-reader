@@ -38,6 +38,9 @@
                    :plugins [[lein-figwheel "0.2.5-SNAPSHOT"
                               :exclusions [[cider/cider-nrepl
                                             :extensions "jar"]]]]
+                   :figwheel {:http-server-root "public"
+                              :css-dirs ["resources/public/css"]
+                              :nrepl-port 7888}
                    :cljsbuild
                    {:builds {:client {:source-paths ["devsrc"]
                                       :compiler
@@ -61,8 +64,4 @@
                 :compiler
                 {:output-to  "resources/public/js/compiled/main.js"
                  :output-dir "resources/public/js/compiled/out"
-                 :asset-path "js/compiled/out"}}}}
-
-  :figwheel {:http-server-root "public"
-             :css-dirs ["resources/public/css"] ;; watch and update CSS
-             :nrepl-port 7888})
+                 :asset-path "js/compiled/out"}}}})
