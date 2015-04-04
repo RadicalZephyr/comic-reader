@@ -35,6 +35,7 @@
          :sites "Display the sites."
          :comics "Display the comics available."
          :read "Display the comic itself!"
+         nil ""
          [four-oh-four])])))
 
 (defn ^:export run []
