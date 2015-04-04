@@ -94,3 +94,5 @@
       nil))
   (reagent/render [comic-reader]
                   (.getElementById js/document "app")))
+
+(run)
