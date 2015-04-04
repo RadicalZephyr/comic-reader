@@ -36,7 +36,10 @@
                       (fn [{{name :value} :attrs}]
                         {:name name
                          :url (format "%s/%s.html"
-                                      base-url name)}))})})
+                                      base-url name)}))})
+      :image-data (fn [page-url]
+                    {:url page-url
+                     :selector [:div#viewer :img#image]})})
 
    (let [canonical-url "http://www.mangareader.net"
          link->map (gen-link->map s/trim
@@ -58,4 +61,7 @@
          :normalize (fn [{[name]       :content
                           {url :value} :attrs}]
                       {:name name
-                       :url (str canonical-url url)})})})])
+                       :url (str canonical-url url)})})
+      :image-data (fn [page-url]
+                    {:url page-url
+                     :selector [:div#imgholder :a :img#img]})})])
