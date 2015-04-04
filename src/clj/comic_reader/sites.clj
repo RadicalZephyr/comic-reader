@@ -24,6 +24,11 @@
         {:url comic-url
          :selector [:div#chapters :ul.chlist
                     :li :div #{:h3 :h4} :a]
+         :normalize link->map})
+      :page-list-data-for-comic-chapter
+      (fn [chapter-url]
+        {:url chapter-url
+         :selector [:div]
          :normalize link->map})})
 
    (let [canonical-url "http://www.mangareader.net"
@@ -38,4 +43,9 @@
       (fn [chapter-url]
         {:url chapter-url
          :selector [:div#chapterlist :tr :td :a]
+         :normalize link->map})
+      :page-list-data-for-comic-chapter
+      (fn [chapter-url]
+        {:url chapter-url
+         :selector [:div]
          :normalize link->map})})])
