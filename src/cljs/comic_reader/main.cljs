@@ -1,5 +1,6 @@
 (ns comic-reader.main
   (:require [comic-reader.api :as api]
+            [comic-reader.handlers :refer [init-handlers!]]
             [comic-reader.history :as history]
             [reagent.core :as reagent :refer [atom]]
             [reagent.ratom :refer-macros [reaction]]
@@ -20,32 +21,6 @@
 
 ;; Actual re-frame code
 
-(defonce initial-state
-  {:page :sites})
-
-(rf/register-handler
- :initialize
- (fn [db _]
-   (merge db initial-state)))
-
-(rf/register-handler
- :sites
- (fn [db [page]]
-   (assoc db :page page)))
-
-(rf/register-handler
- :comics
- (fn [db [page site]]
-   (-> db
-       (assoc :page page)
-       (assoc :site site))))
-
-(rf/register-handler
- :read
- (fn [db [page location]]
-   (-> db
-       (assoc :page page)
-       (assoc :location location))))
 
 (rf/register-sub
  :page
@@ -93,6 +68,7 @@
          [four-oh-four])])))
 
 (defn ^:export run []
+  (init-handlers!)
   (rf/dispatch [:initialize])
   (try
     (history/hook-browser-navigation!)
