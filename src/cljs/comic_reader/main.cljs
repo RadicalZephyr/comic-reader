@@ -30,11 +30,21 @@
    "There's nothing to see here."
    [:a {:href "/#"}]])
 
+(defn manga-site [site]
+  ^{:key (:id site)}
+  [:li
+   [:input {:type "button"
+            :value (:name site)
+            :on-click #(.log js/console
+                             (str "You clicked the "
+                                  (:id site)
+                                  " button!"))}]])
+
 (defn site-list []
   (let [site-list (rf/subscribe [:site-list])]
     (fn []
       (when-let [site-list @site-list]
-        [:ul (vec (map #([:li %]) site-list))]))))
+        [:ul (map manga-site site-list)]))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
