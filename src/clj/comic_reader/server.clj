@@ -35,6 +35,7 @@
                                         (when (= (:id s)
                                                  site)
                                           s)))
+                                :comic-list-data
                                 scrape/fetch-list)]
          (edn-response comic-list)
          (let [error-data (->
