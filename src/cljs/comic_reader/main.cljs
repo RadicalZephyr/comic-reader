@@ -44,7 +44,6 @@
 (defn ^:export run []
   (init-handlers!)
   (init-subscriptions!)
-  (rf/dispatch [:initialize])
   (try
     (history/hook-browser-navigation!)
     (catch js/Error e
