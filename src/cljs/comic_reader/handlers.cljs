@@ -28,4 +28,19 @@
    (fn [db [page location]]
      (-> db
          (assoc :page page)
-         (assoc :location location)))))
+         (assoc :location location))))
+
+  (rf/register-handler
+   :site-list
+   (fn [db [_ site-list]]
+     (assoc db :site-list site-list)))
+
+  (rf/register-handler
+   :comic-list
+   (fn [db [_ comic-list]]
+     (assoc db :comic-list comic-list)))
+
+  (rf/register-handler
+   :comic-urls
+   (fn [db [_ comic-urls]]
+     (assoc db :comic-urls comic-urls))))
