@@ -24,12 +24,7 @@
         {:url comic-url
          :selector [:div#chapters :ul.chlist
                     :li :div #{:h3 :h4} :a]
-         :normalize link->map})
-      :url->feed (fn [url]
-                   (some->> url
-                            (re-matches manga-pattern)
-                            second
-                            (format "%s/rss/%s.xml" canonical-url)))})
+         :normalize link->map})})
 
    (let [canonical-url "http://www.mangareader.net"
          link->map (gen-link->map s/trim
