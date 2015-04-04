@@ -7,9 +7,10 @@
   :source-paths ["src/clj"]
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [enlive "1.1.5"]
                  [ring "1.3.1"]
                  [compojure "1.2.1"]
+                 [hiccup "1.0.5"]
+                 [enlive "1.1.5"]
 
                  [org.clojure/clojurescript "0.0-2850"]
                  [reagent "0.5.0-alpha3"]
