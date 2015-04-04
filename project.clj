@@ -5,7 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
   :min-lein-version "2.5.1"
-  :target-path "comic-reader.jar"
+  :uberjar-name "comic-reader.jar"
   :source-paths ["src/clj"]
 
   :dependencies [[org.clojure/clojure "1.6.0"]
