@@ -30,12 +30,18 @@
    "There's nothing to see here."
    [:a {:href "/#"}]])
 
+(defn site-list []
+  (let [site-list (rf/subscribe [:site-list])]
+    (fn []
+      (when-let [site-list @site-list]
+        [:ul (vec (map #([:li %]) site-list))]))))
+
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
     (fn []
       [:div
        (case @page
-         :sites "Display the sites."
+         :sites [site-list]
          :comics "Display the comics available."
          :read "Display the comic itself!"
          nil ""
