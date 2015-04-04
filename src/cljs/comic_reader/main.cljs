@@ -79,4 +79,4 @@
     (catch js/Error e
       nil))
   (reagent/render [comic-reader]
-                  (.-body js/document)))
+                  (.getElementById js/document "app")))

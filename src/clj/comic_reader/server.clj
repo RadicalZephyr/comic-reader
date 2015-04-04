@@ -17,6 +17,7 @@
   (c/GET "/" [] (hp/html5
                  [:head]
                  [:body
+                  [:div#app]
                   [:input#history_state {:type "hidden"}]
                   (hp/include-js "js/compiled/main.js")]))
   (c/GET "/blank" [] "")
