@@ -30,12 +30,12 @@
                             second
                             (format "%s/rss/%s.xml" canonical-url)))})
 
-   (let [canonical-url "http://www.mangareader.net/"
+   (let [canonical-url "http://www.mangareader.net"
          link->map (gen-link->map s/trim
                                   (partial str canonical-url))]
      {:id :manga-reader
       :name "Manga Reader"
-      :url (str canonical-url "alphabetical")
+      :url (str canonical-url "/alphabetical")
       :selector [:div.series_alpha :ul :li :a]
       :normalize link->map
       :chapter-list-data (fn [chapter-url]
