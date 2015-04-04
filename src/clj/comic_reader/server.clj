@@ -6,7 +6,8 @@
             [ring.middleware.params :refer [wrap-params]]
             [compojure.core  :as c]
             [compojure.route :as route]
-            [hiccup.page :as hp]))
+            [hiccup.page :as hp]
+            [ring.adapter.jetty :refer [run-jetty]]))
 
 (defn edn-response [data & [status]]
   {:status (or status 200)
@@ -48,3 +49,11 @@
   (route/resources "/"))
 
 (def app (wrap-params routes))
+
+(defn run-web-server [& [port]]
+  (let [port (Integer. (or port 10555))]
+    (print "Starting web server on port" port ".\n")
+    (run-jetty app {:port port :join? false})))
+
+(defn -main [& [port]]
+  (run-web-server port))
