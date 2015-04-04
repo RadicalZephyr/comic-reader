@@ -62,6 +62,18 @@
                    #(assoc % :id (:name %)))
                   comic-list)]))))
 
+(defn reader []
+  (let [comic-name (rf/subscribe [:comic])
+        location   (rf/subscribe [:location])]
+    (fn []
+      (let [comic-name @comic-name
+            location @location]
+        (when (and comic-name
+                   location)
+          [:div (str "Display volume " (:volume location)
+                     " page " (:page location)
+                     " of comic " (:comic location))])))))
+
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
     (fn []
@@ -69,7 +81,7 @@
        (case @page
          :sites [site-list]
          :comics [comic-list]
-         :read "Display the comic itself!"
+         :read [reader]
          nil ""
          [four-oh-four])])))
 
