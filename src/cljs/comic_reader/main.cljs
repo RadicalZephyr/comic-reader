@@ -54,11 +54,14 @@
   (let [comic-list (rf/subscribe [:comic-list])]
     (fn []
       (when-let [comic-list @comic-list]
-        [:ul (map (id-btn-for-callback
-                   #(.log js/console
-                          (str "You clicked the "
-                               (:id %)
-                               " button!"))) comic-list)]))))
+        [:ul (map (comp
+                   (id-btn-for-callback
+                    #(.log js/console
+                           (str "You clicked the "
+                                (:id %)
+                                " button!")))
+                   #(assoc % :id (:name %)))
+                  comic-list)]))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
