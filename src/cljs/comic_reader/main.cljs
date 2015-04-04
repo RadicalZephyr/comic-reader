@@ -14,7 +14,7 @@
   (rf/dispatch [:sites]))
 
 (defroute comics-path "/comics/:site" [site]
-  (rf/dispatch [:comics site]))
+  (rf/dispatch [:comics (keyword site)]))
 
 (defroute read-path "/read/:comic/:volume/:page" {:as location}
   (rf/dispatch [:read location]))
@@ -47,7 +47,7 @@
     (fn []
       (when-let [site-list @site-list]
         [:ul (map (id-btn-for-callback
-                   #(go-to (comics-path {:site (:id %)})))
+                   #(go-to (comics-path {:site (name (:id %))})))
                   site-list)]))))
 
 (defn comic-list []
