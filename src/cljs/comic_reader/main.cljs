@@ -33,7 +33,7 @@
    "There's nothing to see here."
    [:a {:href "/#"}]])
 
-(defn btn-for-id-name [on-click]
+(defn id-btn-for-callback [on-click]
   (fn [data]
     (let [{:keys [id name]} data]
       ^{:key id}
@@ -46,14 +46,15 @@
   (let [site-list (rf/subscribe [:site-list])]
     (fn []
       (when-let [site-list @site-list]
-        [:ul (map (btn-for-id-name
-                   #(go-to (comics-path {:site (:id %)}))) site-list)]))))
+        [:ul (map (id-btn-for-callback
+                   #(go-to (comics-path {:site (:id %)})))
+                  site-list)]))))
 
 (defn comic-list []
   (let [comics-list (rf/subscribe [:comic-list])]
     (fn []
       (when-let [comic-list @comic-list]
-        [:ul (map (btn-for-id-name
+        [:ul (map (id-btn-for-callback
                    #(.log js/console
                           (str "You clicked the "
                                (:id %)
