@@ -15,7 +15,7 @@
                         :response-format :edn}))
 
 (defn get-comics [site]
-  (GET (str "/api/v1/comics/" (pr-str site))
+  (GET (str "/api/v1/comics/" site)
       {:handler #(dispatch [:comic-list %])
        :error-handler error-handler
        :response-format :edn}))
