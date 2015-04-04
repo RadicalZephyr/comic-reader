@@ -15,8 +15,10 @@
 
 (c/defroutes routes
   (c/GET "/" [] (hp/html5
-                 [:input#history_state {:type "hidden"}]
-                 (hp/include-js "js/compiled/main.js")))
+                 [:head]
+                 [:body
+                  [:input#history_state {:type "hidden"}]
+                  (hp/include-js "js/compiled/main.js")]))
   (c/GET "/blank" [] "")
   (c/context "/api/v1" []
     (c/GET "/sites" []
