@@ -65,3 +65,30 @@
       :image-data (fn [page-url]
                     {:url page-url
                      :selector [:div#imgholder :a :img#img]})})])
+
+(defn get-site [site]
+  (some (fn [s]
+          (when (= (:id s)
+                   site)
+            s))
+        list))
+
+(defn comic-list-data [site]
+  (-> (get-site site)
+      :comic-list-data))
+
+(defn- get-data-fn [site fn-key]
+  (-> (get-site site)
+      fn-key))
+
+(defn chapter-list-data [site chapter-url]
+  ((get-data-fn site :chapter-list-data-for-comic)
+   chapter-url))
+
+(defn page-list-data [site chapter-url]
+  ((get-data-fn site :page-list-data-for-comic-chapter)
+   chapter-url))
+
+(defn image-data [site page-url]
+  ((get-data-fn site :image-data)
+   page-url))

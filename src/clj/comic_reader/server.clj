@@ -30,13 +30,8 @@
 
     (c/GET "/comics/:site" [site :as r]
       (let [site (keyword site)]
-       (if-let [comic-list (->> sites/list
-                                (some (fn [s]
-                                        (when (= (:id s)
-                                                 site)
-                                          s)))
-                                :comic-list-data
-                                scrape/fetch-list)]
+        (if-let [comic-list (scrape/fetch-list
+                             (sites/comic-list-data site))]
          (edn-response comic-list)
          (let [error-data (->
                            r
