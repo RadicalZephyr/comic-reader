@@ -28,7 +28,7 @@
   :clean-targets ^{:protect false} ["resources/public/js/compiled"]
 
   :hooks [leiningen.cljsbuild]
-  :ring  {:handler comic-reader.core/app
+  :ring  {:handler comic-reader.server/app
           :nrepl {:start? true :port 4500}
           :port 8090}
 
@@ -60,5 +60,5 @@
              :css-dirs ["resources/public/css"] ;; watch and update CSS
              :nrepl-port 7888}
 
-  :main ^:skip-aot comic-reader.core
+  :main ^:skip-aot comic-reader.server
   :target-path "target/%s")

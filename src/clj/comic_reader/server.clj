@@ -1,4 +1,4 @@
-(ns comic-reader.core
+(ns comic-reader.server
   (:gen-class)
   (:require [comic-reader.sites :as sites]
             [comic-reader.scrape :as scrape]
