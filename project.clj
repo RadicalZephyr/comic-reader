@@ -62,6 +62,4 @@
 
   :figwheel {:http-server-root "public"
              :css-dirs ["resources/public/css"] ;; watch and update CSS
-             :nrepl-port 7888}
-
-)
+             :nrepl-port 7888})
