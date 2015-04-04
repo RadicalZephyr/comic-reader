@@ -47,5 +47,8 @@
       :page-list-data-for-comic-chapter
       (fn [chapter-url]
         {:url chapter-url
-         :selector [:div]
-         :normalize link->map})})])
+         :selector [:div#selectpage :select#pageMenu :option]
+         :normalize (fn [{[name]       :content
+                          {url :value} :attrs}]
+                      {:name name
+                       :url (str canonical-url url)})})})])
