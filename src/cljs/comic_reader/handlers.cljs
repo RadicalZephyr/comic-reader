@@ -11,6 +11,11 @@
      (merge db initial-state)))
 
   (rf/register-handler
+   :unknown
+   (fn [db [page]]
+     (assoc db :page :unknown)))
+
+  (rf/register-handler
    :sites
    (fn [db [page]]
      (assoc db :page page)))
