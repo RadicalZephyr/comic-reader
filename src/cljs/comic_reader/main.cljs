@@ -19,13 +19,16 @@
 (defroute read-path "/read/:comic/:volume/:page" {:as location}
   (rf/dispatch [:read location]))
 
+(defroute "*" {:as _}
+  (rf/dispatch [:unknown]))
 
 ;; Actual re-frame code
 
 (defn four-oh-four []
   [:div
    [:h1 "Sorry!"]
-   "There's nothing to see here."])
+   "There's nothing to see here."
+   [:a {:href "/#"}]])
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
