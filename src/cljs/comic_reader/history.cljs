@@ -20,3 +20,6 @@
           (dispatch! (.-token event))))
       (doto hist
         (.setEnabled true)))))
+
+(defn set-token [token]
+  (.setToken @goog-history (str token)))
