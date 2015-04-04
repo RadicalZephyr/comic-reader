@@ -30,28 +30,34 @@
    "There's nothing to see here."
    [:a {:href "/#"}]])
 
-(defn btn-for-id-name [site]
-  (let [{:keys [id name]} site]
-   ^{:key id}
-     [:li
-      [:input {:type "button"
-               :value name
-               :on-click #(.log js/console
-                                (str "You clicked the "
-                                     id
-                                     " button!"))}]]))
+(defn btn-for-id-name [on-click]
+  (fn [data]
+    (let [{:keys [id name]} data]
+      ^{:key id}
+      [:li
+       [:input {:type "button"
+                :value name
+                :on-click (partial on-click data)}]])))
 
 (defn site-list []
   (let [site-list (rf/subscribe [:site-list])]
     (fn []
       (when-let [site-list @site-list]
-        [:ul (map btn-for-id-name site-list)]))))
+        [:ul (map (btn-for-id-name
+                   #(.log js/console
+                          (str "You clicked the "
+                               (:id %)
+                               " button!"))) site-list)]))))
 
 (defn comic-list []
   (let [comics-list (rf/subscribe [:comic-list])]
     (fn []
       (when-let [comic-list @comic-list]
-        [:ul (map btn-for-id-name comic-list)]))))
+        [:ul (map (btn-for-id-name
+                   #(.log js/console
+                          (str "You clicked the "
+                               (:id %)
+                               " button!"))) comic-list)]))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
