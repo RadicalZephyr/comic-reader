@@ -7,6 +7,7 @@
             [compojure.core  :as c]
             [compojure.route :as route]
             [hiccup.page :as hp]
+            [environ.core :refer [env]]
             [ring.adapter.jetty :refer [run-jetty]]))
 
 (defn edn-response [data & [status]]
@@ -51,7 +52,7 @@
 (def app (wrap-params routes))
 
 (defn run-web-server [& [port]]
-  (let [port (Integer. (or port 10555))]
+  (let [port (Integer. (or port (env :port) 10555))]
     (print "Starting web server on port" port ".\n")
     (run-jetty app {:port port :join? false})))
 
