@@ -28,8 +28,15 @@
       :page-list-data-for-comic-chapter
       (fn [chapter-url]
         {:url chapter-url
-         :selector [:div]
-         :normalize link->map})})
+         :selector [:div#top_center_bar :form#top_bar
+                    :select.m :option]
+         :normalize (let [base-url (s/replace chapter-url
+                                              #"/\d+\.html"
+                                              "")]
+                      (fn [{{name :value} :attrs}]
+                        {:name name
+                         :url (format "%s/%s.html"
+                                      base-url name)}))})})
 
    (let [canonical-url "http://www.mangareader.net"
          link->map (gen-link->map s/trim
