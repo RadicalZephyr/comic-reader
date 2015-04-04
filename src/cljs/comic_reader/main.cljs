@@ -51,7 +51,7 @@
                   site-list)]))))
 
 (defn comic-list []
-  (let [comics-list (rf/subscribe [:comic-list])]
+  (let [comic-list (rf/subscribe [:comic-list])]
     (fn []
       (when-let [comic-list @comic-list]
         [:ul (map (id-btn-for-callback
