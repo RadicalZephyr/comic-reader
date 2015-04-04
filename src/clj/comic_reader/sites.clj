@@ -16,14 +16,16 @@
          manga-pattern (re-pattern (str manga-url "(.*?)/"))]
      {:id :manga-fox
       :name "Manga Fox"
-      :url manga-url
-      :selector [:div.manga_list :ul :li :a]
-      :normalize simple-link->map
-      :chapter-list-data (fn [chapter-url]
-                           {:url chapter-url
-                            :selector [:div#chapters :ul.chlist
-                                       :li :div :h3 :a]
-                            :normalize simple-link->map})
+
+      :comic-list-data {:url manga-url
+                        :selector [:div.manga_list :ul :li :a]
+                        :normalize simple-link->map}
+      :chapter-list-data-for-comic
+      (fn [comic-url]
+        {:url comic-url
+         :selector [:div#chapters :ul.chlist
+                    :li :div :h3 :a]
+         :normalize simple-link->map})
       :url->feed (fn [url]
                    (some->> url
                             (re-matches manga-pattern)
@@ -35,10 +37,11 @@
                                   (partial str canonical-url))]
      {:id :manga-reader
       :name "Manga Reader"
-      :url (str canonical-url "/alphabetical")
-      :selector [:div.series_alpha :ul :li :a]
-      :normalize link->map
-      :chapter-list-data (fn [chapter-url]
-                           {:url chapter-url
-                            :selector [:div#chapterlist :tr :td :a]
-                            :normalize link->map})})])
+      :comic-list-data {:url (str canonical-url "/alphabetical")
+                        :selector [:div.series_alpha :ul :li :a]
+                        :normalize link->map}
+      :chapter-list-data-for-comic
+      (fn [chapter-url]
+        {:url chapter-url
+         :selector [:div#chapterlist :tr :td :a]
+         :normalize link->map})})])
