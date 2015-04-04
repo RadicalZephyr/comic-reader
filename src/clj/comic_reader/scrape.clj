@@ -21,9 +21,10 @@
 (defn clean-image-tag [[tag attrs & content]]
   [tag (select-keys attrs [:alt :src])])
 
-(defn fetch-image-tag [url]
-  (-> (fetch-url url)
-      (html/select [:div#imgholder :a :img#img])
-      first
-      enlive->hiccup
-      clean-image-tag))
+(defn fetch-image-tag [{:keys [url selector]}]
+  (when (every? (complement nil?) [url selector])
+    (-> (fetch-url url)
+        (html/select selector)
+        first
+        enlive->hiccup
+        clean-image-tag)))
