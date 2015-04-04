@@ -18,8 +18,12 @@
     [tag attrs]
     [tag attrs content]))
 
+(defn clean-image-tag [[tag attrs & content]]
+  [tag (select-keys attrs [:alt :src])])
+
 (defn fetch-image-tag [url]
   (-> (fetch-url url)
       (html/select [:div#imgholder :a :img#img])
       first
-      enlive->hiccup))
+      enlive->hiccup
+      clean-image-tag))
