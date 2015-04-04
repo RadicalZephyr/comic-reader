@@ -22,6 +22,9 @@
 (defroute "*" {:as _}
   (rf/dispatch [:unknown]))
 
+(defn go-to [page]
+  (history/set-token page))
+
 ;; Actual re-frame code
 
 (defn four-oh-four []
