@@ -8,24 +8,23 @@
     {:name (process-name name)
      :url (process-url url)}))
 
-(def simple-link->map (gen-link->map identity identity))
-
 (def list
   [(let [canonical-url "http://mangafox.me"
          manga-url (format "%s/manga/" canonical-url)
-         manga-pattern (re-pattern (str manga-url "(.*?)/"))]
+         manga-pattern (re-pattern (str manga-url "(.*?)/"))
+         link->map (gen-link->map identity identity)]
      {:id :manga-fox
       :name "Manga Fox"
 
       :comic-list-data {:url manga-url
                         :selector [:div.manga_list :ul :li :a]
-                        :normalize simple-link->map}
+                        :normalize link->map}
       :chapter-list-data-for-comic
       (fn [comic-url]
         {:url comic-url
          :selector [:div#chapters :ul.chlist
                     :li :div :h3 :a]
-         :normalize simple-link->map})
+         :normalize link->map})
       :url->feed (fn [url]
                    (some->> url
                             (re-matches manga-pattern)
