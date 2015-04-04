@@ -28,7 +28,7 @@
                    (when (= (:id s)
                             site)
                      s)))
-           (scrape/fetch-comic-list site)
+           scrape/fetch-comic-list
            edn-response))
     (c/GET "/comic/:name" [name]
       (str "Hello comic" name)))
