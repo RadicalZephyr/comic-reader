@@ -14,7 +14,7 @@
   (rf/dispatch [:sites]))
 
 (defroute comics-path "/comics/:site" [site]
-  (rf/dispatch [:comics (keyword site)]))
+  (rf/dispatch [:comics site]))
 
 (defroute read-path "/read/:comic/:volume/:page" {:as location}
   (rf/dispatch [:read location]))
