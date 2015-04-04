@@ -23,7 +23,7 @@
       (fn [comic-url]
         {:url comic-url
          :selector [:div#chapters :ul.chlist
-                    :li :div :h3 :a]
+                    :li :div #{:h3 :h4} :a]
          :normalize link->map})
       :url->feed (fn [url]
                    (some->> url
