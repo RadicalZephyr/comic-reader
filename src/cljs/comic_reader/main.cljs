@@ -31,14 +31,15 @@
    [:a {:href "/#"}]])
 
 (defn manga-site [site]
-  ^{:key (:id site)}
-  [:li
-   [:input {:type "button"
-            :value (:name site)
-            :on-click #(.log js/console
-                             (str "You clicked the "
-                                  (:id site)
-                                  " button!"))}]])
+  (let [{:keys [id name]} site]
+   ^{:key id}
+     [:li
+      [:input {:type "button"
+               :value name
+               :on-click #(.log js/console
+                                (str "You clicked the "
+                                     id
+                                     " button!"))}]]))
 
 (defn site-list []
   (let [site-list (rf/subscribe [:site-list])]
