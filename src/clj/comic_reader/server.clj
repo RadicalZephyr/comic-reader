@@ -4,6 +4,7 @@
             [comic-reader.scrape :as scrape]
             [ring.util.response :as response]
             [ring.middleware.params :refer [wrap-params]]
+            [ring.middleware.edn :refer [wrap-edn-params]]
             [compojure.core  :as c]
             [compojure.route :as route]
             [hiccup.page :as hp]
@@ -78,7 +79,9 @@
 
   (route/resources "/"))
 
-(def app (wrap-params routes))
+(def app (-> routes
+             wrap-params
+             wrap-edn-params))
 
 (defn run-web-server [& [port]]
   (let [port (Integer. (or port (env :port) 10555))]
