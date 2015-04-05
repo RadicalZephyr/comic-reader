@@ -29,8 +29,8 @@
    (fn [db [page site location]]
      (api/get-comic-urls site location)
      (assoc db
-            :site site
             :page page
+            :site site
             :location location)))
 
   (rf/register-handler
