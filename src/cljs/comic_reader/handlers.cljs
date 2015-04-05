@@ -49,6 +49,8 @@
      (assoc db :url-list url-list)))
 
   (rf/register-handler
-   :comic-imgs
-   (fn [db [_ comic-imgs]]
-     (assoc db :comic-imgs comic-imgs))))
+   :next-image
+   (fn [db [_ img-tag]]
+     (if (vector? (:comic-imgs db))
+       (update-in db [:comic-imgs] conj img-tag)
+       (assoc db :comic-imgs [img-tag])))))
