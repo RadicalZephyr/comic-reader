@@ -22,6 +22,8 @@
      {:id :manga-fox
       :name "Manga Fox"
 
+      :comic->url (fn [comic-id]
+                    (str manga-url comic-id "/"))
       :comic-list-data {:url manga-url
                         :selector [:div.manga_list :ul :li :a]
                         :normalize link->map}
@@ -55,6 +57,9 @@
                                    (partial str canonical-url)))]
      {:id :manga-reader
       :name "Manga Reader"
+
+      :comic->url (fn [comic-id]
+                    (str canonical-url "/" comic-id))
       :comic-list-data {:url (str canonical-url "/alphabetical")
                         :selector [:div.series_alpha :ul :li :a]
                         :normalize link->map}
