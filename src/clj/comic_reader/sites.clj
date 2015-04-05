@@ -50,8 +50,8 @@
                         :selector [:div.series_alpha :ul :li :a]
                         :normalize link->map}
       :chapter-list-data-for-comic
-      (fn [chapter-url]
-        {:url chapter-url
+      (fn [comic-url]
+        {:url comic-url
          :selector [:div#chapterlist :tr :td :a]
          :normalize link->map})
       :page-list-data-for-comic-chapter
@@ -81,9 +81,9 @@
   (-> (get-site site)
       fn-key))
 
-(defn chapter-list-data [site chapter-url]
+(defn chapter-list-data [site comic-url]
   ((get-data-fn site :chapter-list-data-for-comic)
-   chapter-url))
+   comic-url))
 
 (defn page-list-data [site chapter-url]
   ((get-data-fn site :page-list-data-for-comic-chapter)
