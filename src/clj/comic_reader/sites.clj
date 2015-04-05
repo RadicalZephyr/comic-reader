@@ -10,14 +10,15 @@
 
 (defn gen-add-id-from-url [extract-pattern]
   (fn [{:keys [url] :as comic-map}]
-    (let [id (re-find extract-pattern url)]
+    (let [[_ id] (re-find extract-pattern url)]
       (assoc comic-map :id id))))
 
 (def list
   [(let [canonical-url "http://mangafox.me"
          manga-url (format "%s/manga/" canonical-url)
          manga-pattern (re-pattern (str manga-url "(.*?)/"))
-         link->map (gen-link->map identity identity)]
+         link->map (comp (gen-add-id-from-url manga-pattern)
+                         (gen-link->map identity identity))]
      {:id :manga-fox
       :name "Manga Fox"
 
@@ -47,8 +48,11 @@
                      :selector [:div#viewer :img#image]})})
 
    (let [canonical-url "http://www.mangareader.net"
-         link->map (gen-link->map s/trim
-                                  (partial str canonical-url))]
+         manga-pattern (re-pattern (str canonical-url "/(.*?)"))
+         link->map (comp
+                    (gen-add-id-from-url manga-pattern)
+                    (gen-link->map s/trim
+                                   (partial str canonical-url)))]
      {:id :manga-reader
       :name "Manga Reader"
       :comic-list-data {:url (str canonical-url "/alphabetical")

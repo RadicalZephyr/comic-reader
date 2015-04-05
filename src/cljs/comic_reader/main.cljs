@@ -60,13 +60,11 @@
       (let [site       @site
             comic-list @comic-list]
         (when (and site comic-list)
-          [:ul (map (comp
-                     (id-btn-for-callback
-                      #(go-to (read-path {:site site
-                                          :comic (:name %)
-                                          :chapter 1
-                                          :page 1})))
-                     #(assoc % :id (:name %)))
+          [:ul (map (id-btn-for-callback
+                     #(go-to (read-path {:site site
+                                         :comic (:name %)
+                                         :chapter 1
+                                         :page 1})))
                     comic-list)])))))
 
 (defn reader []
