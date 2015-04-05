@@ -46,11 +46,14 @@
   (rf/register-handler
    :url-list
    (fn [db [_ url-list]]
-     (assoc db :url-list url-list)))
+     (api/get-img-tag (:site db) (first url-list))
+     (assoc db :url-list (rest url-list))))
 
   (rf/register-handler
    :next-image
    (fn [db [_ img-tag]]
-     (if (vector? (:comic-imgs db))
-       (update-in db [:comic-imgs] conj img-tag)
-       (assoc db :comic-imgs [img-tag])))))
+     (api/get-img-tag (:site db) (first (:url-list db)))
+     (let [db (update-in db [:url-list] rest)]
+      (if (vector? (:comic-imgs db))
+        (update-in db [:comic-imgs] conj img-tag)
+        (assoc db :comic-imgs [img-tag]))))))
