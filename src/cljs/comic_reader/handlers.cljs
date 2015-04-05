@@ -28,11 +28,15 @@
    :read
    (fn [db [page site location]]
      (api/get-comic-urls site location)
-     (assoc db
-            :page page
-            :site site
-            :location location
-            :comic-imgs [])))
+     (if (and (= (:site db) site)
+              (= (get-in db [:location  :comic])
+                 (get-in      location [:comic])))
+       (assoc db :location location)
+       (assoc db
+              :page page
+              :site site
+              :location location
+              :comic-imgs []))))
 
   (rf/register-handler
    :site-list
