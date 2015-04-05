@@ -41,8 +41,10 @@
                            (merge {:site site}))]
            (edn-response error-data 404)))))
 
-    (c/GET "/comic/:name" [name]
-      (str "Hello comic" name)))
+    (c/GET "/:site/comic/:comic/:chapter{\\d+}/:page{\\d+}"
+        [site comic chapter page]
+      (edn-response ["some-urls"])))
+
   (route/resources "/"))
 
 (def app (wrap-params routes))

@@ -20,8 +20,9 @@
        :error-handler error-handler
        :response-format :edn}))
 
-(defn get-comic-urls [comic-name]
-  (GET (str "/api/v1/comic/" (pr-str comic-name))
-      {:handler #(dispatch [:comic-urls %])
+(defn get-comic-imgs [site {:keys [comic chapter page]}]
+  (GET (str "/api/v1/" site "/comic" comic
+            "/" chapter "/" page)
+      {:handler #(dispatch [:comic-imgs %])
        :error-handler error-handler
        :response-format :edn}))
