@@ -37,13 +37,13 @@
    [:a {:href "/#"}]])
 
 (defn id-btn-for-callback [on-click]
-  (fn [data]
-    (let [{:keys [id name]} data]
-      ^{:key id}
-      [:li
-       [:input {:type "button"
-                :value name
-                :on-click (partial on-click data)}]])))
+  (fn [{:keys [id name]
+        :as data}]
+    ^{:key id}
+    [:li
+     [:input {:type "button"
+              :value name
+              :on-click (partial on-click data)}]]))
 
 (defn site-list []
   (let [site-list (rf/subscribe [:site-list])]
