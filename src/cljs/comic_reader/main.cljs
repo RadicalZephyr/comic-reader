@@ -88,7 +88,7 @@
                      " from site " site)]
            [:br]
            (when comic-imgs
-             comic-imgs)])))))
+             (into [:div] comic-imgs))])))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
