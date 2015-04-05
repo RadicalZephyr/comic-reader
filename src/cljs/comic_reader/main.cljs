@@ -16,7 +16,7 @@
 (defroute comics-path "/comics/:site" [site]
   (rf/dispatch [:comics site]))
 
-(defroute read-path "/read/:comic/:volume/:page" {:as location}
+(defroute read-path "/read/:comic/:chapter/:page" {:as location}
   (rf/dispatch [:read location]))
 
 (defroute "*" {:as _}
@@ -57,7 +57,7 @@
         [:ul (map (comp
                    (id-btn-for-callback
                     #(go-to (read-path {:comic (:name %)
-                                        :volume 1
+                                        :chapter 1
                                         :page 1})))
                    #(assoc % :id (:name %)))
                   comic-list)]))))
@@ -70,7 +70,7 @@
             comic-urls @comic-urls]
         (when (and comic-urls
                    location)
-          [:div (str "Display volume " (:volume location)
+          [:div (str "Display chapter " (:chapter location)
                      " page " (:page location)
                      " of comic " (:comic location))])))))
 
