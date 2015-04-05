@@ -33,12 +33,11 @@
         (if-let [comic-list (scrape/fetch-list
                              (sites/comic-list-data site))]
          (edn-response comic-list)
-         (let [error-data (->
-                           r
-                           (select-keys [:uri
-                                         :request-method
-                                         :params])
-                           (merge {:site site}))]
+         (let [error-data (-> r
+                              (select-keys [:uri
+                                            :request-method
+                                            :params])
+                              (assoc :site site))]
            (edn-response error-data 404)))))
 
     (c/GET "/imgs/:site/:comic/:chapter{\\d+}/:page{\\d+}"
