@@ -62,7 +62,7 @@
         (when (and site comic-list)
           [:ul (map (id-btn-for-callback
                      #(go-to (read-path {:site site
-                                         :comic (:name %)
+                                         :comic (:id %)
                                          :chapter 1
                                          :page 1})))
                     comic-list)])))))
