@@ -61,10 +61,11 @@
             comic-list @comic-list]
         (when (and site comic-list)
           [:ul (map (id-btn-for-callback
-                     #(go-to (read-path {:site site
-                                         :comic (:id %)
-                                         :chapter 1
-                                         :page 1})))
+                     (fn [item]
+                       (go-to (read-path {:site site
+                                          :comic (:id item)
+                                          :chapter 1
+                                          :page 1}))))
                     comic-list)])))))
 
 (defn reader []
