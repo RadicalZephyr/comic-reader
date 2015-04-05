@@ -61,6 +61,21 @@
          get-next-image)))
 
   (rf/register-handler
+   :scroll
+   (fn [db _]
+     (if (= (:page db)
+            :read)
+       (let [scroll-y (.-scrollY js/window)
+             window-height (.-innerHeight js/window)
+             screen-bottom (+ scroll-y window-height)
+             document-height (.-clientHeight js/document)]
+         (if (> screen-bottom
+                (* 0.75 document-height))
+           (get-next-image db)
+           db))
+       db)))
+
+  (rf/register-handler
    :next-image
    (fn [db [_ img-tag]]
      (-> db
