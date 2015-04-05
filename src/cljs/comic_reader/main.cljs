@@ -54,16 +54,20 @@
                   site-list)]))))
 
 (defn comic-list []
-  (let [comic-list (rf/subscribe [:comic-list])]
+  (let [site (rf/subscribe [:site])
+        comic-list (rf/subscribe [:comic-list])]
     (fn []
-      (when-let [comic-list @comic-list]
-        [:ul (map (comp
-                   (id-btn-for-callback
-                    #(go-to (read-path {:comic (:name %)
-                                        :chapter 1
-                                        :page 1})))
-                   #(assoc % :id (:name %)))
-                  comic-list)]))))
+      (let [site       @site
+            comic-list @comic-list]
+        (when (and site comic-list)
+          [:ul (map (comp
+                     (id-btn-for-callback
+                      #(go-to (read-path {:site site
+                                          :comic (:name %)
+                                          :chapter 1
+                                          :page 1})))
+                     #(assoc % :id (:name %)))
+                    comic-list)])))))
 
 (defn reader []
   (let [location   (rf/subscribe [:location])
