@@ -1,5 +1,6 @@
 (ns comic-reader.main
   (:require [comic-reader.api :as api]
+            [comic-reader.routes :as r]
             [comic-reader.handlers :refer [init-handlers!]]
             [comic-reader.subscriptions
              :refer [init-subscriptions!]]
@@ -10,26 +11,7 @@
             [reagent.core :as reagent :refer [atom]]
             [re-frame.core :as rf]
             [secretary.core :as secretary
-                            :refer-macros [defroute]]))
-
-;; Have secretary pull apart URL's and then dispatch with re-frame
-(defroute sites-path "/" []
-  (rf/dispatch [:sites]))
-
-(defroute comics-path "/comics/:site" [site]
-  (rf/dispatch [:comics site]))
-
-(defroute read-path "/read/:site/:comic/:chapter/:page"
-  {site :site
-   :as location}
-  (let [location (dissoc location :site)]
-    (rf/dispatch [:read site location])))
-
-(defroute "*" {:as _}
-  (rf/dispatch [:unknown]))
-
-(defn go-to [page]
-  (history/set-token page))
+             :refer-macros [defroute]]))
 
 ;; Actual re-frame code
 
@@ -53,7 +35,7 @@
     (fn []
       (when-let [site-list @site-list]
         [:ul (map (id-btn-for-callback
-                   #(go-to (comics-path {:site (name (:id %))})))
+                   #(r/go-to (r/comics-path {:site (name (:id %))})))
                   site-list)]))))
 
 (defn comic-list []
@@ -65,10 +47,10 @@
         (when (and site comic-list)
           [:ul (map (id-btn-for-callback
                      (fn [item]
-                       (go-to (read-path {:site site
-                                          :comic (:id item)
-                                          :chapter 1
-                                          :page 1}))))
+                       (r/go-to (r/read-path {:site site
+                                              :comic (:id item)
+                                              :chapter 1
+                                              :page 1}))))
                     comic-list)])))))
 
 (defn reader []

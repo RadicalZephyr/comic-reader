@@ -1,0 +1,24 @@
+(ns comic-reader.routes
+  (:require [comic-reader.history :as h]
+            [re-frame.core :as rf]
+            [secretary.core :as secretary
+             :refer-macros [defroute]]))
+
+;; Have secretary pull apart URL's and then dispatch with re-frame
+(defroute sites-path "/" []
+  (rf/dispatch [:sites]))
+
+(defroute comics-path "/comics/:site" [site]
+  (rf/dispatch [:comics site]))
+
+(defroute read-path "/read/:site/:comic/:chapter/:page"
+  {site :site
+   :as location}
+  (let [location (dissoc location :site)]
+    (rf/dispatch [:read site location])))
+
+(defroute "*" {:as _}
+  (rf/dispatch [:unknown]))
+
+(defn go-to [page]
+  (h/set-token page))
