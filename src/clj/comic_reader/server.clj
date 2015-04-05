@@ -82,7 +82,7 @@
     (c/GET "/comics/:site" request
       (get-comics-list request))
 
-    (c/GET "/imgs/:site/:comic/:chapter{\\d+}/:page{\\d+}"
+    (c/GET "/urls/:site/:comic/:chapter{\\d+}/:page{\\d+}"
         request
       (get-comic-imgs request))
 
