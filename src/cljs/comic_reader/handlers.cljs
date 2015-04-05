@@ -27,7 +27,7 @@
   (rf/register-handler
    :read
    (fn [db [page site location]]
-     (api/get-comic-imgs site location)
+     (api/get-comic-urls site location)
      (assoc db
             :site site
             :page page
