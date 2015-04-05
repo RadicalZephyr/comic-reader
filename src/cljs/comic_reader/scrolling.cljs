@@ -8,10 +8,12 @@
         throttler (fn []
                     (when (not @running)
                       (toggle!)
-                      (js/requestAnimationFrame
-                       (fn []
-                         (rf/dispatch [key])
-                         (toggle!)))))]
+                      (.setTimeout js/window
+                                   #(js/requestAnimationFrame
+                                     (fn []
+                                       (rf/dispatch [key])
+                                       (toggle!)))
+                                   1000)))]
     (.addEventListener target type throttler)))
 
 (defn setup-scrolling-events! []
