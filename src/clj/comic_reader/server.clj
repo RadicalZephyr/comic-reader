@@ -77,9 +77,10 @@
         request
       (get-comic-imgs request))
 
-    (c/POST "/img" {{:keys [url]} :edn-params
+    (c/POST "/img" {{:keys [site page-url]} :edn-params
                     :as request}
-      (if-let [img-tag nil]
+      (if-let [img-tag (scrape/fetch-image-tag
+                        (sites/image-data site page-url))]
         (edn-response img-tag)
         (edn-response (gen-error-data request) 404))))
 
