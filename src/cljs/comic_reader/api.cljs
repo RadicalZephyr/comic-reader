@@ -21,7 +21,7 @@
        :response-format :edn}))
 
 (defn get-comic-imgs [site {:keys [comic chapter page]}]
-  (GET (str "/api/v1/" site "/comic" comic
+  (GET (str "/api/v1/imgs/" site "/" comic
             "/" chapter "/" page)
       {:handler #(dispatch [:comic-imgs %])
        :error-handler error-handler
