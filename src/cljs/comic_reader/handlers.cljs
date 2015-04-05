@@ -4,8 +4,8 @@
             [re-frame.core :as rf]
             [secretary.core :as secretary]))
 
-(defn get-next-image [{:keys site url-list}
-                      :as db]
+(defn get-next-image [{:keys [site url-list]
+                       :as db}]
   (api/get-img-tag site (first url-list))
   (assoc db :url-list (rest url-list)))
 
