@@ -10,11 +10,12 @@
                        {:keys [chapter]} :location
                        :as db}]
   (api/get-img-tag site (first url-list))
-  (let [db (assoc db :url-list (next url-list))
+  (let [{:keys [url-list] :as db} (assoc db :url-list
+                                         (next url-list))
         new-location (assoc location :chapter
                             (inc
                              (read-string chapter)))]
-    (when (not (:url-list db))
+    (when (not url-list)
       (api/get-comic-urls site new-location))
     db))
 
