@@ -54,7 +54,6 @@
 
 (defn get-comic-imgs [{{:keys [site comic chapter page]} :params
                        :as request}]
-  (println (:uri request))
   (let [chapter-map (get-comic-chapter site comic
                                        (safe-read-string chapter))
         page-list (get-following-pages site comic
