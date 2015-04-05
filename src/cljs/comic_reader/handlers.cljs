@@ -57,7 +57,6 @@
   (rf/register-handler
    :next-image
    (fn [db [_ img-tag]]
-     (api/get-img-tag (:site db) (first (:url-list db)))
      (-> db
          (update-in [:url-list] rest)
          (update-in [:comic-imgs] conj img-tag)))))
