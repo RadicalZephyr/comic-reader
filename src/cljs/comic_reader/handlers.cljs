@@ -90,9 +90,11 @@
                   (* @scroll-threshold document-height))
              (do
                (swap! counter inc)
-               (swap! scroll-threshold + (/ 1
-                                            (.pow js/Math
-                                                  2 counter)))
+               (swap! scroll-threshold
+                      +
+                      (/ 1
+                         (.pow js/Math
+                               2 @counter)))
                (get-next-image db))
              db))
          db))))
