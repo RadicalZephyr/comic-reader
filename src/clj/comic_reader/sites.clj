@@ -51,7 +51,8 @@
                      :selector [:div#viewer :img#image]})})
 
    (let [canonical-url "http://www.mangareader.net"
-         manga-pattern (re-pattern (str canonical-url "/(.*)$"))
+         manga-pattern (re-pattern (str canonical-url
+                                        "/(.*)(\\.html)?$"))
          link->map (gen-link->map s/trim
                                   (partial str canonical-url))]
      {:id :manga-reader
