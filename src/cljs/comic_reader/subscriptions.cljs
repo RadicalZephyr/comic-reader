@@ -24,9 +24,9 @@
      (reaction (get @db :comic-list))))
 
   (rf/register-sub
-   :comic-urls
+   :comic-imgs
    (fn [db _]
-     (reaction (get @db :comic-urls))))
+     (reaction (get @db :comic-imgs))))
 
   (rf/register-sub
    :location
