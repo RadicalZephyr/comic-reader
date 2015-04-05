@@ -77,8 +77,11 @@
         request
       (get-comic-imgs request))
 
-    (c/POST "/img" {{:keys [url]} :edn-params}
-      (edn-response (format "Yay, you got the url '%s'" url))))
+    (c/POST "/img" {{:keys [url]} :edn-params
+                    :as request}
+      (if-let [img-tag nil]
+        (edn-response img-tag)
+        (edn-response (gen-error-data request) 404))))
 
   (route/resources "/"))
 
