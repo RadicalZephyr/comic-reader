@@ -70,13 +70,16 @@
                     comic-list)])))))
 
 (defn reader []
-  (let [location   (rf/subscribe [:location])
-        comic-urls (rf/subscribe [:comic-urls])]
+  (let [site       (rf/subscribe [:site])
+        location   (rf/subscribe [:location])
+        comic-imgs (rf/subscribe [:comic-imgs])]
     (fn []
-      (let [location @location
-            comic-urls @comic-urls]
-        (when (and comic-urls
-                   location)
+      (let [site       @site
+            location   @location
+            comic-imgs @comic-imgs]
+        (when (and site
+                   location
+                   comic-imgs)
           [:div (str "Display chapter " (:chapter location)
                      " page " (:page location)
                      " of comic " (:comic location))])))))
