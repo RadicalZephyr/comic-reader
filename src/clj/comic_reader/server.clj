@@ -61,8 +61,8 @@
         page-list (get-following-pages site comic
                                        chapter-map
                                        (safe-read-string page))]
-    (if-let [comic-urls nil]
-      (edn-response)
+    (if-let [comic-urls (map :url page-list)]
+      (edn-response comic-urls)
       (edn-response (gen-error-data request) 404))))
 
 (c/defroutes routes
