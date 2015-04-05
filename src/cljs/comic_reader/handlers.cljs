@@ -4,6 +4,11 @@
             [re-frame.core :as rf]
             [secretary.core :as secretary]))
 
+(defn get-next-image [{:keys site url-list}
+                      :as db]
+  (api/get-img-tag site (first url-list))
+  (assoc db :url-list (rest url-list)))
+
 (defn init-handlers! []
   (rf/register-handler
    :unknown
@@ -51,8 +56,9 @@
   (rf/register-handler
    :url-list
    (fn [db [_ url-list]]
-     (api/get-img-tag (:site db) (first url-list))
-     (assoc db :url-list (rest url-list))))
+     (-> db
+         (assoc :url-list url-list)
+         get-next-image)))
 
   (rf/register-handler
    :next-image
