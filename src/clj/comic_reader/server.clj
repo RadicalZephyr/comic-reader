@@ -75,7 +75,10 @@
 
     (c/GET "/imgs/:site/:comic/:chapter{\\d+}/:page{\\d+}"
         request
-      (get-comic-imgs request)))
+      (get-comic-imgs request))
+
+    (c/POST "/img" {{:keys [url]} :edn-params}
+      (edn-response (format "Yay, you got the url '%s'" url))))
 
   (route/resources "/"))
 
