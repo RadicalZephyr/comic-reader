@@ -23,7 +23,7 @@
 (defn get-comic-imgs [site {:keys [comic chapter page]}]
   (GET (str "/api/v1/imgs/" site "/" comic
             "/" chapter "/" page)
-      {:handler #(dispatch [:comic-imgs %])
+      {:handler #(dispatch [:url-list %])
        :error-handler error-handler
        :response-format :edn}))
 

@@ -44,6 +44,11 @@
      (assoc db :comic-list comic-list)))
 
   (rf/register-handler
+   :url-list
+   (fn [db [_ url-list]]
+     (assoc db :url-list url-list)))
+
+  (rf/register-handler
    :comic-imgs
    (fn [db [_ comic-imgs]]
      (assoc db :comic-imgs comic-imgs))))
