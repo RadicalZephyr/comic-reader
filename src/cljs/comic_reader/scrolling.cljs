@@ -1,7 +1,7 @@
 (ns comic-reader.scrolling
   (:require [re-frame.core :as rf]))
 
-(defn throttle [type key target]
+(defn throttle [type key & [target]]
   (let [target (or target js/window)
         running (atom false)
         toggle! #(swap! running not)
