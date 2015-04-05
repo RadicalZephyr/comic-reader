@@ -16,8 +16,11 @@
 (defroute comics-path "/comics/:site" [site]
   (rf/dispatch [:comics site]))
 
-(defroute read-path "/read/:comic/:chapter/:page" {:as location}
-  (rf/dispatch [:read location]))
+(defroute read-path "/read/:site/:comic/:chapter/:page"
+  {site :site
+   :as location}
+  (let [location (dissoc location :site)]
+    (rf/dispatch [:read location])))
 
 (defroute "*" {:as _}
   (rf/dispatch [:unknown]))
