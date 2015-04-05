@@ -15,6 +15,26 @@
    :headers {"Content-Type" "application/edn"}
    :body (pr-str data)})
 
+(defn gen-error-data [request & {:as others}]
+  (-> request
+      (select-keys [:uri
+                    :request-method
+                    :params])
+      (merge others)))
+
+(defn get-comics-list [{{:keys [site]} :params
+                        :as request}]
+  (if-let [comic-list (scrape/fetch-list
+                       (sites/comic-list-data site))]
+    (edn-response comic-list)
+    (edn-response (gen-error-data request) 404)))
+
+(defn get-comic-imgs [{{:keys [site comic chapter page]} :params
+                       :as request}]
+  (if-let [comic-urls nil]
+    (edn-response)
+    (edn-response (gen-error-data request) 404)))
+
 (c/defroutes routes
   (c/GET "/" [] (hp/html5
                  [:head]
@@ -25,24 +45,16 @@
   (c/GET "/blank" [] "")
   (c/context "/api/v1" []
     (c/GET "/sites" []
-      (edn-response (vec (map #(select-keys % [:id :name :url])
-                              sites/list))))
+      (edn-response
+       (vec (map #(select-keys % [:id :name :url])
+                 sites/list))))
 
-    (c/GET "/comics/:site" [site :as r]
-      (let [site (keyword site)]
-        (if-let [comic-list (scrape/fetch-list
-                             (sites/comic-list-data site))]
-         (edn-response comic-list)
-         (let [error-data (-> r
-                              (select-keys [:uri
-                                            :request-method
-                                            :params])
-                              (assoc :site site))]
-           (edn-response error-data 404)))))
+    (c/GET "/comics/:site" request
+      (get-comics-list request))
 
     (c/GET "/imgs/:site/:comic/:chapter{\\d+}/:page{\\d+}"
-        [site comic chapter page]
-      (edn-response ["some-urls"])))
+        request
+      (get-comic-imgs request)))
 
   (route/resources "/"))
 
