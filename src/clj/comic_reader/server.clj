@@ -25,7 +25,7 @@
 (defn get-comics-list [{{:keys [site]} :params
                         :as request}]
   (if-let [comic-list (scrape/fetch-list
-                       (sites/comic-list-data site))]
+                       (sites/comic-list-data (keyword site)))]
     (edn-response comic-list)
     (edn-response (gen-error-data request) 404)))
 
