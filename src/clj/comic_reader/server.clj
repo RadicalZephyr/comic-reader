@@ -35,7 +35,7 @@
    (drop (dec chapter)
          (sort-by :url
                   (scrape/fetch-list
-                   (sites/chapter-list-data site
+                   (sites/chapter-list-data (keyword site)
                                             comic))))))
 
 (defn get-following-pages [site comic chapter-map page]
@@ -80,7 +80,8 @@
     (c/POST "/img" {{:keys [site page-url]} :edn-params
                     :as request}
       (if-let [img-tag (scrape/fetch-image-tag
-                        (sites/image-data site page-url))]
+                        (sites/image-data (keyword site)
+                                          page-url))]
         (edn-response img-tag)
         (edn-response (gen-error-data request) 404))))
 
