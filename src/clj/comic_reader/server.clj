@@ -32,8 +32,9 @@
 (defn get-comic-imgs [{{:keys [site comic chapter page]} :params
                        :as request}]
   (println (:uri request))
-  (let [chapter-list (scrape/fetch-list
-                      (sites/chapter-list-data site comic))]
+  (let [chapter-list (sort-by :url
+                      (scrape/fetch-list
+                       (sites/chapter-list-data site comic)))]
    (if-let [comic-urls nil]
      (edn-response)
      (edn-response (gen-error-data request) 404))))
