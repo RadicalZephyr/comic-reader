@@ -8,6 +8,11 @@
     {:name (process-name name)
      :url (process-url url)}))
 
+(defn gen-add-id-from-url [extract-pattern]
+  (fn [{:keys [url] :as comic-map}]
+    (let [id (re-find extract-pattern url)]
+      (assoc comic-map :id id))))
+
 (def list
   [(let [canonical-url "http://mangafox.me"
          manga-url (format "%s/manga/" canonical-url)
