@@ -95,9 +95,12 @@
   (-> (get-site site)
       fn-key))
 
-(defn chapter-list-data [site comic-url]
+(defn get-comic-url [site comic-id]
+  ((get-data-fn site :comic->url) comic-id))
+
+(defn chapter-list-data [site comic-id]
   ((get-data-fn site :chapter-list-data-for-comic)
-   comic-url))
+   (get-comic-url site comic-id)))
 
 (defn page-list-data [site chapter-url]
   ((get-data-fn site :page-list-data-for-comic-chapter)
