@@ -9,7 +9,15 @@
             [compojure.route :as route]
             [hiccup.page :as hp]
             [environ.core :refer [env]]
-            [ring.adapter.jetty :refer [run-jetty]]))
+            [ring.adapter.jetty :refer [run-jetty]]
+            [clojure.tools.reader.edn :as edn]))
+
+(defn unknown-val [tag val]
+  {:unknown-tag tag
+   :value val})
+
+(defn safe-read-string [s]
+  (edn/read-string {:default unknown-val} s))
 
 (defn edn-response [data & [status]]
   {:status (or status 200)
@@ -48,10 +56,10 @@
                        :as request}]
   (println (:uri request))
   (let [chapter-map (get-comic-chapter site comic
-                                       (int chapter))
+                                       (safe-read-string chapter))
         page-list (get-following-pages site comic
                                        chapter-map
-                                       (int page))]
+                                       (safe-read-string page))]
     (if-let [comic-urls nil]
       (edn-response)
       (edn-response (gen-error-data request) 404))))
