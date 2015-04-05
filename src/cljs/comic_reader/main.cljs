@@ -4,6 +4,7 @@
             [comic-reader.subscriptions
              :refer [init-subscriptions!]]
             [comic-reader.history :as history]
+            [comic-reader.scrolling :as scrolling]
             [reagent.core :as reagent :refer [atom]]
             [re-frame.core :as rf]
             [secretary.core :as secretary
@@ -104,6 +105,7 @@
 (defn ^:export run []
   (init-handlers!)
   (init-subscriptions!)
+  (scrolling/setup-scrolling-events!)
   (try
     (history/hook-browser-navigation!)
     (catch js/Error e
