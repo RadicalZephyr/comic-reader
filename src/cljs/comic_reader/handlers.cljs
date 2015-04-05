@@ -10,8 +10,9 @@
                        {:keys [chapter]} :location
                        :as db}]
   (api/get-img-tag site (first url-list))
-  (let [{:keys [url-list] :as db} (assoc db :url-list
-                                         (next url-list))
+  (let [{:keys [url-list] :as db} (assoc db
+                                         :url-list (next url-list)
+                                         :waiting true)
         new-location (assoc location :chapter
                             (inc
                              (read-string chapter)))]
@@ -73,8 +74,9 @@
   (rf/register-handler
    :scroll
    (fn [db _]
-     (if (= (:page db)
-            :read)
+     (if (and (not (:waiting db))
+              (= (:page db)
+                 :read))
        (let [scroll-y (.-scrollY js/window)
              window-height (.-innerHeight js/window)
              screen-bottom (+ scroll-y window-height)
@@ -89,5 +91,6 @@
    :next-image
    (fn [db [_ img-tag]]
      (-> db
+         (assoc :waiting false)
          (update-in [:url-list] rest)
          (update-in [:comic-imgs] conj img-tag)))))
