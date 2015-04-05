@@ -33,17 +33,18 @@
 
 (defn get-comics-list [{{:keys [site]} :params
                         :as request}]
-  (if-let [comic-list (scrape/fetch-list
-                       (sites/comic-list-data (keyword site)))]
-    (edn-response comic-list)
-    (edn-response (gen-error-data request) 404)))
+  (let [site (keyword site)]
+    (if-let [comic-list (scrape/fetch-list
+                         (sites/comic-list-data site))]
+      (edn-response comic-list)
+      (edn-response (gen-error-data request) 404))))
 
 (defn get-comic-chapter [site comic chapter]
   (first
    (drop (dec chapter)
          (sort-by :url
                   (scrape/fetch-list
-                   (sites/chapter-list-data (keyword site)
+                   (sites/chapter-list-data site
                                             comic))))))
 
 (defn get-following-pages [site comic chapter-map page]
@@ -54,7 +55,8 @@
 
 (defn get-comic-imgs [{{:keys [site comic chapter page]} :params
                        :as request}]
-  (let [chapter-map (get-comic-chapter site comic
+  (let [site (keyword site)
+        chapter-map (get-comic-chapter site comic
                                        (safe-read-string chapter))
         page-list (get-following-pages site comic
                                        chapter-map
