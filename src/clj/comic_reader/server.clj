@@ -86,13 +86,14 @@
         request
       (get-comic-imgs request))
 
-    (c/POST "/img" {{:keys [site page-url]} :edn-params
+    (c/POST "/img" {{:keys [site url]} :edn-params
                     :as request}
-      (if-let [img-tag (scrape/fetch-image-tag
-                        (sites/image-data (keyword site)
-                                          page-url))]
-        (edn-response img-tag)
-        (edn-response (gen-error-data request) 404))))
+      (let [site (keyword site)]
+        (if-let [img-tag (scrape/fetch-image-tag
+                          (sites/image-data site
+                                            url))]
+          (edn-response img-tag)
+          (edn-response (gen-error-data request) 404)))))
 
   (route/resources "/"))
 
