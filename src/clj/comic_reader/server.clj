@@ -29,15 +29,31 @@
     (edn-response comic-list)
     (edn-response (gen-error-data request) 404)))
 
+(defn get-comic-chapter [site comic chapter]
+  (first
+   (drop (dec chapter)
+         (sort-by :url
+                  (scrape/fetch-list
+                   (sites/chapter-list-data site
+                                            comic))))))
+
+(defn get-following-pages [site comic chapter-map page]
+  (drop (dec page)
+        (scrape/fetch-list
+         (sites/page-list-data site
+                               (:url chapter-map)))))
+
 (defn get-comic-imgs [{{:keys [site comic chapter page]} :params
                        :as request}]
   (println (:uri request))
-  (let [chapter-list (sort-by :url
-                      (scrape/fetch-list
-                       (sites/chapter-list-data site comic)))]
-   (if-let [comic-urls nil]
-     (edn-response)
-     (edn-response (gen-error-data request) 404))))
+  (let [chapter-map (get-comic-chapter site comic
+                                       (int chapter))
+        page-list (get-following-pages site comic
+                                       chapter-map
+                                       (int page))]
+    (if-let [comic-urls nil]
+      (edn-response)
+      (edn-response (gen-error-data request) 404))))
 
 (c/defroutes routes
   (c/GET "/" [] (hp/html5
