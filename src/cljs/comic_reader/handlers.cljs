@@ -73,21 +73,29 @@
 
   (rf/register-handler
    :scroll
-   (fn [db _]
-     (if (and (not (:waiting db))
-              (= (:page db)
-                 :read))
-       (let [scroll-y (.-scrollY js/window)
-             window-height (.-innerHeight js/window)
-             screen-bottom (+ scroll-y window-height)
-             document-height (-> js/document
-                                 .-body
-                                 .-clientHeight)]
-         (if (> screen-bottom
-                (* 0.95 document-height))
-           (get-next-image db)
-           db))
-       db)))
+   (let [counter (atom 2)
+         scroll-threshold (atom (/ 1 2))]
+     (fn [db _]
+       (if (and (not (:waiting db))
+                (= (:page db)
+                   :read))
+         (let [scroll-y (.-scrollY js/window)
+               window-height (.-innerHeight js/window)
+               screen-bottom (+ scroll-y window-height)
+               document-height (-> js/document
+                                   .-body
+                                   .-clientHeight)]
+           (.log js/console "Threshold: " @scroll-threshold)
+           (if (> screen-bottom
+                  (* @scroll-threshold document-height))
+             (do
+               (swap! counter inc)
+               (swap! scroll-threshold + (/ 1
+                                            (.pow js/Math
+                                                  2 counter)))
+               (get-next-image db))
+             db))
+         db))))
 
   (rf/register-handler
    :next-image
