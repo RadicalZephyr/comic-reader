@@ -80,14 +80,15 @@
             comic-imgs @comic-imgs]
         (when (and site
                    location
-                   url-list
-                   comic-imgs)
-          [:div (str "Display chapter " (:chapter location)
+                   url-list)
+          [:div
+           [:h2 (str "Display chapter " (:chapter location)
                      " page " (:page location)
                      " of comic " (:comic location)
-                     " on site " site)
+                     " from site " site)]
            [:br]
-           comic-imgs])))))
+           (when comic-imgs
+             comic-imgs)])))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
