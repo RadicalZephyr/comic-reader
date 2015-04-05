@@ -1,13 +1,22 @@
 (ns comic-reader.handlers
-  (:require [comic-reader.api :as api]
+  (:require [cljs.reader :refer [read-string]]
+            [comic-reader.api :as api]
             [comic-reader.history :as h]
+            [comic-reader.routes :as r]
             [re-frame.core :as rf]
             [secretary.core :as secretary]))
 
-(defn get-next-image [{:keys [site url-list]
+(defn get-next-image [{:keys [site url-list location]
+                       {:keys [chapter]} :location
                        :as db}]
   (api/get-img-tag site (first url-list))
-  (assoc db :url-list (rest url-list)))
+  (let [db (assoc db :url-list (next url-list))
+        new-location (assoc location :chapter
+                            (inc
+                             (read-string chapter)))]
+    (when (not (:url-list db))
+      (api/get-comic-urls site new-location))
+    db))
 
 (defn init-handlers! []
   (rf/register-handler
