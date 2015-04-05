@@ -73,7 +73,7 @@
 
   (rf/register-handler
    :scroll
-   (let [counter (atom 2)
+   (let [counter (atom 1)
          scroll-threshold (atom (/ 1 2))]
      (fn [db _]
        (if (and (not (:waiting db))
