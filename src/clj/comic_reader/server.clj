@@ -41,7 +41,7 @@
                            (merge {:site site}))]
            (edn-response error-data 404)))))
 
-    (c/GET "/:site/comic/:comic/:chapter{\\d+}/:page{\\d+}"
+    (c/GET "/imgs/:site/:comic/:chapter{\\d+}/:page{\\d+}"
         [site comic chapter page]
       (edn-response ["some-urls"])))
 
