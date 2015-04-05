@@ -82,7 +82,10 @@
                    comic-imgs)
           [:div (str "Display chapter " (:chapter location)
                      " page " (:page location)
-                     " of comic " (:comic location))])))))
+                     " of comic " (:comic location)
+                     " on site " site)
+           [:br]
+           comic-imgs])))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
