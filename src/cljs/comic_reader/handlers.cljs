@@ -31,7 +31,8 @@
      (assoc db
             :page page
             :site site
-            :location location)))
+            :location location
+            :comic-imgs [])))
 
   (rf/register-handler
    :site-list
@@ -53,7 +54,6 @@
    :next-image
    (fn [db [_ img-tag]]
      (api/get-img-tag (:site db) (first (:url-list db)))
-     (let [db (update-in db [:url-list] rest)]
-      (if (vector? (:comic-imgs db))
-        (update-in db [:comic-imgs] conj img-tag)
-        (assoc db :comic-imgs [img-tag]))))))
+     (-> db
+         (update-in [:url-list] rest)
+         (update-in [:comic-imgs] conj img-tag)))))
