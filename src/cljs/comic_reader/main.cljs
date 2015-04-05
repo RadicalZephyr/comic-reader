@@ -20,7 +20,7 @@
   {site :site
    :as location}
   (let [location (dissoc location :site)]
-    (rf/dispatch [:read location])))
+    (rf/dispatch [:read site location])))
 
 (defroute "*" {:as _}
   (rf/dispatch [:unknown]))

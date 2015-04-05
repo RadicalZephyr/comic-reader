@@ -26,11 +26,12 @@
 
   (rf/register-handler
    :read
-   (fn [db [page location]]
-     (api/get-comic-imgs (:site db) location)
-     (-> db
-         (assoc :page page)
-         (assoc :location location))))
+   (fn [db [page site location]]
+     (api/get-comic-imgs site location)
+     (assoc db
+            :site site
+            :page page
+            :location location)))
 
   (rf/register-handler
    :site-list
