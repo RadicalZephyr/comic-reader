@@ -17,8 +17,7 @@
   [(let [canonical-url "http://mangafox.me"
          manga-url (format "%s/manga/" canonical-url)
          manga-pattern (re-pattern (str manga-url "(.*?)/"))
-         link->map (comp (gen-add-id-from-url manga-pattern)
-                         (gen-link->map identity identity))]
+         link->map (gen-link->map identity identity)]
      {:id :manga-fox
       :name "Manga Fox"
 
@@ -26,7 +25,9 @@
                     (str manga-url comic-id "/"))
       :comic-list-data {:url manga-url
                         :selector [:div.manga_list :ul :li :a]
-                        :normalize link->map}
+                        :normalize (comp (gen-add-id-from-url
+                                          manga-pattern)
+                                         link->map)}
       :chapter-list-data-for-comic
       (fn [comic-url]
         {:url comic-url
@@ -51,10 +52,8 @@
 
    (let [canonical-url "http://www.mangareader.net"
          manga-pattern (re-pattern (str canonical-url "/(.*)$"))
-         link->map (comp
-                    (gen-add-id-from-url manga-pattern)
-                    (gen-link->map s/trim
-                                   (partial str canonical-url)))]
+         link->map (gen-link->map s/trim
+                                  (partial str canonical-url))]
      {:id :manga-reader
       :name "Manga Reader"
 
@@ -62,7 +61,10 @@
                     (str canonical-url "/" comic-id))
       :comic-list-data {:url (str canonical-url "/alphabetical")
                         :selector [:div.series_alpha :ul :li :a]
-                        :normalize link->map}
+                        :normalize (comp
+                                    (gen-add-id-from-url
+                                     manga-pattern)
+                                    link->map)}
       :chapter-list-data-for-comic
       (fn [comic-url]
         {:url comic-url
