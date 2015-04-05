@@ -31,9 +31,12 @@
 
 (defn get-comic-imgs [{{:keys [site comic chapter page]} :params
                        :as request}]
-  (if-let [comic-urls nil]
-    (edn-response)
-    (edn-response (gen-error-data request) 404)))
+  (println (:uri request))
+  (let [chapter-list (scrape/fetch-list
+                      (sites/chapter-list-data site comic))]
+   (if-let [comic-urls nil]
+     (edn-response)
+     (edn-response (gen-error-data request) 404))))
 
 (c/defroutes routes
   (c/GET "/" [] (hp/html5
