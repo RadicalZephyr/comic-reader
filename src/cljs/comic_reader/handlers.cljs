@@ -80,7 +80,9 @@
        (let [scroll-y (.-scrollY js/window)
              window-height (.-innerHeight js/window)
              screen-bottom (+ scroll-y window-height)
-             document-height (.-clientHeight js/document)]
+             document-height (-> js/document
+                                 .-body
+                                 .-clientHeight)]
          (if (> screen-bottom
                 (* 0.75 document-height))
            (get-next-image db)
