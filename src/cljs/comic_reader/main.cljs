@@ -106,7 +106,7 @@
         :sites [site-list]
         :comics [comic-list]
         :read [reader]
-        nil ""
+        nil [:span ""]
         [four-oh-four]))))
 
 (defn ^:export run []
