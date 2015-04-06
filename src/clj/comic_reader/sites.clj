@@ -8,10 +8,12 @@
     {:name (process-name name)
      :url (process-url url)}))
 
-(defn gen-add-id-from-url [extract-pattern]
-  (fn [{:keys [url] :as comic-map}]
-    (let [[_ id] (re-find extract-pattern url)]
-      (assoc comic-map :id id))))
+(defn gen-add-key-from-url [key extract-pattern & [process]]
+  (let [process (or process identity)]
+    (fn [{:keys [url] :as comic-map}]
+      (let [[_ data] (re-find extract-pattern url)]
+        (assoc comic-map
+               key (process data))))))
 
 (def list
   [(let [canonical-url "http://mangafox.me"
@@ -25,7 +27,8 @@
                     (str manga-url comic-id "/"))
       :comic-list-data {:url manga-url
                         :selector [:div.manga_list :ul :li :a]
-                        :normalize (comp (gen-add-id-from-url
+                        :normalize (comp (gen-add-key-from-url
+                                          :id
                                           manga-pattern)
                                          link->map)}
       :chapter-list-data-for-comic
@@ -63,7 +66,8 @@
       :comic-list-data {:url (str canonical-url "/alphabetical")
                         :selector [:div.series_alpha :ul :li :a]
                         :normalize (comp
-                                    (gen-add-id-from-url
+                                    (gen-add-key-from-url
+                                     :id
                                      manga-pattern)
                                     link->map)}
       :chapter-list-data-for-comic
