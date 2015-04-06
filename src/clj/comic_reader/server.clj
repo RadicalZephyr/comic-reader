@@ -92,13 +92,15 @@
         request
       (get-comic-urls request))
 
-    (c/POST "/img" {{:keys [site url]} :edn-params
+    (c/POST "/img" {{:keys [site chapter page url]} :edn-params
                     :as request}
       (let [site (keyword site)]
         (if-let [img-tag (scrape/fetch-image-tag
                           (sites/image-data site
                                             url))]
-          (edn-response img-tag)
+          (edn-response {:chapter chapter
+                         :page    page
+                         :tag     img-tag})
           (edn-response (gen-error-data request) 404)))))
 
   (route/resources "/"))

@@ -27,11 +27,11 @@
        :error-handler error-handler
        :response-format :edn}))
 
-(defn get-img-tag [site page-url]
+(defn get-img-tag [site page-info]
   (POST "/api/v1/img"
       {:format :edn
        :params {:site site
-                :url page-url}
+                :page-info page-info}
        :handler #(dispatch [:next-image %])
        :error-handler error-handler
        :response-format :edn}))
