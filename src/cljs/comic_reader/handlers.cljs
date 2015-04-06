@@ -6,18 +6,18 @@
             [re-frame.core :as rf]
             [secretary.core :as secretary]))
 
-(defn get-next-image [{:keys [site url-list location]
+(defn get-next-image [{:keys [site page-list location]
                        {:keys [chapter]} :location
                        :as db}]
-  (api/get-img-tag site (first url-list))
-  (let [{:keys [url-list] :as db} (assoc db
-                                         :url-list (next url-list)
-                                         :waiting true)
+  (api/get-img-tag site (first page-list))
+  (let [{:keys [page-list] :as db} (assoc db
+                                          :page-list (next page-list)
+                                          :waiting true)
         new-location (assoc location :chapter
                             (inc
                              (read-string chapter)))]
-    (when (not url-list)
-      (api/get-comic-urls site new-location))
+    (when (not page-list)
+      (api/get-comic-pages site new-location))
     db))
 
 (defn init-handlers! []
@@ -43,7 +43,7 @@
   (rf/register-handler
    :read
    (fn [db [page site location]]
-     (api/get-comic-urls site location)
+     (api/get-comic-pages site location)
      (if (and (= (:site db) site)
               (= (get-in db [:location  :comic])
                  (get-in      location [:comic])))
@@ -65,10 +65,10 @@
      (assoc db :comic-list comic-list)))
 
   (rf/register-handler
-   :url-list
-   (fn [db [_ url-list]]
+   :page-list
+   (fn [db [_ page-list]]
      (-> db
-         (assoc :url-list url-list)
+         (assoc :page-list page-list)
          get-next-image)))
 
   (rf/register-handler
@@ -94,5 +94,5 @@
    (fn [db [_ img-tag]]
      (-> db
          (assoc :waiting false)
-         (update-in [:url-list] rest)
+         (update-in [:page-list] rest)
          (update-in [:comic-imgs] conj img-tag)))))
