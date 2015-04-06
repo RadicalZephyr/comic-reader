@@ -35,7 +35,7 @@
 (defn get-comic-chapter [site comic chapter]
   (first
    (drop (dec chapter)
-         (sort-by :url
+         (sort-by :ch-num
                   (scrape/fetch-list
                    (sites/chapter-list-data site
                                             comic))))))
