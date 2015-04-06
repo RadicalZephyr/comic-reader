@@ -94,7 +94,46 @@
                        :url (str canonical-url url)})})
       :image-data (fn [page-url]
                     {:url page-url
-                     :selector [:div#imgholder :a :img#img]})})])
+                     :selector [:div#imgholder :a :img#img]})})
+
+   (let [canonical-url "http://www.mangahere.co"
+         manga-url     (format "%s/manga" canonical-url)
+         mangalist-url (format "%s/mangalist/" canonical-url)
+         manga-pattern (re-pattern (str manga-url "(.*?)/"))
+         link->map (gen-link->map identity identity)]
+     {:id :manga-here
+      :name "Manga Here"
+      :comic->url (fn [comic-id]
+                    (str canonical-url "/" comic-id))
+      :comic-list-data {:url mangalist-url
+                        :selector [:section.main
+                                   :li :a.manga_info]
+                        :normalize (comp (gen-add-key-from-url
+                                          :id
+                                          manga-pattern)
+                                         link->map)}
+      :chapter-list-data-for-comic
+      (fn [comic-url]
+        {:url comic-url
+         :selector [:div.detail_list :ul
+                    :li :span.left :a]
+         :normalize (comp
+                     (gen-add-key-from-url :ch-num
+                                           #"/c0*(\d+)(\.\d+)?/"
+                                           safe-read-string)
+                     link->map)})
+      :page-list-data-for-comic-chapter
+      (fn [chapter-url]
+        {:url chapter-url
+         :selector [:section.readpage_top :div.go_page
+                    :span.right :select :option]
+         :normalize (fn [{[name]       :content
+                          {url :value} :attrs}]
+                      {:name name
+                       :url  url})})
+      :image-data (fn [page-url]
+                    {:url page-url
+                     :selector [:section#viewer :a :img#image]})})])
 
 (defn get-site [site]
   (some (fn [s]
