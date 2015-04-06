@@ -60,22 +60,34 @@
 (defn img-component [site
                      {:keys [comic]}
                      {:keys [chapter page tag]}]
-  (let [waypoint (clojure.core/atom nil)]
+  (let [waypoints (clojure.core/atom nil)]
     (reagent/create-class
      {:component-did-mount
       (fn [this]
-        (let [wp (js/Waypoint.
-                  #js {:element (reagent/dom-node this)
-                       :handler #(r/go-to
-                                  (r/read-path
-                                   {:site site
-                                    :comic comic
-                                    :chapter chapter
-                                    :page page}))})]
-          (reset! waypoint wp)))
+        (let [node (reagent/dom-node this)
+              go-to-comic #(r/go-to
+                            (r/read-path
+                             {:site site
+                              :comic comic
+                              :chapter chapter
+                              :page page}))
+              wp-down
+              (js/Waypoint.
+               #js {:element node
+                    :handler #(when (= %
+                                       "down")
+                                (go-to-comic))})
+              wp-up
+              (js/Waypoint.
+               #js {:element node
+                    :offset "bottom-in-view"
+                    :handler #(when (= %
+                                       "up")
+                                (go-to-comic))})]
+          (reset! waypoints [wp-up wp-down])))
       :componentWillUnmount
       (fn []
-        (.destroy @waypoint))
+        (map #(.destroy %) @waypoints))
       :reagent-render
       (fn [site location {:keys [tag]}]
         tag)})))
