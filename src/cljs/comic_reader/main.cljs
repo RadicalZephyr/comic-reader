@@ -37,7 +37,8 @@
       (when-let [site-list @site-list]
         [:div
          [:ul (map (id-btn-for-callback
-                    #(r/go-to (r/comics-path {:site (name (:id %))})))
+                    #(r/go-to (r/comics-path
+                               {:site (name (:id %))})))
                    site-list)]]))))
 
 (defn comic-list []
@@ -59,10 +60,12 @@
 (defn img-component [site
                      {:keys [comic]}
                      {:keys [chapter page tag]}]
+  (.log js/console "Make an img-component.")
   (let [waypoint (clojure.core/atom nil)]
     (reagent/create-class
      {:component-did-mount
       (fn [this]
+        (.log js/console "Did mount.")
         (let [wp (js/Waypoint.
                   #js {:element (reagent/dom-node this)
                        :offset "bottom-in-view"
@@ -75,6 +78,7 @@
           (reset! waypoint wp)))
       :reagent-render
       (fn [site location {:keys [tag]}]
+        (.log js/console "Render.")
         tag)})))
 
 (defn reader []
