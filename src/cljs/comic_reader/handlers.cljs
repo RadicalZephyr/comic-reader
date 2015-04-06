@@ -10,9 +10,10 @@
                        {:keys [chapter]} :location
                        :as db}]
   (api/get-img-tag site (first page-list))
-  (let [{:keys [page-list] :as db} (assoc db
-                                          :page-list (next page-list)
-                                          :waiting true)
+  (let [{:keys [page-list] :as db}
+        (assoc db
+               :page-list (next page-list)
+               :waiting true)
         new-location (assoc location :chapter
                             (inc
                              (read-string chapter)))]
