@@ -18,9 +18,10 @@
         (assoc db
                :page-list (next page-list)
                :waiting true)
-        new-location (assoc location :chapter
-                            (inc
-                             (read-string chapter)))]
+        new-location (assoc location
+                            :chapter (inc
+                                      (read-string chapter))
+                            :page 1)]
     (when (not page-list)
       (api/get-comic-pages site new-location))
     db))
