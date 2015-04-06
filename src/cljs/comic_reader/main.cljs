@@ -74,6 +74,9 @@
                                     :chapter chapter
                                     :page page}))})]
           (reset! waypoint wp)))
+      :componentWillUnmount
+      (fn []
+        (.destroy @waypoint))
       :reagent-render
       (fn [site location {:keys [tag]}]
         tag)})))
