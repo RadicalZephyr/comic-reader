@@ -1,6 +1,7 @@
 (ns comic-reader.sites
   (:refer-clojure :exclude [list])
-  (:require [clojure.string :as s]))
+  (:require [comic-reader.utils :refer [safe-read-string]]
+            [clojure.string :as s]))
 
 (defn gen-link->map [process-name process-url]
   (fn [{[name] :content
@@ -36,7 +37,11 @@
         {:url comic-url
          :selector [:div#chapters :ul.chlist
                     :li :div #{:h3 :h4} :a]
-         :normalize link->map})
+         :normalize (comp
+                     (gen-add-key-from-url :ch-num
+                                           #"/c0*(\d+)/"
+                                           safe-read-string)
+                     link->map)})
       :page-list-data-for-comic-chapter
       (fn [chapter-url]
         {:url chapter-url
@@ -74,7 +79,11 @@
       (fn [comic-url]
         {:url comic-url
          :selector [:div#chapterlist :tr :td :a]
-         :normalize link->map})
+         :normalize (comp
+                     (gen-add-key-from-url :ch-num
+                                           #"/0+(\d+)(/\d+)?"
+                                           safe-read-string)
+                     link->map)})
       :page-list-data-for-comic-chapter
       (fn [chapter-url]
         {:url chapter-url
