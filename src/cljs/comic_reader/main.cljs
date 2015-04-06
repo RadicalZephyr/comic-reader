@@ -97,7 +97,7 @@
                  [:br]]]
             (when comic-imgs
               (into component
-                    (map (partial img-component site location)
+                    (map (partial vector img-component site location)
                          comic-imgs)))))))))
 
 (defn comic-reader []
