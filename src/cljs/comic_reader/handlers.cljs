@@ -85,7 +85,7 @@
                                  .-body
                                  .-clientHeight)]
          (if (> screen-bottom
-                (- document-height 100))
+                (- document-height 200))
            (get-next-image db)
            db))
        db)))
