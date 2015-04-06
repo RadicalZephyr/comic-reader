@@ -95,5 +95,4 @@
    (fn [db [_ img-tag]]
      (-> db
          (assoc :waiting false)
-         (update-in [:page-list] rest)
          (update-in [:comic-imgs] conj img-tag)))))
