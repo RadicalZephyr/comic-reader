@@ -22,7 +22,7 @@
                   :exclusions [[org.clojure/clojurescript
                                 :extension "jar"]]]
                  [secretary "1.2.3"]
-                 [cljsjs/waypoints "3.1.1"]
+                 [org.clojars.earthlingzephyr/waypoints "3.1.1"]
                  [cljs-ajax "0.3.10"]]
 
   :plugins      [[lein-ring "0.8.13"]
