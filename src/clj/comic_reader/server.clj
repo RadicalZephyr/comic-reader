@@ -53,8 +53,8 @@
          (sites/page-list-data site
                                (:url chapter-map)))))
 
-(defn get-comic-urls [{{:keys [site comic chapter page]} :params
-                       :as request}]
+(defn get-comic-pages [{{:keys [site comic chapter page]} :params
+                        :as request}]
   (let [site (keyword site)
         chapter (safe-read-string chapter)
         page    (safe-read-string page)
@@ -66,9 +66,9 @@
         page-list (get-following-pages site comic
                                        chapter-map
                                        page)]
-    (if-let [comic-urls (map-indexed add-location
-                                     page-list)]
-      (edn-response comic-urls)
+    (if-let [comic-pages (map-indexed add-location
+                                      page-list)]
+      (edn-response comic-pages)
       (edn-response (gen-error-data request) 404))))
 
 (c/defroutes routes
@@ -88,12 +88,14 @@
     (c/GET "/comics/:site" request
       (get-comics-list request))
 
-    (c/GET "/urls/:site/:comic/:chapter{\\d+}/:page{\\d+}"
+    (c/GET "/pages/:site/:comic/:chapter{\\d+}/:page{\\d+}"
         request
-      (get-comic-urls request))
+      (get-comic-pages request))
 
     (c/POST "/img" {{:keys [site chapter page url]} :edn-params
                     :as request}
+      (println (:edn-params request))
+      (println)
       (let [site (keyword site)]
         (if-let [img-tag (scrape/fetch-image-tag
                           (sites/image-data site
