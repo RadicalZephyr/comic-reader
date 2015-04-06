@@ -87,16 +87,17 @@
             comic-imgs @comic-imgs]
         (when (and site
                    location)
-          [:div
-           [:h2 (str "Display chapter " (:chapter location)
-                     " page " (:page location)
-                     " of comic " (:comic location)
-                     " from site " site)]
-           [:br]
-           (when comic-imgs
-             (into [:div]
-                   (map (partial img-component site location)
-                        comic-imgs)))])))))
+          (let [component
+                [:div
+                 [:h2 (str "Display chapter " (:chapter location)
+                           " page " (:page location)
+                           " of comic " (:comic location)
+                           " from site " site)]
+                 [:br]]]
+            (when comic-imgs
+              (into component
+                    (map (partial img-component site location)
+                         comic-imgs)))))))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
