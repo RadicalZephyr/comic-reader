@@ -66,7 +66,6 @@
       (fn [this]
         (let [wp (js/Waypoint.
                   #js {:element (reagent/dom-node this)
-                       :offset "bottom-in-view"
                        :handler #(r/go-to
                                   (r/read-path
                                    {:site site
