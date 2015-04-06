@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [comic-reader.sites :as sites]
             [comic-reader.scrape :as scrape]
+            [comic-reader.utils :refer [safe-read-string]]
             [ring.util.response :as response]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.edn :refer [wrap-edn-params]]
@@ -9,15 +10,7 @@
             [compojure.route :as route]
             [hiccup.page :as hp]
             [environ.core :refer [env]]
-            [ring.adapter.jetty :refer [run-jetty]]
-            [clojure.tools.reader.edn :as edn]))
-
-(defn unknown-val [tag val]
-  {:unknown-tag tag
-   :value val})
-
-(defn safe-read-string [s]
-  (edn/read-string {:default unknown-val} s))
+            [ring.adapter.jetty :refer [run-jetty]]))
 
 (defn edn-response [data & [status]]
   {:status (or status 200)
