@@ -68,9 +68,9 @@
   (rf/register-handler
    :page-list
    (fn [db [_ page-list]]
+     (rf/dispatch [:scroll])
      (-> db
-         (assoc :page-list page-list)
-         get-next-image)))
+         (assoc :page-list page-list))))
 
   (rf/register-handler
    :scroll
