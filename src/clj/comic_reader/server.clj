@@ -92,7 +92,9 @@
         request
       (get-comic-pages request))
 
-    (c/POST "/img" {{:keys [site chapter page url]} :edn-params
+    (c/POST "/img" {{:keys [site]
+                     {:keys [chapter page url]} :page-info}
+                    :edn-params
                     :as request}
       (println (:edn-params request))
       (println)
