@@ -35,9 +35,10 @@
   (let [site-list (rf/subscribe [:site-list])]
     (fn []
       (when-let [site-list @site-list]
-        [:ul (map (id-btn-for-callback
-                   #(r/go-to (r/comics-path {:site (name (:id %))})))
-                  site-list)]))))
+        [:div
+         [:ul (map (id-btn-for-callback
+                    #(r/go-to (r/comics-path {:site (name (:id %))})))
+                   site-list)]]))))
 
 (defn comic-list []
   (let [site (rf/subscribe [:site])
@@ -46,13 +47,14 @@
       (let [site       @site
             comic-list @comic-list]
         (when (and site comic-list)
-          [:ul (map (id-btn-for-callback
-                     (fn [item]
-                       (r/go-to (r/read-path {:site site
-                                              :comic (:id item)
-                                              :chapter 1
-                                              :page 1}))))
-                    comic-list)])))))
+          [:div
+           [:ul (map (id-btn-for-callback
+                      (fn [item]
+                        (r/go-to (r/read-path {:site site
+                                               :comic (:id item)
+                                               :chapter 1
+                                               :page 1}))))
+                     comic-list)]])))))
 
 (defn img-component [site
                      {:keys [comic]}
@@ -99,13 +101,12 @@
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
     (fn []
-      [:div
-       (case @page
-         :sites [site-list]
-         :comics [comic-list]
-         :read [reader]
-         nil ""
-         [four-oh-four])])))
+      (case @page
+        :sites [site-list]
+        :comics [comic-list]
+        :read [reader]
+        nil ""
+        [four-oh-four]))))
 
 (defn ^:export run []
   (init-handlers!)
