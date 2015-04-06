@@ -54,19 +54,37 @@
                                               :page 1}))))
                     comic-list)])))))
 
+(defn img-component [site
+                     {:keys [comic chapter page]}
+                     img-tag]
+  (let [waypoint (clojure.core/atom nil)]
+    (reagent/create-class
+     {:component-did-mount
+      (fn [this]
+        (let [wp (js/Waypoint.
+                  #js {:element (reagent/dom-node this)
+                       :offset "bottom-in-view"
+                       :handler #(r/go-to
+                                  (r/read-path
+                                   {:site site
+                                    :comic comic
+                                    :chapter chapter
+                                    :page page}))})]
+          (reset! waypoint wp)))
+      :reagent-render
+      (fn [img-tag]
+        img-tag)})))
+
 (defn reader []
   (let [site       (rf/subscribe [:site])
         location   (rf/subscribe [:location])
-        url-list   (rf/subscribe [:url-list])
         comic-imgs (rf/subscribe [:comic-imgs])]
     (fn []
       (let [site       @site
             location   @location
-            url-list   @url-list
             comic-imgs @comic-imgs]
         (when (and site
-                   location
-                   url-list)
+                   location)
           [:div
            [:h2 (str "Display chapter " (:chapter location)
                      " page " (:page location)
@@ -74,7 +92,9 @@
                      " from site " site)]
            [:br]
            (when comic-imgs
-             (into [:div] comic-imgs))])))))
+             (into [:div]
+                   (map (partial img-component site location)
+                        comic-imgs)))])))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
