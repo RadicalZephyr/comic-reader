@@ -55,8 +55,8 @@
                     comic-list)])))))
 
 (defn img-component [site
-                     {:keys [comic chapter page]}
-                     img-tag]
+                     {:keys [comic]}
+                     {:keys [chapter page tag]}]
   (let [waypoint (clojure.core/atom nil)]
     (reagent/create-class
      {:component-did-mount
@@ -72,8 +72,8 @@
                                     :page page}))})]
           (reset! waypoint wp)))
       :reagent-render
-      (fn [img-tag]
-        img-tag)})))
+      (fn [site location {:keys [tag]}]
+        tag)})))
 
 (defn reader []
   (let [site       (rf/subscribe [:site])
