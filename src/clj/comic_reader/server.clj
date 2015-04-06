@@ -56,12 +56,18 @@
 (defn get-comic-urls [{{:keys [site comic chapter page]} :params
                        :as request}]
   (let [site (keyword site)
-        chapter-map (get-comic-chapter site comic
-                                       (safe-read-string chapter))
+        chapter (safe-read-string chapter)
+        page    (safe-read-string page)
+        add-location (fn [idx comic-info]
+                       (assoc comic-info
+                              :chapter chapter
+                              :page (+ page idx)))
+        chapter-map (get-comic-chapter site comic chapter)
         page-list (get-following-pages site comic
                                        chapter-map
-                                       (safe-read-string page))]
-    (if-let [comic-urls (map :url page-list)]
+                                       page)]
+    (if-let [comic-urls (map-indexed add-location
+                                     page-list)]
       (edn-response comic-urls)
       (edn-response (gen-error-data request) 404))))
 
