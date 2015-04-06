@@ -96,8 +96,6 @@
                      {:keys [chapter page url]} :page-info}
                     :edn-params
                     :as request}
-      (println (:edn-params request))
-      (println)
       (let [site (keyword site)]
         (if-let [img-tag (scrape/fetch-image-tag
                           (sites/image-data site
