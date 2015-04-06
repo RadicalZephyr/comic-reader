@@ -53,7 +53,7 @@
          (sites/page-list-data site
                                (:url chapter-map)))))
 
-(defn get-comic-imgs [{{:keys [site comic chapter page]} :params
+(defn get-comic-urls [{{:keys [site comic chapter page]} :params
                        :as request}]
   (let [site (keyword site)
         chapter-map (get-comic-chapter site comic
@@ -84,7 +84,7 @@
 
     (c/GET "/urls/:site/:comic/:chapter{\\d+}/:page{\\d+}"
         request
-      (get-comic-imgs request))
+      (get-comic-urls request))
 
     (c/POST "/img" {{:keys [site url]} :edn-params
                     :as request}
