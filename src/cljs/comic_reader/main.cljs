@@ -11,7 +11,8 @@
             [reagent.core :as reagent :refer [atom]]
             [re-frame.core :as rf]
             [secretary.core :as secretary
-             :refer-macros [defroute]]))
+             :refer-macros [defroute]]
+            cljsjs.waypoints))
 
 ;; Actual re-frame code
 
