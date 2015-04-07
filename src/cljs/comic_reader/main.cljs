@@ -8,6 +8,7 @@
              :refer [hook-browser-navigation!]]
             [comic-reader.scrolling
              :refer [setup-scrolling-events!]]
+            [comic-reader.utils :refer [titlize]]
             [reagent.core :as reagent :refer [atom]]
             [re-frame.core :as rf]
             [secretary.core :as secretary
@@ -48,15 +49,17 @@
     (fn []
       (let [site       @site
             comic-list @comic-list]
-        (when (and site comic-list)
-          [:div
+        [:div
+         [:h1 "Comics from " (titlize site
+                                      :to-spaces #"-")]
+         (when (and site comic-list)
            [:ul (map (id-btn-for-callback
                       (fn [item]
                         (r/read-path {:site site
                                       :comic (:id item)
                                       :chapter 1
                                       :page 1})))
-                     comic-list)]])))))
+                     comic-list)])]))))
 
 (defn img-component [site
                      {:keys [comic]}
