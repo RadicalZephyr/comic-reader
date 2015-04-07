@@ -91,7 +91,7 @@
                                  (.getElementById "app")
                                  .-clientHeight)]
          (if (> screen-bottom
-                (- document-height 200))
+                (- document-height 800))
            (get-next-image db)
            db))
        db)))
