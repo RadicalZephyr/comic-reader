@@ -27,15 +27,16 @@
         :as data}]
     ^{:key id}
     [:li
-     [:input {:type "button"
-              :value name
-              :on-click (partial on-click data)}]]))
+     [:a.large.button
+      {:on-click (partial on-click data)}
+      name]]))
 
 (defn site-list []
   (let [site-list (rf/subscribe [:site-list])]
     (fn []
       (when-let [site-list @site-list]
         [:div
+         [:h1 "Manga Sites"]
          [:ul (map (id-btn-for-callback
                     #(r/go-to (r/comics-path
                                {:site (name (:id %))})))
