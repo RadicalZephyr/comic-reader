@@ -100,20 +100,21 @@
          manga-url     (format "%s/manga" canonical-url)
          mangalist-url (format "%s/mangalist/" canonical-url)
          manga-pattern (re-pattern (str manga-url "/(.*?)/"))
-         link->map (gen-link->map (comp #(s/replace % #"\"" "")
-                                        second)
-                                  identity)]
+         cl-link->map (gen-link->map (comp #(s/replace % #"\"" "")
+                                           second)
+                                     identity)
+         link->map (gen-link->map identity identity)]
      {:id :manga-here
       :name "Manga Here"
       :comic->url (fn [comic-id]
-                    (str canonical-url "/" comic-id))
+                    (str manga-url "/" comic-id))
       :comic-list-data {:url mangalist-url
                         :selector [:section.main
                                    :li :a.manga_info]
                         :normalize (comp (gen-add-key-from-url
                                           :id
                                           manga-pattern)
-                                         link->map)}
+                                         )}
       :chapter-list-data-for-comic
       (fn [comic-url]
         {:url comic-url
