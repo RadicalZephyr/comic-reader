@@ -88,7 +88,7 @@
              window-height (.-innerHeight js/window)
              screen-bottom (+ scroll-y window-height)
              document-height (-> js/document
-                                 .-body
+                                 (.getElementById "app")
                                  .-clientHeight)]
          (if (> screen-bottom
                 (- document-height 200))
