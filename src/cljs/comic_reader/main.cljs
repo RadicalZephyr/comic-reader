@@ -94,7 +94,8 @@
         (map #(.destroy %) @waypoints))
       :reagent-render
       (fn [site location {:keys [tag]}]
-        tag)})))
+        [:div.row
+         [:div.medium-12.columns tag]])})))
 
 (defn reader []
   (let [site       (rf/subscribe [:site])
