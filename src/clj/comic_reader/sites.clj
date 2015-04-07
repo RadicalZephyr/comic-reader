@@ -100,7 +100,9 @@
          manga-url     (format "%s/manga" canonical-url)
          mangalist-url (format "%s/mangalist/" canonical-url)
          manga-pattern (re-pattern (str manga-url "/(.*?)/"))
-         link->map (gen-link->map second identity)]
+         link->map (gen-link->map (comp #(s/replace % #"\"" "")
+                                        second)
+                                  identity)]
      {:id :manga-here
       :name "Manga Here"
       :comic->url (fn [comic-id]
