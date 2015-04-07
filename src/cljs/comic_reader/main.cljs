@@ -109,14 +109,13 @@
                    location)
           (let [component
                 [:div
-                 [:h2 (str "Display chapter " (:chapter location)
-                           " page " (:page location)
-                           " of comic " (:comic location)
-                           " from site " site)]
+                 [:h2 (titlize (:comic location)
+                               :to-spaces #"(_|-)")]
                  [:br]]]
             (when comic-imgs
               (into component
-                    (map (partial vector img-component site location)
+                    (map (partial vector
+                                  img-component site location)
                          comic-imgs)))))))))
 
 (defn comic-reader []
