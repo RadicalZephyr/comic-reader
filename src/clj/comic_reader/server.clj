@@ -66,11 +66,17 @@
 
 (c/defroutes routes
   (c/GET "/" [] (hp/html5
-                 [:head]
+                 [:head
+                  (hp/include-css "css/foundation.css")
+                  (hp/include-js "js/vendor/modernizr.js")
+                  ]
                  [:body
-                  [:div#app]
+                  [:div.row
+                   [:div#app.large-12.columns]]
                   [:input#history_state {:type "hidden"}]
-                  (hp/include-js "js/compiled/main.js")]))
+                  (hp/include-js "js/compiled/main.js"
+                                 "js/vendor/jquery.js"
+                                 "js/foundation.min.js")]))
   (c/GET "/blank" [] "")
   (c/context "/api/v1" []
     (c/GET "/sites" []
