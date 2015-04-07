@@ -68,8 +68,8 @@
   (c/GET "/" [] (hp/html5
                  [:head
                   (hp/include-css "css/foundation.css")
-                  (hp/include-js "js/vendor/modernizr.js")
-                  ]
+                  [:style "img {width: 100%;}"]
+                  (hp/include-js "js/vendor/modernizr.js")]
                  [:body
                   [:div.row
                    [:div#app.large-12.columns]]
