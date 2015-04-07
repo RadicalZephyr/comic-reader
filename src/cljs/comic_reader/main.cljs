@@ -22,13 +22,13 @@
    "There's nothing to see here."
    [:a {:href "/#"}]])
 
-(defn id-btn-for-callback [on-click]
+(defn id-btn-for-callback [click-address]
   (fn [{:keys [id name]
         :as data}]
     ^{:key id}
     [:li
      [:a.large.button
-      {:on-click (partial on-click data)}
+      {:href (str "/#" (click-address data))}
       name]]))
 
 (defn site-list []
@@ -38,8 +38,8 @@
         [:div
          [:h1 "Manga Sites"]
          [:ul (map (id-btn-for-callback
-                    #(r/go-to (r/comics-path
-                               {:site (name (:id %))})))
+                    #(r/comics-path
+                      {:site (name (:id %))}))
                    site-list)]]))))
 
 (defn comic-list []
@@ -52,10 +52,10 @@
           [:div
            [:ul (map (id-btn-for-callback
                       (fn [item]
-                        (r/go-to (r/read-path {:site site
-                                               :comic (:id item)
-                                               :chapter 1
-                                               :page 1}))))
+                        (r/read-path {:site site
+                                      :comic (:id item)
+                                      :chapter 1
+                                      :page 1})))
                      comic-list)]])))))
 
 (defn img-component [site
