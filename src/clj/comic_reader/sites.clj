@@ -4,7 +4,7 @@
             [clojure.string :as s]))
 
 (defn gen-link->map [process-name process-url]
-  (fn [{[name] :content
+  (fn [{name :content
         {url :href} :attrs}]
     {:name (process-name name)
      :url (process-url url)}))
@@ -20,7 +20,7 @@
   [(let [canonical-url "http://mangafox.me"
          manga-url (format "%s/manga/" canonical-url)
          manga-pattern (re-pattern (str manga-url "(.*?)/"))
-         link->map (gen-link->map identity identity)]
+         link->map (gen-link->map first identity)]
      {:id :manga-fox
       :name "Manga Fox"
 
@@ -61,7 +61,7 @@
    (let [canonical-url "http://www.mangareader.net"
          manga-pattern (re-pattern (str canonical-url
                                         "/(.*)(\\.html)?$"))
-         link->map (gen-link->map s/trim
+         link->map (gen-link->map (comp s/trim first)
                                   (partial str canonical-url))]
      {:id :manga-reader
       :name "Manga Reader"
@@ -99,8 +99,8 @@
    (let [canonical-url "http://www.mangahere.co"
          manga-url     (format "%s/manga" canonical-url)
          mangalist-url (format "%s/mangalist/" canonical-url)
-         manga-pattern (re-pattern (str manga-url "(.*?)/"))
-         link->map (gen-link->map identity identity)]
+         manga-pattern (re-pattern (str manga-url "/(.*?)/"))
+         link->map (gen-link->map second identity)]
      {:id :manga-here
       :name "Manga Here"
       :comic->url (fn [comic-id]
