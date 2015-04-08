@@ -24,3 +24,6 @@
 
 (defn go-to [page]
   (h/set-token page))
+
+(defn setup-secretary! []
+  (secretary/set-config! :prefix "#"))
