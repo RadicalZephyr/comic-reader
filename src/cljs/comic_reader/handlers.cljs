@@ -40,7 +40,7 @@
 
   (rf/register-handler
    :comics
-   (fn [db [page site]]
+   (fn [db [page site filter]]
      (api/get-comics site)
      (-> db
          (assoc :page page)
