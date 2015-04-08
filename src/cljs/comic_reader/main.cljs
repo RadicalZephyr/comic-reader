@@ -43,6 +43,23 @@
                       {:site (name (:id %))}))
                    site-list)]]))))
 
+(defn comic-buttons [site comic-list]
+  (map (id-btn-for-callback
+        (fn [item]
+          (r/read-path {:site site
+                        :comic (:id item)
+                        :chapter 1
+                        :page 1})))
+       comic-list))
+
+(defn filter-comics [cl-filter comic-list]
+  (if cl-filter
+    (let [filter-re (re-pattern cl-filter)]
+      (filter (fn [{:keys [name]}]
+                (re-find filter-re name))
+              comic-list))
+    comic-list))
+
 (defn comic-list []
   (let [site (rf/subscribe [:site])
         comic-list (rf/subscribe [:comic-list])
