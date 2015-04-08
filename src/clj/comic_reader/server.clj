@@ -76,6 +76,7 @@
                   [:input#history_state {:type "hidden"}]
                   (hp/include-js "js/compiled/main.js"
                                  "js/vendor/jquery.js"
+                                 "js/vendor/fastclick.js"
                                  "js/foundation.min.js")]))
   (c/GET "/blank" [] "")
   (c/context "/api/v1" []
