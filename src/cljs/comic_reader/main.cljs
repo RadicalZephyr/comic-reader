@@ -54,7 +54,7 @@
 
 (defn filter-comics [cl-filter comic-list]
   (if cl-filter
-    (let [filter-re (re-pattern cl-filter)]
+    (let [filter-re (re-pattern (str "(?i)" cl-filter))]
       (filter (fn [{:keys [name]}]
                 (re-find filter-re name))
               comic-list))
