@@ -45,13 +45,17 @@
 
 (defn comic-list []
   (let [site (rf/subscribe [:site])
-        comic-list (rf/subscribe [:comic-list])]
+        comic-list (rf/subscribe [:comic-list])
+        comic-list-filter (rf/subscribe [:comic-list-filter])]
     (fn []
       (let [site       @site
-            comic-list @comic-list]
+            comic-list @comic-list
+            cl-filter @comic-list-filter]
         [:div
          [:h1 "Comics from " (titlize site
                                       :to-spaces #"-")]
+         (when cl-filter
+           [:h3 "Filtered by " cl-filter])
          (when (and site comic-list)
            [:ul (map (id-btn-for-callback
                       (fn [item]
