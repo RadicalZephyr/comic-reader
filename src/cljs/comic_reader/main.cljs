@@ -74,13 +74,9 @@
          (when cl-filter
            [:h3 "Filtered by " cl-filter])
          (when (and site comic-list)
-           [:ul (map (id-btn-for-callback
-                      (fn [item]
-                        (r/read-path {:site site
-                                      :comic (:id item)
-                                      :chapter 1
-                                      :page 1})))
-                     comic-list)])]))))
+           [:ul (->> comic-list
+                     (filter-comics cl-filter)
+                     (comic-buttons site))])]))))
 
 (defn img-component [site
                      {:keys [comic]}
