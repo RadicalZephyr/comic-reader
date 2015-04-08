@@ -24,6 +24,11 @@
      (reaction (get @db :comic-list))))
 
   (rf/register-sub
+   :comic-list-filter
+   (fn [db _]
+     (reaction (get @db :comic-list-filter))))
+
+  (rf/register-sub
    :url-list
    (fn [db _]
      (reaction (get @db :url-list))))
