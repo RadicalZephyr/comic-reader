@@ -1,6 +1,7 @@
 (ns comic-reader.main
   (:require [comic-reader.api :as api]
-            [comic-reader.routes :as r]
+            [comic-reader.routes :as r
+             :refer [setup-secretary!]]
             [comic-reader.handlers :refer [init-handlers!]]
             [comic-reader.subscriptions
              :refer [init-subscriptions!]]
@@ -29,7 +30,7 @@
     ^{:key id}
     [:li
      [:a.large.button
-      {:href (str "/#" (click-address data))}
+      {:href (click-address data)}
       name]]))
 
 (defn site-list []
@@ -149,6 +150,7 @@
   (init-handlers!)
   (init-subscriptions!)
   (setup-scrolling-events!)
+  (setup-secretary!)
   (try
     (hook-browser-navigation!)
     (catch js/Error e
