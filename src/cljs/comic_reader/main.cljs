@@ -38,7 +38,7 @@
       (when-let [site-list @site-list]
         [:div
          [:h1 "Manga Sites"]
-         [:ul (map (id-btn-for-callback
+         [:ul.inline-list (map (id-btn-for-callback
                     #(r/comics-path
                       {:site (name (:id %))}))
                    site-list)]]))))
