@@ -8,8 +8,10 @@
 (defroute sites-path "/" []
   (rf/dispatch [:sites]))
 
-(defroute comics-path "/comics/:site" [site]
-  (rf/dispatch [:comics site]))
+(defroute comics-path "/comics/:site" {:keys [site]
+                                       {:keys [filter]}
+                                       :query-params}
+  (rf/dispatch [:comics site filter]))
 
 (defroute read-path "/read/:site/:comic/:chapter/:page"
   {site :site
