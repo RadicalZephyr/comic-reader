@@ -48,8 +48,7 @@
   [(if (= cl-filter letter)
      :dd.active
      :dd)
-   {:key (str "filter-" letter)
-    :role "menuitem"}
+   {:role "menuitem"}
    [:a.button.success.radius
     {:href (r/comics-path
             {:site site
@@ -85,7 +84,8 @@
    [:dl.sub-nav {:role "menu" :title "Comics Filter List"}
     (->> "#ABCDEFGHIJKLMNOPQRSTUVWXYZ"
          seq
-         (map #(conj [filter-element site cl-filter]
+         (map #(conj ^{:key (str "filter-" %)}
+                     [filter-element site cl-filter]
                      %)))]
    [:a.tiny.secondary.button
     {:href (r/comics-path
