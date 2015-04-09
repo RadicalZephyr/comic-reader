@@ -73,7 +73,7 @@
                   (hp/include-js "js/vendor/modernizr.js")]
                  [:body
                   [:div.row
-                   [:div#app.large-12.columns]]
+                   [:div#app.small-12.columns]]
                   [:input#history_state {:type "hidden"}]
                   (hp/include-js "js/vendor/jquery.js"
                                  "js/vendor/fastclick.js"
