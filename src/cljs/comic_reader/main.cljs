@@ -118,8 +118,8 @@
                                          :to-spaces #"-")]
             (when comic-list
               [:ul.no-bullet
-              (->> comic-list
-                   (comic-buttons site))])])]))))
+               (->> comic-list
+                    (comic-buttons site))])])]))))
 
 (defn img-component [site
                      {:keys [comic]}
@@ -169,16 +169,15 @@
             comic-imgs @comic-imgs]
         (when (and site
                    location)
-          (let [component
-                [:div
-                 [:h2 (titlize (:comic location)
-                               :to-spaces #"(_|-)")]
-                 [:br]]]
-            (when comic-imgs
-              (into component
-                    (map #(conj [img-component site location]
-                                %)
-                         comic-imgs)))))))))
+          [:div
+           [:h1 (titlize (:comic location)
+                         :to-spaces #"(_|-)")]
+           [:br]
+           (when comic-imgs
+             (map #(conj ^{:key (select-keys % [:chapter :page])}
+                         [img-component site location]
+                         %)
+                  comic-imgs))])))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
