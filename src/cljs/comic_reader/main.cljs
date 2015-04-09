@@ -40,9 +40,9 @@
         [:div
          [:h1 "Manga Sites"]
          [:ul.inline-list (map (id-btn-for-callback
-                    #(r/comics-path
-                      {:site (name (:id %))}))
-                   site-list)]]))))
+                                #(r/comics-path
+                                  {:site (name (:id %))}))
+                               site-list)]]))))
 
 (defn comic-buttons [site comic-list]
   (map (id-btn-for-callback
