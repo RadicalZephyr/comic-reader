@@ -44,6 +44,54 @@
                                   {:site (name (:id %))}))
                                site-list)]]))))
 
+(defn filter-element [site cl-filter letter]
+  [(if (= cl-filter letter)
+     :dd.active
+     :dd)
+   {:key (str "filter-" letter)
+    :role "menuitem"}
+   [:a.button.success.radius
+    {:href (r/comics-path
+            {:site site
+             :query-params
+             (when-not (= cl-filter letter)
+               {:filter letter})})}
+    letter]])
+
+(defn search-box [site cl-filter]
+  (reagent/create-class
+   {:display-name "search-box"
+    :component-did-mount
+    (fn [this]
+      (let [node (reagent/dom-node this)
+            value (.-value node)]
+        (.addEventListener node "input"
+                           #(r/go-to
+                             (r/comics-path
+                              {:site site
+                               :query-params
+                               (when value
+                                 {:filter value})})))))
+    :reagent-render
+    (fn [site cl-filter]
+      [:input {:type "search"
+               :placeholder (or cl-filter "")
+               :auto-complete "on"}])}))
+
+(defn filter-nav-bar [site cl-filter]
+  [:div.panel.radius
+   [:h6 "Filter Comics:"
+    [search-box site cl-filter]]
+   [:dl.sub-nav {:role "menu" :title "Comics Filter List"}
+    (->> "#ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+         seq
+         (map #(conj [filter-element site cl-filter]
+                     %)))]
+   [:a.tiny.secondary.button
+    {:href (r/comics-path
+            {:site site})}
+    "clear filters"]])
+
 (defn comic-buttons [site comic-list]
   (map (id-btn-for-callback
         (fn [item]
