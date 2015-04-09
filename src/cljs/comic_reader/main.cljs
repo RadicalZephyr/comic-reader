@@ -120,7 +120,7 @@
               [:ul.no-bullet
                (->> comic-list
                     (comic-buttons site))]
-              [:img {:src "/img/loading.gif"}])])]))))
+              [:img {:src "/img/loading.svg"}])])]))))
 
 (defn img-component [site
                      {:keys [comic]}
@@ -179,7 +179,7 @@
                          [img-component site location]
                          %)
                   comic-imgs)
-             [:img {:src "/img/loading.gif"}])])))))
+             [:img {:src "/img/loading.svg"}])])))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
