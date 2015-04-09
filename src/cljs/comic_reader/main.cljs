@@ -108,7 +108,7 @@
                                        "up")
                                 (go-to-comic))})]
           (reset! waypoints [wp-up wp-down])))
-      :componentWillUnmount
+      :component-will-unmount
       (fn []
         (map #(.destroy %) @waypoints))
       :reagent-render
