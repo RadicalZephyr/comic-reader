@@ -101,20 +101,6 @@
                         :page 1})))
        comic-list))
 
-(defn re-string [letter]
-  (if (= letter "#")
-    "^[^a-z]"
-    (str "^" letter)))
-
-(defn filter-comics [cl-filter comic-list]
-  (if cl-filter
-    (let [filter-re (re-pattern (str "(?i)"
-                                     (re-string cl-filter)))]
-      (filter (fn [{:keys [name]}]
-                (re-find filter-re name))
-              comic-list))
-    comic-list))
-
 (defn comic-list []
   (let [site (rf/subscribe [:site])
         comic-list (rf/subscribe [:comic-list])
@@ -132,7 +118,6 @@
                                          :to-spaces #"-")]
             [:ul.no-bullet
              (->> comic-list
-                  (filter-comics cl-filter)
                   (comic-buttons site))]])]))))
 
 (defn img-component [site
