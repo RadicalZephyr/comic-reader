@@ -65,7 +65,7 @@
     (fn [this]
       (let [node (reagent/dom-node this)
             value (.-value node)]
-        (.addEventListener node "input"
+        (.addEventListener node "change"
                            #(r/go-to
                              (r/comics-path
                               {:site site
