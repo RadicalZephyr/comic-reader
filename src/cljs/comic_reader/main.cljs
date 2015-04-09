@@ -62,15 +62,15 @@
    {:display-name "search-box"
     :component-did-mount
     (fn [this]
-      (let [node (reagent/dom-node this)
-            value (.-value node)]
+      (let [node (reagent/dom-node this)]
         (.addEventListener node "change"
-                           #(r/go-to
-                             (r/comics-path
-                              {:site site
-                               :query-params
-                               (when value
-                                 {:filter value})})))))
+                           #(let [value (.-value node)]
+                              (r/go-to
+                               (r/comics-path
+                                {:site site
+                                 :query-params
+                                 (when value
+                                   {:filter value})}))))))
     :reagent-render
     (fn [site cl-filter]
       [:input {:type "search"
