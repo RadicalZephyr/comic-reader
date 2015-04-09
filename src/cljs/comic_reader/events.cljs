@@ -1,6 +1,6 @@
 (ns comic-reader.events)
 
-(defn throttle [type key & [target]]
+(defn throttle [type fire-event delay & [target]]
   (let [target (or target js/window)
         running (atom false)
         toggle! #(swap! running not)
@@ -9,8 +9,8 @@
                       (toggle!)
                       (js/requestAnimationFrame
                        (fn []
-                         (rf/dispatch [key])
+                         (fire-event)
                          (.setTimeout js/window
                                       #(toggle!)
-                                      1000)))))]
+                                      delay)))))]
     (.addEventListener target type throttler)))
