@@ -68,17 +68,17 @@
   (c/GET "/" [] (hp/html5
                  [:head
                   (hp/include-css "css/normalize.css"
-                                  "css/foundation.css")
-                  [:style "img {width: 100%;}"]
+                                  "css/foundation.min.css"
+                                  "css/app.css")
                   (hp/include-js "js/vendor/modernizr.js")]
                  [:body
                   [:div.row
                    [:div#app.large-12.columns]]
                   [:input#history_state {:type "hidden"}]
-                  (hp/include-js "js/compiled/main.js"
-                                 "js/vendor/jquery.js"
+                  (hp/include-js "js/vendor/jquery.js"
                                  "js/vendor/fastclick.js"
-                                 "js/foundation.min.js")]))
+                                 "js/foundation.min.js"
+                                 "js/compiled/main.js")]))
   (c/GET "/blank" [] "")
   (c/context "/api/v1" []
     (c/GET "/sites" []
