@@ -152,7 +152,8 @@
           (reset! waypoints [wp-up wp-down])))
       :component-will-unmount
       (fn []
-        (map #(.destroy %) @waypoints))
+        (map #(.destroy %) @waypoints)
+        (reset! waypoints nil))
       :reagent-render
       (fn [site location {:keys [tag]}]
         [:div.row
