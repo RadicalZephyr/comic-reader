@@ -69,7 +69,7 @@
                  [:head
                   (hp/include-css "css/normalize.css"
                                   "css/foundation.css")
-                  [:style "img {width: 100%;} ul {list-style-type:none;}"]
+                  [:style "img {width: 100%;}"]
                   (hp/include-js "js/vendor/modernizr.js")]
                  [:body
                   [:div.row

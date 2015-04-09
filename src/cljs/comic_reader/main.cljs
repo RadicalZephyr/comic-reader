@@ -75,9 +75,10 @@
          (when cl-filter
            [:h3 "Filtered by " cl-filter])
          (when (and site comic-list)
-           [:ul (->> comic-list
-                     (filter-comics cl-filter)
-                     (comic-buttons site))])]))))
+           [:ul.no-bullet
+            (->> comic-list
+                 (filter-comics cl-filter)
+                 (comic-buttons site))])]))))
 
 (defn img-component [site
                      {:keys [comic]}
