@@ -116,10 +116,11 @@
            [:div.small-12.large-7.large-pull-5.columns
             [:h1 "Comics from " (titlize site
                                          :to-spaces #"-")]
-            (when comic-list
+            (if comic-list
               [:ul.no-bullet
                (->> comic-list
-                    (comic-buttons site))])])]))))
+                    (comic-buttons site))]
+              [:img {:src "/img/loading.gif"}])])]))))
 
 (defn img-component [site
                      {:keys [comic]}
@@ -173,11 +174,12 @@
            [:h1 (titlize (:comic location)
                          :to-spaces #"(_|-)")]
            [:br]
-           (when comic-imgs
+           (if comic-imgs
              (map #(conj ^{:key (select-keys % [:chapter :page])}
                          [img-component site location]
                          %)
-                  comic-imgs))])))))
+                  comic-imgs)
+             [:img {:src "/img/loading.gif"}])])))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
