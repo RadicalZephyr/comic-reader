@@ -67,7 +67,8 @@
 (c/defroutes routes
   (c/GET "/" [] (hp/html5
                  [:head
-                  (hp/include-css "css/foundation.css")
+                  (hp/include-css "css/normalize.css"
+                                  "css/foundation.css")
                   [:style "img {width: 100%;} ul {list-style-type:none;}"]
                   (hp/include-js "js/vendor/modernizr.js")]
                  [:body
