@@ -112,13 +112,14 @@
         [:div.row
          [:div.small-12.large-5.large-push-7.columns
           [filter-nav-bar site cl-filter]]
-         (when (and site comic-list)
+         (when site
            [:div.small-12.large-7.large-pull-5.columns
             [:h1 "Comics from " (titlize site
                                          :to-spaces #"-")]
-            [:ul.no-bullet
-             (->> comic-list
-                  (comic-buttons site))]])]))))
+            (when comic-list
+              [:ul.no-bullet
+              (->> comic-list
+                   (comic-buttons site))])])]))))
 
 (defn img-component [site
                      {:keys [comic]}
