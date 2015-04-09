@@ -22,7 +22,7 @@
   [:div
    [:h1 "Sorry!"]
    "There's nothing to see here."
-   [:a {:href "/#"}]])
+   [:a {:href "/#"} "Go back to the beginning..."]])
 
 (defn id-btn-for-callback [click-address]
   (fn [{:keys [id name]
