@@ -122,24 +122,26 @@
     (fn []
       (let [site       @site
             comic-list @comic-list
-            cl-filter @comic-list-filter]
-        [:div
-         [:h1 "Comics from " (titlize site
-                                      :to-spaces #"-")]
-         (when cl-filter
-           [:h3 "Filtered by " cl-filter])
+            cl-filter  @comic-list-filter]
+        [:div.row
+         [:div.small-12.large-5.large-push-7.columns
+          [filter-nav-bar site cl-filter]]
          (when (and site comic-list)
-           [:ul.no-bullet
-            (->> comic-list
-                 (filter-comics cl-filter)
-                 (comic-buttons site))])]))))
+           [:div.small-12.large-7.large-pull-5.columns
+            [:h1 "Comics from " (titlize site
+                                         :to-spaces #"-")]
+            [:ul.no-bullet
+             (->> comic-list
+                  (filter-comics cl-filter)
+                  (comic-buttons site))]])]))))
 
 (defn img-component [site
                      {:keys [comic]}
                      {:keys [chapter page tag]}]
   (let [waypoints (clojure.core/atom nil)]
     (reagent/create-class
-     {:component-did-mount
+     {:display-name "image-component"
+      :component-did-mount
       (fn [this]
         (let [node (reagent/dom-node this)
               go-to-comic #(r/go-to
