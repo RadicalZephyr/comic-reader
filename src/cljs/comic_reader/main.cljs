@@ -29,7 +29,7 @@
         :as data}]
     ^{:key id}
     [:li
-     [:a.large.button
+     [:a.large.button.radius
       {:href (click-address data)}
       name]]))
 
@@ -87,7 +87,7 @@
          (map #(conj ^{:key (str "filter-" %)}
                      [filter-element site cl-filter]
                      %)))]
-   [:a.tiny.secondary.button
+   [:a.tiny.secondary.button.radius
     {:href (r/comics-path
             {:site site})}
     "clear filters"]])
