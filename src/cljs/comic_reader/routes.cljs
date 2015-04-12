@@ -22,8 +22,11 @@
 (defroute "*" {:as _}
   (rf/dispatch [:unknown]))
 
-(defn go-to [page]
-  (h/set-token page))
+(defn go-to [page-url]
+  (h/set-token page-url))
+
+(defn make-link [page-url]
+  (str "/#" page-url))
 
 (defn setup-secretary! []
-  (secretary/set-config! :prefix "#"))
+  (secretary/set-config! :prefix ""))
