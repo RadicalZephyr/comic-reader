@@ -40,8 +40,9 @@
         [:div
          [:h1 "Manga Sites"]
          [:ul.inline-list (map (id-btn-for-callback
-                                #(r/comics-path
-                                  {:site (name (:id %))}))
+                                #(r/make-link
+                                  (r/comics-path
+                                   {:site (name (:id %))})))
                                site-list)]]))))
 
 (defn filter-element [site cl-filter letter]
@@ -50,11 +51,12 @@
      :dd)
    {:role "menuitem"}
    [:a.button.success.radius
-    {:href (r/comics-path
-            {:site site
-             :query-params
-             (when-not (= cl-filter letter)
-               {:filter letter})})}
+    {:href (r/make-link
+            (r/comics-path
+             {:site site
+              :query-params
+              (when-not (= cl-filter letter)
+                {:filter letter})}))}
     letter]])
 
 (defn search-box [site cl-filter]
@@ -88,17 +90,19 @@
                      [filter-element site cl-filter]
                      %)))]
    [:a.tiny.secondary.button.radius
-    {:href (r/comics-path
-            {:site site})}
+    {:href (r/make-link
+            (r/comics-path
+              {:site site}))}
     "clear filters"]])
 
 (defn comic-buttons [site comic-list]
   (map (id-btn-for-callback
         (fn [item]
-          (r/read-path {:site site
-                        :comic (:id item)
-                        :chapter 1
-                        :page 1})))
+          (r/make-link
+           (r/read-path {:site site
+                         :comic (:id item)
+                         :chapter 1
+                         :page 1}))))
        comic-list))
 
 (defn comic-list []
