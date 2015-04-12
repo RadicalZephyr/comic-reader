@@ -14,7 +14,7 @@
             [re-frame.core :as rf]
             [secretary.core :as secretary
              :refer-macros [defroute]]
-            org.clojars.earthlingzephyr.waypoints))
+            cljsjs.waypoints))
 
 ;; Actual re-frame code
 
