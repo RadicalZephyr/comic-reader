@@ -41,7 +41,8 @@
   (rf/register-handler
    :comics
    (fn [db [page site filter]]
-     (api/get-comics site)
+     (if-not (= (:site db) site)
+       (api/get-comics site))
      (-> db
          (assoc :page page
                 :site site
@@ -57,10 +58,10 @@
        (do
          (api/get-comic-pages site location)
          (assoc db
-               :page page
-               :site site
-               :location location
-               :comic-imgs [])))))
+                :page page
+                :site site
+                :location location
+                :comic-imgs [])))))
 
   (rf/register-handler
    :site-list
