@@ -6,10 +6,6 @@
             [re-frame.core :as rf]
             [secretary.core :as secretary]))
 
-(defn go-to-location [db {:keys [chapter page]
-                          :as location}]
-  (assoc db :location location))
-
 (defn get-next-image [{:keys [site page-list location]
                        {:keys [chapter]} :location
                        :as db}]
@@ -54,7 +50,7 @@
      (if (and (= (:site db) site)
               (= (get-in db [:location  :comic])
                  (get-in      location [:comic])))
-       (go-to-location db location)
+       (assoc db :location location)
        (do
          (api/get-comic-pages site location)
          (assoc db
