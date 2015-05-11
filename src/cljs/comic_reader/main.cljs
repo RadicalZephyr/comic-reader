@@ -183,7 +183,11 @@
                          [img-component site location]
                          %)
                   comic-imgs))
-           [:img {:src "/img/loading.svg"}]])))))
+           [:img {:src "/img/loading.svg"
+                  :style {:margin-left "auto"
+                          :margin-right "auto"
+                          :width "40%"
+                          :display "block"}}]])))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
