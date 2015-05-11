@@ -178,12 +178,12 @@
            [:h1 (titlize (:comic location)
                          :to-spaces #"(_|-)")]
            [:br]
-           (if comic-imgs
+           (when comic-imgs
              (map #(conj ^{:key (select-keys % [:chapter :page])}
                          [img-component site location]
                          %)
-                  comic-imgs)
-             [:img {:src "/img/loading.svg"}])])))))
+                  comic-imgs))
+           [:img {:src "/img/loading.svg"}]])))))
 
 (defn comic-reader []
   (let [page (rf/subscribe [:page])]
