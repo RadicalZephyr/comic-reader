@@ -11,7 +11,7 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [ring "1.3.2"]
                  [fogus/ring-edn "0.2.0"]
-                 [compojure "1.3.2"]
+                 [compojure "1.3.4"]
                  [hiccup "1.0.5"]
                  [enlive "1.1.5"]
                  [environ "1.0.0"]
