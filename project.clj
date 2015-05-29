@@ -17,7 +17,7 @@
                  [environ "1.0.0"]
 
                  [org.clojure/clojurescript "0.0-3211"]
-                 [reagent "0.5.0-alpha3"]
+                 [reagent "0.5.0"]
                  [re-frame "0.2.0"
                   :exclusions [[org.clojure/clojurescript
                                 :extension "jar"]]]
