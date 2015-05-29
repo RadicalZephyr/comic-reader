@@ -16,7 +16,7 @@
                  [enlive "1.1.5"]
                  [environ "1.0.0"]
 
-                 [org.clojure/clojurescript "0.0-2850"]
+                 [org.clojure/clojurescript "0.0-3211"]
                  [reagent "0.5.0-alpha3"]
                  [re-frame "0.2.0"
                   :exclusions [[org.clojure/clojurescript
