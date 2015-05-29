@@ -8,7 +8,7 @@
   :uberjar-name "comic-reader.jar"
   :source-paths ["src/clj"]
 
-  :dependencies [[org.clojure/clojure "1.6.0"]
+  :dependencies [[org.clojure/clojure "1.7.0-RC1"]
                  [ring "1.4.0-RC1"]
                  [fogus/ring-edn "0.2.0"]
                  [compojure "1.3.4"]
