@@ -35,8 +35,8 @@
           :nrepl {:start? true :port 4500}
           :port 8090}
 
-  :profiles {:dev {:dependencies [[figwheel "0.2.5-SNAPSHOT"]]
-                   :plugins [[lein-figwheel "0.2.5-SNAPSHOT"
+  :profiles {:dev {:dependencies [[figwheel "0.3.3"]]
+                   :plugins [[lein-figwheel "0.3.3"
                               :exclusions [[cider/cider-nrepl
                                             :extensions "jar"]]]]
                    :figwheel {:http-server-root "public"
