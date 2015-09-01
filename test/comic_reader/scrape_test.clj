@@ -3,6 +3,14 @@
             [comic-reader.scrape :refer :all]
             [clojure.test :refer :all]))
 
+(deftest clean-image-tag-test
+  (is (= (clean-image-tag [:img {:src "abc"}])
+         [:img {:src "abc"}]))
+  (is (= (clean-image-tag [:img {:alt "def"}])
+         [:img {:alt "def"}]))
+  (is (= (clean-image-tag [:img {:src "def" :walrus "i am"}])
+         [:img {:src "def"}])))
+
 (deftest extract-image-tag-test
   (let [html (html/html [:div {} [:img {:src "dummy-img"
                                         :alt "alt-text"}]])]
