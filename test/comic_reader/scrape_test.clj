@@ -3,6 +3,12 @@
             [comic-reader.scrape :refer :all]
             [clojure.test :refer :all]))
 
+(deftest enlive->hiccup-test
+  (is (= (enlive->hiccup {:tag :img :attrs {}})
+         [:img {}]))
+  (is (= (enlive->hiccup {:tag :p :attrs {:things 1} :content ["stuff"]})
+         [:p {:things 1} ["stuff"]])))
+
 (deftest clean-image-tag-test
   (is (= (clean-image-tag [:img {:src "abc"}])
          [:img {:src "abc"}]))
