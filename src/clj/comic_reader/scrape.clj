@@ -4,7 +4,7 @@
   (:import java.net.URL))
 
 (defn fetch-url [url]
-  (html/html-resource (java.net.URL. url)))
+  (html/html-resource (URL. url)))
 
 (defn extract-list [html selector normalize]
   (map normalize (html/select html selector)))
