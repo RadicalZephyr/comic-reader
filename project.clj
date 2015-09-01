@@ -8,25 +8,25 @@
   :uberjar-name "comic-reader.jar"
   :source-paths ["src/clj"]
 
-  :dependencies [[org.clojure/clojure "1.7.0-RC1"]
-                 [ring "1.4.0-RC1"]
-                 [fogus/ring-edn "0.2.0"]
-                 [compojure "1.3.4"]
+  :dependencies [[org.clojure/clojure "1.7.0"]
+                 [ring "1.4.0"]
+                 [fogus/ring-edn "0.3.0"]
+                 [compojure "1.4.0"]
                  [hiccup "1.0.5"]
-                 [enlive "1.1.5"]
+                 [enlive "1.1.6"]
                  [environ "1.0.0"]
 
-                 [org.clojure/clojurescript "0.0-3211"]
+                 [org.clojure/clojurescript "1.7.48"]
                  [reagent "0.5.0"]
-                 [re-frame "0.2.0"
+                 [re-frame "0.4.1"
                   :exclusions [[org.clojure/clojurescript
                                 :extension "jar"]]]
                  [secretary "1.2.3"]
                  [cljsjs/waypoints "3.1.1-0"]
                  [cljs-ajax "0.3.10"]]
 
-  :plugins      [[lein-ring "0.8.13"]
-                 [lein-cljsbuild "1.0.5"]]
+  :plugins      [[lein-ring "0.9.6"]
+                 [lein-cljsbuild "1.1.0"]]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled"]
 
@@ -35,8 +35,8 @@
           :nrepl {:start? true :port 4500}
           :port 8090}
 
-  :profiles {:dev {:dependencies [[figwheel "0.3.3"]]
-                   :plugins [[lein-figwheel "0.3.3"
+  :profiles {:dev {:dependencies [[figwheel "0.3.8"]]
+                   :plugins [[lein-figwheel "0.3.8"
                               :exclusions [[cider/cider-nrepl
                                             :extensions "jar"]]]]
                    :figwheel {:http-server-root "public"
