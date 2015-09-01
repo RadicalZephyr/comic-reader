@@ -28,6 +28,13 @@
     (is (= (extract-image-tag html [:div :p :img])
            [:img {:src "img-two" :alt "text-alt"}]))))
 
+(deftest fetch-image-tag-test
+  (let  [html (html [:div {} [:img {:src "dummy-img"
+                                    :alt "alt-text"}]])]
+    (with-redefs [fetch-url (fn [url] html)]
+      (is (= (fetch-image-tag {:url "abc" :selector [:div :img]})
+             [:img {:src "dummy-img" :alt "alt-text"}])))))
+
 (deftest extract-list-test
   (let [html (html [:div {} [:p {}]])]
     (is (= (extract-list html [:div :p] :tag)
@@ -36,3 +43,11 @@
            [{}]))
     (is (= (extract-list html [:div :p] (comp seq :content))
            [nil]))))
+
+(deftest fetch-list-test
+  (let [html (html [:div {} [:p {}]])]
+    (with-redefs [fetch-url (fn [url] html)]
+      (is (= (fetch-list {:url "abc"
+                          :selector [:div :p]
+                          :normalize :tag})
+             [:p])))))

@@ -31,4 +31,4 @@
 (defn fetch-image-tag [{:keys [url selector]}]
   (when (every? (complement nil?) [url selector])
     (-> (fetch-url url)
-        extract-image-tag)))
+        (extract-image-tag selector))))
