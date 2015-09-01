@@ -1,36 +1,25 @@
 # Comic-Reader
 
-An app for reading comics/manga on or offline
+An app for reading comics/manga online.
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Download from https://github.com/RadicalZephyr/comic-reader
 
 ## Usage
 
-FIXME: explanation
+Just run it!
 
     $ java -jar comic-reader-0.1.0-standalone.jar [args]
 
-## Options
+## Development
 
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+Run `lein ring server` to start the ring server, and `lein figwheel`
+to start the clojurescript compilation and figwheel server.
 
 ## License
 
-Copyright © 2015 FIXME
+Copyright © 2015 Geoff Shannon
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
