@@ -27,3 +27,12 @@
                                           :alt "text-alt"}]]])]
     (is (= (extract-image-tag html [:div :p :img])
            [:img {:src "img-two" :alt "text-alt"}]))))
+
+(deftest extract-list-test
+  (let [html (html [:div {} [:p {}]])]
+    (is (= (extract-list html [:div :p] :tag)
+           [:p]))
+    (is (= (extract-list html [:div :p] :attrs)
+           [{}]))
+    (is (= (extract-list html [:div :p] (comp seq :content))
+           [nil]))))
