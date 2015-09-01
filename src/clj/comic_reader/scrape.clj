@@ -3,9 +3,6 @@
             [net.cgrand.enlive-html :as html])
   (:import java.net.URL))
 
-(defn fetch-feed [url]
-  (html/xml-resource (java.net.URL. url)))
-
 (defn fetch-url [url]
   (html/html-resource (java.net.URL. url)))
 
