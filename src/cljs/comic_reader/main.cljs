@@ -9,7 +9,7 @@
              :refer [hook-browser-navigation!]]
             [comic-reader.scrolling
              :refer [setup-scrolling-events!]]
-            [comic-reader.utils :refer [titlize]]
+            [comic-reader.util :refer [titlize]]
             [reagent.core :as reagent :refer [atom]]
             [re-frame.core :as rf]
             [secretary.core :as secretary

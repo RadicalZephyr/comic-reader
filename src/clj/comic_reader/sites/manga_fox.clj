@@ -2,7 +2,7 @@
   (:require [comic-reader.sites.protocol :refer [MangaSite]]
             [comic-reader.sites.util :as util]
             [comic-reader.scrape :as scrape]
-            [comic-reader.utils :refer [safe-read-string]]
+            [comic-reader.util :refer [safe-read-string]]
             [clojure.string :as s]))
 
 (def ^:private root-url "http://mangafox.me")

@@ -2,7 +2,7 @@
   (:gen-class)
   (:require [comic-reader.sites :as sites]
             [comic-reader.scrape :as scrape]
-            [comic-reader.utils :refer [safe-read-string]]
+            [comic-reader.util :refer [safe-read-string]]
             [ring.util.response :as response]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.edn :refer [wrap-edn-params]]
