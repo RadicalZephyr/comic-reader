@@ -66,7 +66,9 @@
 (deftype MangaFox []
   MangaSite
   (get-comic-list [this]
-    [])
+    (-> manga-url
+        scrape/fetch-url
+        extract-comics-list))
 
   (get-chapter-list [this comic-id]
     [])
