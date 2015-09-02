@@ -24,3 +24,18 @@
            24))
     (is (= (first pages)
            {:name "1" :url "root.url/1.html"}))))
+
+(deftest extract-chapters-list-test
+  (let [html (html/html [:div {}])
+        chapters (extract-chapters-list html "root.url")]
+    (is (= (seq chapters)
+           nil)))
+
+  (let [html (html/html-resource "test/manga_fox/chapter_list.html")
+        chapters (extract-chapters-list html "root.url")]
+    (is (= (count chapters)
+           97))
+    (is (= (first chapters)
+           {:name "The Gamer 96",
+            :url "http://mangafox.me/manga/the_gamer/v02/c096/1.html",
+            :ch-num 96}))))
