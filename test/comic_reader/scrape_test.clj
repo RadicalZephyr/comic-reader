@@ -14,6 +14,8 @@
          [:img {:src "abc"}]))
   (is (= (clean-image-tag [:img {:alt "def"}])
          [:img {:alt "def"}]))
+  (is (= (clean-image-tag [:img {} '[lots of content]])
+         [:img {}]))
   (is (= (clean-image-tag [:img {:src "def" :walrus "i am"}])
          [:img {:src "def"}])))
 
