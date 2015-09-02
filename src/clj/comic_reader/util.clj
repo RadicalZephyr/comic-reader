@@ -1,4 +1,4 @@
-(ns comic-reader.utils
+(ns comic-reader.util
   (:require [clojure.string :as s]
             [clojure.tools.reader.edn :as edn]))
 

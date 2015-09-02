@@ -3,7 +3,7 @@
   (:require [comic-reader.sites.manga-fox    :refer [manga-fox]]
             [comic-reader.sites.manga-reader :refer [manga-reader]]
             [comic-reader.sites.manga-here   :refer [manga-here]]
-            [comic-reader.utils :refer [safe-read-string]]
+            [comic-reader.util :refer [safe-read-string]]
             [clojure.string :as s]))
 
 (defn gen-link->map [process-name process-url]

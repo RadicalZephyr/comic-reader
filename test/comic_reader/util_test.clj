@@ -1,5 +1,5 @@
-(ns comic-reader.utils-test
-  (:require [comic-reader.utils :refer :all]
+(ns comic-reader.util-test
+  (:require [comic-reader.util :refer :all]
             [clojure.test :refer :all]))
 
 (deftest keyword->words-test
