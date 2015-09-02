@@ -39,3 +39,18 @@
            {:name "The Gamer 96",
             :url "http://mangafox.me/manga/the_gamer/v02/c096/1.html",
             :ch-num 96}))))
+
+(deftest extract-comics-list-test
+  (let [html (html/html [:div {}])
+        comics (extract-comics-list html)]
+    (is (= (seq comics)
+           nil)))
+
+  (let [html (html/html-resource "test/manga_fox/comic_list.html")
+        comics (extract-comics-list html)]
+    (is (= (count comics)
+           15))
+    (is (= (first comics)
+           {:name "-6mm no Taboo",
+            :url "http://mangafox.me/manga/6mm_no_taboo/",
+            :id "6mm_no_taboo"}))))

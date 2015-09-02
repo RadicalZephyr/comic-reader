@@ -7,6 +7,12 @@
 
 (def ^:private root-url "http://mangafox.me")
 
+(def ^:private manga-url
+  (format "%s/manga/" root-url))
+
+(def ^:private manga-pattern
+  (re-pattern (str manga-url "(.*?)/")))
+
 (def ^:private link->map (util/gen-link->map first identity))
 
 (def ^:private image-selector [:div#viewer :img#image])
@@ -41,6 +47,21 @@
   (scrape/extract-list html
                        chapter-list-selector
                        chapter-link-normalize))
+
+(def ^:private comic-list-selector
+  [:div.manga_list :ul :li :a])
+
+(def ^:private comic-link-normalize
+  (comp
+   (util/gen-add-key-from-url
+    :id
+    manga-pattern)
+   link->map))
+
+(defn extract-comics-list [html]
+  (scrape/extract-list html
+                       comic-list-selector
+                       comic-link-normalize))
 
 (deftype MangaFox []
   MangaSite
