@@ -1,5 +1,11 @@
 (ns comic-reader.sites.manga-fox
-  (:require [comic-reader.sites.protocol :refer [MangaSite]]))
+  (:require [comic-reader.sites.protocol :refer [MangaSite]]
+            [comic-reader.scrape :as scrape]))
+
+(def ^:private image-selector [:div#viewer :img#image])
+
+(defn extract-image-tag [html]
+  (scrape/extract-image-tag html image-selector))
 
 (deftype MangaFox []
   MangaSite
