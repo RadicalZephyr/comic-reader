@@ -20,6 +20,9 @@
          [:img {:src "def"}])))
 
 (deftest extract-image-tag-test
+  (let [html (html [:div {}])]
+    (is (= (extract-image-tag html [:div :img])
+           nil)))
   (let [html (html [:div {} [:img {:src "dummy-img"
                                    :alt "alt-text"}]])]
     (is (= (extract-image-tag html [:div :img])
