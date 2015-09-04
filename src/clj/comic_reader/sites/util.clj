@@ -12,3 +12,9 @@
       (let [[_ data] (re-find extract-pattern url)]
         (assoc comic-map
                key (process data))))))
+
+(defn gen-page-list-normalize [base-url fmt-string extract-chapter]
+  (fn [{{chapter :value} :attrs [name] :content}]
+    {:name name
+     :url (format fmt-string
+                  base-url (extract-chapter name))}))
