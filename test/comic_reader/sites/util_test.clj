@@ -14,3 +14,20 @@
     (is (= ((gen-link->map str str) link)
            {:name "[n stuff]"
             :url "things"}))))
+
+(deftest gen-add-key-from-url-test
+  (is (= ((gen-add-key-from-url :foo #"^(.*)$") {:url "bar"})
+         {:url "bar"
+          :foo "bar"}))
+  (is (= ((gen-add-key-from-url :foo #"^(.+?)") {:url "bar"})
+         {:url "bar"
+          :foo "b"}))
+  (is (= ((gen-add-key-from-url :foo #"(ar)") {:url "bar"
+                                               :all 'other
+                                               :keys 'are
+                                               :still 'present})
+         {:url "bar"
+          :foo "ar"
+          :all 'other
+          :keys 'are
+          :still 'present})))
