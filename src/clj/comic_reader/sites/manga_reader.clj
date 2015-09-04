@@ -31,19 +31,14 @@
   {:name name
    :url (str root-url url)})
 
-(defn- mk-page-list-normalize [base-url fmt-string extract-chapter]
-  (fn [{{chapter :value} :attrs [name] :content}]
-    {:name name
-     :url (format fmt-string
-                  base-url (extract-chapter name))}))
-
 (defn extract-pages-list [html chapter-url]
   (let [base-url (s/replace chapter-url
                             #"/\d+$"
                             "")
-        normalize (mk-page-list-normalize base-url
-                                          "%s/%s"
-                                          (fn [v] (re-find #"\d+$" v)))]
+        normalize (util/gen-page-list-normalize base-url
+                                                "%s/%s"
+                                                (fn [v]
+                                                  (re-find #"\d+$" v)))]
     (scrape/extract-list html
                          page-list-selector
                          normalize)))
