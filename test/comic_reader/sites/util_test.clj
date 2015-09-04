@@ -8,8 +8,8 @@
 
   (let [link {:attrs {:href 'things} :content ['n 'stuff]}]
     (is (= ((gen-link->map identity identity) link)
-                 {:name ['n 'stuff]
-                  :url  'things}))
+           {:name ['n 'stuff]
+            :url  'things}))
 
     (is (= ((gen-link->map str str) link)
            {:name "[n stuff]"
