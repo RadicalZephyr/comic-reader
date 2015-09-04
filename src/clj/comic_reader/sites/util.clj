@@ -11,12 +11,17 @@
                form)
     @symbols))
 
+(defmacro html-fn [bindings & body]
+  (let [symbols (walk-for-symbols bindings)]
+    `(fn [~bindings]
+       (when (and ~@symbols)
+         ~@body))))
+
 (defn gen-link->map [process-name process-url]
-  (fn [{name :content
-        {url :href} :attrs}]
-    (when (and name url)
-      {:name (process-name name)
-       :url (process-url url)})))
+  (html-fn {name :content
+            {url :href} :attrs}
+    {:name (process-name name)
+     :url (process-url url)}))
 
 (defn gen-page-list-normalize [base-url fmt-string extract-chapter]
   (fn [{[name] :content
