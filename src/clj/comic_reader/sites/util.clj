@@ -1,4 +1,15 @@
-(ns comic-reader.sites.util)
+(ns comic-reader.sites.util
+  (:require [clojure.walk :as w]))
+
+(defn walk-for-symbols [form]
+  (let [symbols (atom [])
+        append! #(swap! symbols conj %)]
+    (w/prewalk (fn [val]
+                 (when (symbol? val)
+                   (append! val))
+                 val)
+               form)
+    @symbols))
 
 (defn gen-link->map [process-name process-url]
   (fn [{name :content

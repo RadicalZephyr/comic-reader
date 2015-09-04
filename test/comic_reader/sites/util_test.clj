@@ -2,6 +2,19 @@
   (:require [comic-reader.sites.util :refer :all]
             [clojure.test            :refer :all]))
 
+(deftest walk-for-symbols-test
+  (is (= (walk-for-symbols '{:a 1})
+         []))
+
+  (is (= (walk-for-symbols '{a 1})
+         '[a]))
+
+  (is (= (walk-for-symbols '{{name :url} :attrs})
+         '[name]))
+
+  (is (= (walk-for-symbols '{{{:other symbol} :url} :attrs 1 sym})
+         '[symbol sym])))
+
 (deftest gen-link->map-test
   (is (= ((gen-link->map identity identity) {})
          nil))
@@ -19,9 +32,11 @@
   (is (= ((gen-add-key-from-url :foo #"^(.*)$") {:url "bar"})
          {:url "bar"
           :foo "bar"}))
+
   (is (= ((gen-add-key-from-url :foo #"^(.+?)") {:url "bar"})
          {:url "bar"
           :foo "b"}))
+
   (is (= ((gen-add-key-from-url :foo #"(ar)") {:url "bar"
                                                :all 'other
                                                :keys 'are
