@@ -15,6 +15,15 @@
   (is (= (walk-for-symbols '{{{:other symbol} :url} :attrs 1 sym})
          '[symbol sym])))
 
+(deftest html-fn-test
+  (is (= ((html-fn {[name] :content} name)
+          {:content ["stuff"]})
+         "stuff"))
+
+  (is (= ((html-fn {{val :val} :attrs} [val])
+          {:content ["stuff"]})
+         nil)))
+
 (deftest gen-link->map-test
   (is (= ((gen-link->map identity identity) {})
          nil))
