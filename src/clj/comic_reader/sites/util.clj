@@ -21,7 +21,12 @@
   (html-fn {name :content
             {url :href} :attrs}
     {:name (process-name name)
-     :url (process-url url)}))
+     :url  (process-url  url)}))
+
+(defn gen-select->map [process-name process-url]
+  (html-fn {[name] :content}
+    {:name (process-name name)
+     :url  (process-url  name)}))
 
 (defn gen-add-key-from-url [key extract-pattern & [process]]
   (let [process (or process identity)]
