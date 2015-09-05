@@ -5,50 +5,74 @@
             [comic-reader.util :refer [safe-read-string]]
             [clojure.string :as s]))
 
-(def ^:private root-url "http://mangafox.me")
+(def ^:const comic->url-format "%s%s/")
 
-(def ^:private manga-url
-  (format "%s/manga/" root-url))
+(def ^:private comic-list-selector
+  [:div.manga_list :ul :li :a])
 
-(def ^:private manga-list-url
-  (format "%s/manga/" root-url))
+(def ^:const chapter-number-match-pattern #"/c0*(\d+)/")
 
-(def ^:private manga-pattern
-  (re-pattern (str manga-url "(.*?)/")))
+(def ^:private chapter-list-selector
+  [:div#chapters :ul.chlist :li :div #{:h3 :h4} :a])
 
-(def ^:private link->map
-  (util/gen-link->map first
-                      identity))
+(def ^:const page-normalize-pattern #"^.*$")
 
-(def ^:private image-selector
-  [:div#viewer :img#image])
+(def ^:const page-normalize-format "%s/%s.html")
 
-(defn extract-image-tag [html]
-  (scrape/extract-image-tag html image-selector))
+(def ^:const chapter-number-pattern #"/\d+\.html")
 
 (def ^:private page-list-selector
   [:div#top_center_bar :form#top_bar :select.m :option])
 
+(def ^:private image-selector
+  [:div#viewer :img#image])
+
+(def ^:private root-url "http://mangafox.me")
+
+(def ^:const link-url-normalize identity)
+
+(def ^:const link-name-normalize first)
+
+(def ^:const manga-pattern-match-portion "(.*?)/")
+
+(def ^:const manga-list-format "%s/manga/")
+
+(def ^:const manga-url-format "%s/manga/")
+
+(def ^:private manga-url
+  (format manga-url-format root-url))
+
+(def ^:private manga-list-url
+  (format manga-list-format root-url))
+
+(def ^:private manga-pattern
+  (re-pattern (str manga-url manga-pattern-match-portion)))
+
+(def ^:private link->map
+  (util/gen-link->map link-name-normalize
+                      link-url-normalize))
+
+(defn extract-image-tag [html]
+  (scrape/extract-image-tag html image-selector))
+
 (defn extract-pages-list [html chapter-url]
   (let [base-url (s/replace chapter-url
-                            #"/\d+\.html"
+                            chapter-number-pattern
                             "")
-        normalize (util/html-fn  {[name] :content}
+        normalize (util/html-fn {[name] :content}
                     {:name name
-                     :url (format "%s/%s.html" base-url
-                                  (re-find #"^.*$"
+                     :url (format page-normalize-format
+                                  base-url
+                                  (re-find page-normalize-pattern
                                            name))})]
     (scrape/extract-list html
                          page-list-selector
                          normalize)))
 
-(def ^:private chapter-list-selector
-  [:div#chapters :ul.chlist :li :div #{:h3 :h4} :a])
-
 (def ^:private chapter-link-normalize
   (comp
    (util/gen-add-key-from-url :ch-num
-                              #"/c0*(\d+)/"
+                              chapter-number-match-pattern
                               safe-read-string)
    link->map))
 
@@ -56,9 +80,6 @@
   (scrape/extract-list html
                        chapter-list-selector
                        chapter-link-normalize))
-
-(def ^:private comic-list-selector
-  [:div.manga_list :ul :li :a])
 
 (def ^:private comic-link-normalize
   (comp
@@ -72,7 +93,7 @@
                        comic-link-normalize))
 
 (defn comic->url [comic-id]
-  (format "%s%s/" manga-url comic-id))
+  (format comic->url-format manga-url comic-id))
 
 (deftype MangaFox []
   MangaSite
