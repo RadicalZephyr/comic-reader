@@ -1,10 +1,11 @@
 (ns comic-reader.scrape
   (:require [clojure.string :as s]
+            [clojure.java.io :as io]
             [net.cgrand.enlive-html :as html])
   (:import java.net.URL))
 
 (defn fetch-url [url]
-  (html/html-resource (URL. url)))
+  (html/html-resource (io/as-url url)))
 
 (defn extract-list [html selector normalize]
   (map normalize (html/select html selector)))
