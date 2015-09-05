@@ -42,3 +42,19 @@
            {:name "The Gamer 1"
             :ch-num 1
             :url "http://mangareader.net/the-gamer/1"}))))
+
+(deftest extract-comics-list-test
+  (let [html (html/html [:div {}])
+        comics (extract-comics-list html)]
+    (is (= (seq comics)
+           nil)))
+
+  (let [html (html/html-resource "test/manga_reader/comic_list.html")
+        comics (extract-comics-list html)]
+    (is (= (count comics)
+           74))
+
+    (is (= (first comics)
+           {:id "junjou-drop"
+            :name "Junjou Drop"
+            :url "http://mangareader.net/junjou-drop"}))))
