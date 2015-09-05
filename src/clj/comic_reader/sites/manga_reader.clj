@@ -72,13 +72,21 @@
                        comic-list-selector
                        comic-link-normalize))
 
+(defn comic->url [comic-id]
+  (format "%s%s/" manga-url comic-id))
+
 (deftype MangaReader []
   MangaSite
   (get-comic-list [this]
-    [])
+    (-> manga-url
+        scrape/fetch-url
+        extract-comics-list))
 
   (get-chapter-list [this comic-id]
-    [])
+    (let [comic-url (comic->url comic-id)]
+      (-> comic-url
+          scrape/fetch-url
+          (extract-chapters-list comic-url))))
 
   (get-page-list [this comic-id chapter]
     [])
