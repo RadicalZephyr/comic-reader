@@ -11,7 +11,7 @@
   (format "%s/" root-url))
 
 (def ^:private manga-pattern
-  (re-pattern (str manga-url "/(.*)(\\.html)?$")))
+  (re-pattern (str root-url "/(.*)(\\.html)?$")))
 
 (def ^:private link->map
   (util/gen-link->map (comp s/trim first)
@@ -57,6 +57,20 @@
   (scrape/extract-list html
                        chapter-list-selector
                        chapter-link-normalize))
+
+(def ^:private comic-list-selector
+  [:div.series_alpha :ul :li :a])
+
+(def ^:private comic-link-normalize
+  (comp
+   (util/gen-add-key-from-url :id
+                              manga-pattern)
+   link->map))
+
+(defn extract-comics-list [html]
+  (scrape/extract-list html
+                       comic-list-selector
+                       comic-link-normalize))
 
 (deftype MangaReader []
   MangaSite
