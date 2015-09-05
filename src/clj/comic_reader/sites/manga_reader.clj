@@ -11,10 +11,10 @@
   (format "%s/" root-url))
 
 (def ^:private manga-list-url
-  (str root-url "/alphabetical"))
+  (format "%s/alphabetical" root-url))
 
 (def ^:private manga-pattern
-  (re-pattern (str root-url "/(.*)(\\.html)?$")))
+  (re-pattern (str manga-url "(.*)(\\.html)?$")))
 
 (def ^:private link->map
   (util/gen-link->map (comp s/trim first)
@@ -29,11 +29,6 @@
 (def ^:private page-list-selector
   [:div#selectpage :select#pageMenu :option])
 
-(defn- page-list-normalize [{[name] :content
-                             {url :value} :attrs}]
-  {:name name
-   :url (str root-url url)})
-
 (defn extract-pages-list [html chapter-url]
   (let [base-url (s/replace chapter-url
                             #"/\d+$"
@@ -41,7 +36,8 @@
         normalize (util/html-fn {[name] :content}
                     {:name name
                      :url (format "%s/%s" base-url
-                                  (re-find #"\d+$" name))})]
+                                  (re-find #"\d+$"
+                                           name))})]
     (scrape/extract-list html
                          page-list-selector
                          normalize)))

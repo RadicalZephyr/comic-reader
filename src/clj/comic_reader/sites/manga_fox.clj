@@ -10,12 +10,18 @@
 (def ^:private manga-url
   (format "%s/manga/" root-url))
 
+(def ^:private manga-list-url
+  (format "%s/manga/" root-url))
+
 (def ^:private manga-pattern
   (re-pattern (str manga-url "(.*?)/")))
 
-(def ^:private link->map (util/gen-link->map first identity))
+(def ^:private link->map
+  (util/gen-link->map first
+                      identity))
 
-(def ^:private image-selector [:div#viewer :img#image])
+(def ^:private image-selector
+  [:div#viewer :img#image])
 
 (defn extract-image-tag [html]
   (scrape/extract-image-tag html image-selector))
@@ -29,9 +35,9 @@
                             "")
         normalize (util/html-fn  {[name] :content}
                     {:name name
-                     :url (format "%s/%s.html"
-                                  base-url
-                                  name)})]
+                     :url (format "%s/%s.html" base-url
+                                  (re-find #"^.*$"
+                                           name))})]
     (scrape/extract-list html
                          page-list-selector
                          normalize)))
@@ -56,9 +62,8 @@
 
 (def ^:private comic-link-normalize
   (comp
-   (util/gen-add-key-from-url
-    :id
-    manga-pattern)
+   (util/gen-add-key-from-url :id
+                              manga-pattern)
    link->map))
 
 (defn extract-comics-list [html]
@@ -72,7 +77,7 @@
 (deftype MangaFox []
   MangaSite
   (get-comic-list [this]
-    (-> manga-url
+    (-> manga-list-url
         scrape/fetch-url
         extract-comics-list))
 
