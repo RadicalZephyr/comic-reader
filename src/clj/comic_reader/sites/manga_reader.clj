@@ -10,6 +10,9 @@
 (def ^:private manga-url
   (format "%s/" root-url))
 
+(def ^:private manga-list-url
+  (str root-url "/alphabetical"))
+
 (def ^:private manga-pattern
   (re-pattern (str root-url "/(.*)(\\.html)?$")))
 
@@ -73,12 +76,12 @@
                        comic-link-normalize))
 
 (defn comic->url [comic-id]
-  (format "%s%s/" manga-url comic-id))
+  (format "%s%s" manga-url comic-id))
 
 (deftype MangaReader []
   MangaSite
   (get-comic-list [this]
-    (-> manga-url
+    (-> manga-list-url
         scrape/fetch-url
         extract-comics-list))
 
