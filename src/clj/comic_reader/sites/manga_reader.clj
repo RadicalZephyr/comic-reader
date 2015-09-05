@@ -43,6 +43,21 @@
                          page-list-selector
                          normalize)))
 
+(def ^:private chapter-list-selector
+  [:div#chapterlist :tr :td :a])
+
+(def ^:private chapter-link-normalize
+  (comp
+   (util/gen-add-key-from-url :ch-num
+                              #"0*(\d+)$"
+                              safe-read-string)
+   link->map))
+
+(defn extract-chapters-list [html comic-url]
+  (scrape/extract-list html
+                       chapter-list-selector
+                       chapter-link-normalize))
+
 (deftype MangaReader []
   MangaSite
   (get-comic-list [this]
