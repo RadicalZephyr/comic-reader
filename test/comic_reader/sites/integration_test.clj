@@ -1,7 +1,8 @@
 (ns comic-reader.sites.integration-test
   (:require [clojure.test :refer :all]
             [comic-reader.sites.protocol  :refer :all]
-            [comic-reader.sites.manga-fox :refer [manga-fox]]))
+            [comic-reader.sites.manga-fox :refer [manga-fox]]
+            [comic-reader.sites.manga-reader :refer [manga-reader]]))
 
 (deftest ^:integration get-comics-list-test
   (let [comics (get-comic-list manga-fox)]
@@ -10,11 +11,25 @@
     (let [comic-6mm {:name "-6mm no Taboo",
                      :url "http://mangafox.me/manga/6mm_no_taboo/",
                      :id "6mm_no_taboo"}]
-      (is (some #{comic-6mm}
-                comics)
-          comic-6mm))))
+      (is (= (some #{comic-6mm}
+                  comics)
+             comic-6mm))))
+
+  (let [comics (get-comic-list manga-reader)]
+    (is (> (count comics)
+           4000))
+    (let [comic-mfm {:name "A Man for Megan",
+                     :url "http://mangareader.net/a-man-for-megan",
+                     :id "a-man-for-megan"}]
+      (is (= (some #{comic-mfm}
+                   comics)
+             comic-mfm)))))
 
 (deftest ^:integration get-chapter-list-test
   (let [chapters (get-chapter-list manga-fox "the_gamer")]
+    (is (>= (count chapters)
+            97)))
+
+  (let [chapters (get-chapter-list manga-reader "the-gamer")]
     (is (>= (count chapters)
             97))))
