@@ -35,10 +35,10 @@
   (let [base-url (s/replace chapter-url
                             #"/\d+$"
                             "")
-        normalize (util/gen-page-list-normalize base-url
-                                                "%s/%s"
-                                                (fn [v]
-                                                  (re-find #"\d+$" v)))]
+        normalize (util/html-fn {[name] :content}
+                    {:name name
+                     :url (format "%s/%s" base-url
+                                  (re-find #"\d+$" name))})]
     (scrape/extract-list html
                          page-list-selector
                          normalize)))
