@@ -108,7 +108,7 @@
           scrape/fetch-url
           (extract-chapters-list comic-url))))
 
-  (get-page-list [this comic-id chapter]
+  (get-page-list [this comic-chapter]
     [])
 
   (get-image-data [this comic-id chapter page]

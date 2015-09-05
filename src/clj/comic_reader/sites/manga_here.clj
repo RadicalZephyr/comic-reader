@@ -9,7 +9,7 @@
   (get-chapter-list [this comic-id]
     [])
 
-  (get-page-list [this comic-id chapter]
+  (get-page-list [this comic-chapter]
     [])
 
   (get-image-data [this comic-id chapter page]
