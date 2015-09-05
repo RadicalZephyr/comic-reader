@@ -109,7 +109,10 @@
           (extract-chapters-list comic-url))))
 
   (get-page-list [this comic-chapter]
-    [])
+    (let [chapter-url (:url comic-chapter)]
+      (-> chapter-url
+          scrape/fetch-url
+          (extract-pages-list chapter-url))))
 
   (get-image-data [this comic-id chapter page]
     []))
