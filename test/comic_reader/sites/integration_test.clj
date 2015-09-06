@@ -12,7 +12,7 @@
                      :url "http://mangafox.me/manga/6mm_no_taboo/",
                      :id "6mm_no_taboo"}]
       (is (= (some #{comic-6mm}
-                  comics)
+                   comics)
              comic-6mm))))
 
   (let [comics (get-comic-list manga-reader)]
@@ -33,3 +33,16 @@
   (let [chapters (get-chapter-list manga-reader "the-gamer")]
     (is (>= (count chapters)
             97))))
+
+(deftest ^:integration get-page-list-test
+  (let [pages (get-page-list manga-fox {:name "The Gamer",
+                                        :url "http://mangafox.me/manga/the_gamer/v01/c001/1.html"
+                                        :id "the_gamer"})]
+    (is (= (count pages)
+           24)))
+
+  (let [pages (get-page-list manga-fox {:name "The Gamer",
+                                        :url "http://www.mangareader.net/the-gamer/1"
+                                        :id "the-gamer"})]
+    (is (= (count pages)
+           23))))
