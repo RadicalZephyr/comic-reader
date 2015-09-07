@@ -34,3 +34,10 @@
       (let [[_ data] (re-find extract-pattern url)]
         (assoc comic-map
                key (process data))))))
+
+(defn symbolize-keys [coll]
+  (into {}
+        (map (fn [[k v]]
+               [(-> k name symbol)
+                v])
+             coll)))

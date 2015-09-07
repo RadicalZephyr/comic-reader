@@ -55,3 +55,16 @@
           :all 'other
           :keys 'are
           :still 'present})))
+
+(deftest symbolize-keys-test
+  (is (= (symbolize-keys {:foo 1 :bar 2})
+         '{foo 1 bar 2}))
+
+  (is (= (symbolize-keys {:foo 2 :bar 1})
+         '{foo 2 bar 1}))
+
+  (is (= (symbolize-keys {"foo" 2 "bar" 1})
+         '{foo 2 bar 1}))
+
+  (is (= (symbolize-keys '{foo 2 bar 1})
+         '{foo 2 bar 1})))
