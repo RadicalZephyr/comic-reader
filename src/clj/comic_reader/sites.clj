@@ -1,9 +1,6 @@
 (ns comic-reader.sites
   (:refer-clojure :exclude [list])
-  (:require [comic-reader.sites.manga-fox    :refer [manga-fox]]
-            [comic-reader.sites.manga-reader :refer [manga-reader]]
-            [comic-reader.sites.manga-here   :refer [manga-here]]
-            [comic-reader.util :refer [safe-read-string]]
+  (:require [comic-reader.util :refer [safe-read-string]]
             [clojure.string :as s]))
 
 (defn gen-link->map [process-name process-url]
@@ -170,8 +167,3 @@
 (defn image-data [site page-url]
   ((get-data-fn site :image-data)
    page-url))
-
-(def site-list
-  [{:manga-fox    manga-fox
-    :manga-reader manga-reader
-    :manga-here   manga-here}])
