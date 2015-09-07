@@ -73,17 +73,20 @@
 (defn extract-image-tag [html]
   (scrape/extract-image-tag html image-selector))
 
+(defn gen-extract-pages-list-normalize [base-url]
+  (util/html-fn {[name] :content}
+                (if-let [page-number (re-find page-normalize-pattern
+                                              name)]
+                  {:name name
+                   :url (format page-normalize-format
+                                base-url
+                                page-number)})))
+
 (defn extract-pages-list [html chapter-url]
   (let [base-url (s/replace chapter-url
                             chapter-number-pattern
                             "")
-        normalize (util/html-fn {[name] :content}
-                    (if-let [page-number (re-find page-normalize-pattern
-                                                  name)]
-                      {:name name
-                       :url (format page-normalize-format
-                                    base-url
-                                    page-number)}))]
+        normalize (gen-extract-pages-list-normalize base-url)]
     (scrape/extract-list html
                          page-list-selector
                          normalize)))
