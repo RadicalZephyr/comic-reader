@@ -60,11 +60,12 @@
                             chapter-number-pattern
                             "")
         normalize (util/html-fn {[name] :content}
-                    {:name name
-                     :url (format page-normalize-format
-                                  base-url
-                                  (re-find page-normalize-pattern
-                                           name))})]
+                    (if-let [page-number (re-find page-normalize-pattern
+                                                  name)]
+                      {:name name
+                       :url (format page-normalize-format
+                                    base-url
+                                    page-number)}))]
     (scrape/extract-list html
                          page-list-selector
                          normalize)))

@@ -15,7 +15,7 @@
 (def ^:private chapter-list-selector
   [:div#chapters :ul.chlist :li :div #{:h3 :h4} :a])
 
-(def ^:const page-normalize-pattern #"^.*$")
+(def ^:const page-normalize-pattern #"^\d+$")
 
 (def ^:const page-normalize-format "%s/%s.html")
 
@@ -60,11 +60,12 @@
                             chapter-number-pattern
                             "")
         normalize (util/html-fn {[name] :content}
-                    {:name name
-                     :url (format page-normalize-format
-                                  base-url
-                                  (re-find page-normalize-pattern
-                                           name))})]
+                    (if-let [page-number (re-find page-normalize-pattern
+                                                  name)]
+                      {:name name
+                       :url (format page-normalize-format
+                                    base-url
+                                    page-number)}))]
     (scrape/extract-list html
                          page-list-selector
                          normalize)))
