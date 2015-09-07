@@ -1,5 +1,5 @@
 (ns comic-reader.sites.manga-reader
-  (:require [comic-reader.sites.protocol :refer [MangaSite]]
+  (:require [comic-reader.sites.protocol :refer :all]
             [comic-reader.sites.util :as util]
             [comic-reader.scrape :as scrape]
             [comic-reader.util :refer [safe-read-string]]
