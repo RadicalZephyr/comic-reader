@@ -39,7 +39,7 @@
                                         :url "http://mangafox.me/manga/the_gamer/v01/c001/1.html"
                                         :id "the_gamer"})]
     (is (= (count pages)
-           24)))
+           23)))
 
   (let [pages (get-page-list manga-reader {:name "The Gamer",
                                            :url "http://www.mangareader.net/the-gamer/1"

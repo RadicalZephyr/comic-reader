@@ -11,7 +11,9 @@
    (html/html-resource html-file)))
 
 (defn extract-list [html selector normalize]
-  (map normalize (html/select html selector)))
+  (->> (html/select html selector)
+       (map normalize)
+       (filter identity)))
 
 (defn fetch-list [{:keys [url selector normalize]}]
   (when (every? (complement nil?) [url selector normalize])

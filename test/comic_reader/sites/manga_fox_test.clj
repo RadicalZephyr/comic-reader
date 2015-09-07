@@ -23,7 +23,7 @@
   (let [html (html/html-resource "test/manga_fox/image.html")
         pages (extract-pages-list html "root.url")]
     (is (= (count pages)
-           24))
+           23))
     (is (= (first pages)
            {:name "1" :url "root.url/1.html"}))))
 
