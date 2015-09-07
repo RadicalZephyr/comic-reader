@@ -41,8 +41,8 @@
     (is (= (count pages)
            24)))
 
-  (let [pages (get-page-list manga-fox {:name "The Gamer",
-                                        :url "http://www.mangareader.net/the-gamer/1"
-                                        :id "the-gamer"})]
+  (let [pages (get-page-list manga-reader {:name "The Gamer",
+                                           :url "http://www.mangareader.net/the-gamer/1"
+                                           :id "the-gamer"})]
     (is (= (count pages)
            23))))
