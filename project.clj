@@ -13,6 +13,8 @@
                  [fogus/ring-edn "0.3.0"]
                  [compojure "1.4.0"]
                  [hiccup "1.0.5"]
+                 [clj-http "2.0.0"]
+                 [tempfile "0.2.0"]
                  [enlive "1.1.6"]
                  [environ "1.0.0"]
 
