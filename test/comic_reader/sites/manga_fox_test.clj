@@ -1,7 +1,6 @@
 (ns comic-reader.sites.manga-fox-test
   (:require [clojure.test :refer :all]
             [comic-reader.sites.manga-fox :refer :all]
-            [comic-reader.sites.protocol  :refer :all]
             [comic-reader.scrape :as scrape]
             [net.cgrand.enlive-html :as html]))
 
