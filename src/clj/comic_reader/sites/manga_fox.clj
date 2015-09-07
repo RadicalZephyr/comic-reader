@@ -5,50 +5,69 @@
             [comic-reader.util :refer [safe-read-string]]
             [clojure.string :as s]))
 
-(def ^:const comic->url-format "%s%s/")
+(def ^:private
+ comic->url-format "%s%s/")
 
-(def ^:private comic-list-selector
+(def ^:private
+ comic-list-selector
   [:div.manga_list :ul :li :a])
 
-(def ^:const chapter-number-match-pattern #"/c0*(\d+)/")
+(def ^:private
+ chapter-number-match-pattern #"/c0*(\d+)/")
 
-(def ^:private chapter-list-selector
+(def ^:private
+ chapter-list-selector
   [:div#chapters :ul.chlist :li :div #{:h3 :h4} :a])
 
-(def ^:const page-normalize-pattern #"^\d+$")
+(def ^:private
+ page-normalize-pattern #"^\d+$")
 
-(def ^:const page-normalize-format "%s/%s.html")
+(def ^:private
+ page-normalize-format "%s/%s.html")
 
-(def ^:const chapter-number-pattern #"/\d+\.html")
+(def ^:private
+ chapter-number-pattern #"/\d+\.html")
 
-(def ^:private page-list-selector
+(def ^:private
+ page-list-selector
   [:div#top_center_bar :form#top_bar :select.m :option])
 
-(def ^:private image-selector
+(def ^:private
+ image-selector
   [:div#viewer :img#image])
 
-(def ^:private root-url "http://mangafox.me")
+(def ^:private
+ root-url "http://mangafox.me")
 
-(def ^:const link-url-normalize identity)
+(def ^:private
+ link-url-normalize identity)
 
-(def ^:const link-name-normalize first)
+(def ^:private
+ link-name-normalize first)
 
-(def ^:const manga-pattern-match-portion "(.*?)/")
+(def ^:private
+ manga-pattern-match-portion "(.*?)/")
 
-(def ^:const manga-list-format "%s/manga/")
+(def ^:private
+ manga-list-format "%s/manga/")
 
-(def ^:const manga-url-format "%s/manga/")
+(def ^:private
+ manga-url-format "%s/manga/")
 
-(def ^:private manga-url
+(def ^:private
+ manga-url
   (format manga-url-format root-url))
 
-(def ^:private manga-list-url
+(def ^:private
+ manga-list-url
   (format manga-list-format root-url))
 
-(def ^:private manga-pattern
+(def ^:private
+ manga-pattern
   (re-pattern (str manga-url manga-pattern-match-portion)))
 
-(def ^:private link->map
+(def ^:private
+ link->map
   (util/gen-link->map link-name-normalize
                       link-url-normalize))
 
