@@ -1,5 +1,6 @@
 (ns comic-reader.sites.manga-fox
-  (:require [comic-reader.sites.util :as util]
+  (:require [comic-reader.sites.protocol :refer :all]
+            [comic-reader.sites.util :as util]
             [comic-reader.scrape :as scrape]
             [comic-reader.util :refer [safe-read-string]]
             [clojure.string :as s]))
@@ -111,11 +112,6 @@
                        (comic-list-selector)
                        comic-link-normalize))
 
-(defn get-comic-list []
-  (-> (manga-list-url)
-      scrape/fetch-url
-      extract-comics-list))
-
 
 ;; ############################################################
 ;; ## Get Chapter List functions
@@ -140,12 +136,6 @@
 (defn comic->url [comic-id]
   (format (comic->url-format) (manga-url) comic-id))
 
-(defn get-chapter-list [comic-id]
-  (let [comic-url (comic->url comic-id)]
-    (-> comic-url
-        scrape/fetch-url
-        (extract-chapters-list comic-url))))
-
 
 ;; ############################################################
 ;; ## Get Page List functions
@@ -169,12 +159,6 @@
                          (page-list-selector)
                          normalize)))
 
-(defn get-page-list [comic-chapter]
-  (let [chapter-url (:url comic-chapter)]
-    (-> chapter-url
-        scrape/fetch-url
-        (extract-pages-list chapter-url))))
-
 
 ;; ############################################################
 ;; ## Get Image Data functions
@@ -183,7 +167,35 @@
 (defn extract-image-tag [html]
   (scrape/extract-image-tag html (image-selector)))
 
-(defn get-image-data [{page-url :url}]
-  (-> page-url
-      scrape/fetch-url
-      extract-image-tag))
+
+;; ############################################################
+;; ## Protocol functions
+;; ############################################################
+
+(deftype MangaFox []
+  PMangaSite
+
+  (get-comic-list [this]
+    (-> (manga-list-url)
+        scrape/fetch-url
+        extract-comics-list))
+
+  (get-chapter-list [this comic-id]
+    (let [comic-url (comic->url comic-id)]
+      (-> comic-url
+          scrape/fetch-url
+          (extract-chapters-list comic-url))))
+
+  (get-page-list [this comic-chapter]
+    (let [chapter-url (:url comic-chapter)]
+      (-> chapter-url
+          scrape/fetch-url
+          (extract-pages-list chapter-url))))
+
+  (get-image-data [this {page-url :url}]
+    (-> page-url
+        scrape/fetch-url
+        extract-image-tag)))
+
+(def manga-fox
+  (MangaFox.))
