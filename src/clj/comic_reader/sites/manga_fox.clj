@@ -58,10 +58,10 @@
 (defn manga-pattern []
   (re-pattern (str (manga-url) (manga-pattern-match-portion))))
 
-(def ^:private
-  link->map
-  (util/gen-link->map (link-name-normalize)
-                      (link-url-normalize)))
+(defn link->map [{name :content
+                  {url :href} :attrs}]
+  {:name ((link-name-normalize) name)
+   :url  ((link-url-normalize)  url)})
 
 (defn extract-image-tag [html]
   (scrape/extract-image-tag html (image-selector)))
