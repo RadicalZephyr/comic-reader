@@ -5,68 +5,68 @@
             [clojure.string :as s]))
 
 (def ^:private
- comic->url-format "%s%s/")
+  comic->url-format "%s%s/")
 
 (def ^:private
- comic-list-selector
+  comic-list-selector
   [:div.manga_list :ul :li :a])
 
 (def ^:private
- chapter-number-match-pattern #"/c0*(\d+)/")
+  chapter-number-match-pattern #"/c0*(\d+)/")
 
 (def ^:private
- chapter-list-selector
+  chapter-list-selector
   [:div#chapters :ul.chlist :li :div #{:h3 :h4} :a])
 
 (def ^:private
- page-normalize-pattern #"^\d+$")
+  page-normalize-pattern #"^\d+$")
 
 (def ^:private
- page-normalize-format "%s/%s.html")
+  page-normalize-format "%s/%s.html")
 
 (def ^:private
- chapter-number-pattern #"/\d+\.html")
+  chapter-number-pattern #"/\d+\.html")
 
 (def ^:private
- page-list-selector
+  page-list-selector
   [:div#top_center_bar :form#top_bar :select.m :option])
 
 (def ^:private
- image-selector
+  image-selector
   [:div#viewer :img#image])
 
 (def ^:private
- root-url "http://mangafox.me")
+  root-url "http://mangafox.me")
 
 (def ^:private
- link-url-normalize identity)
+  link-url-normalize identity)
 
 (def ^:private
- link-name-normalize first)
+  link-name-normalize first)
 
 (def ^:private
- manga-pattern-match-portion "(.*?)/")
+  manga-pattern-match-portion "(.*?)/")
 
 (def ^:private
- manga-list-format "%s/manga/")
+  manga-list-format "%s/manga/")
 
 (def ^:private
- manga-url-format "%s/manga/")
+  manga-url-format "%s/manga/")
 
 (def ^:private
- manga-url
+  manga-url
   (format manga-url-format root-url))
 
 (def ^:private
- manga-list-url
+  manga-list-url
   (format manga-list-format root-url))
 
 (def ^:private
- manga-pattern
+  manga-pattern
   (re-pattern (str manga-url manga-pattern-match-portion)))
 
 (def ^:private
- link->map
+  link->map
   (util/gen-link->map link-name-normalize
                       link-url-normalize))
 
@@ -75,12 +75,12 @@
 
 (defn gen-extract-pages-list-normalize [base-url]
   (util/html-fn {[name] :content}
-                (if-let [page-number (re-find page-normalize-pattern
-                                              name)]
-                  {:name name
-                   :url (format page-normalize-format
-                                base-url
-                                page-number)})))
+    (if-let [page-number (re-find page-normalize-pattern
+                                  name)]
+      {:name name
+       :url (format page-normalize-format
+                    base-url
+                    page-number)})))
 
 (defn extract-pages-list [html chapter-url]
   (let [base-url (s/replace chapter-url
@@ -118,21 +118,21 @@
   (format comic->url-format manga-url comic-id))
 
 (defn get-comic-list []
-                (-> manga-list-url
-                    scrape/fetch-url
-                    extract-comics-list))
+  (-> manga-list-url
+      scrape/fetch-url
+      extract-comics-list))
 
 (defn get-chapter-list [comic-id]
-                  (let [comic-url (comic->url comic-id)]
-                    (-> comic-url
-                        scrape/fetch-url
-                        (extract-chapters-list comic-url))))
+  (let [comic-url (comic->url comic-id)]
+    (-> comic-url
+        scrape/fetch-url
+        (extract-chapters-list comic-url))))
 
 (defn get-page-list [comic-chapter]
-               (let [chapter-url (:url comic-chapter)]
-                 (-> chapter-url
-                     scrape/fetch-url
-                     (extract-pages-list chapter-url))))
+  (let [chapter-url (:url comic-chapter)]
+    (-> chapter-url
+        scrape/fetch-url
+        (extract-pages-list chapter-url))))
 
 (defn get-image-data [comic-id chapter page]
-                [])
+  [])
