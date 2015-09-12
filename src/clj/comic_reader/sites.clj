@@ -57,10 +57,10 @@
   (:root-url options))
 
 (defn link-url-normalize []
-  (:link-url-normalize options))
+  (eval (:link-url-normalize options)))
 
 (defn link-name-normalize []
-  (:link-name-normalize options))
+  (eval (:link-name-normalize options)))
 
 (defn manga-pattern-match-portion []
   (:manga-pattern-match-portion options))
