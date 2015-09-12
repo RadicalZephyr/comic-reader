@@ -1,6 +1,6 @@
 (ns comic-reader.sites.protocol)
 
-(defprotocol MangaSite
+(defprotocol PMangaSite
   "A protocol for traversing a manga site."
 
   (get-comic-list [this]
