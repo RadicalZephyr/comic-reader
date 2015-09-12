@@ -4,25 +4,33 @@
             [comic-reader.scrape :as scrape]
             [net.cgrand.enlive-html :as html]))
 
+(defmacro test-data-functions-not-nil []
+  `(are [selector] (is (not= (selector)
+                             nil))
+     root-url
+     manga-list-format
+     manga-url-format
+     manga-pattern-match-portion
+
+     comic->url-format
+
+     chapter-list-selector
+     comic-list-selector
+     image-selector
+     page-list-selector
+
+     chapter-number-pattern
+     chapter-number-match-pattern
+
+     link-name-normalize
+     link-url-normalize
+
+     page-normalize-format
+     page-normalize-pattern))
+
 (deftest extract-comics-list-test
   (binding [options (read-site-options "manga-fox")]
-    (are [selector] (is (not= (selector)
-                              nil))
-      chapter-number-match-pattern
-      page-list-selector
-      link-url-normalize
-      manga-pattern-match-portion
-      page-normalize-format
-      manga-list-format
-      page-normalize-pattern
-      chapter-number-pattern
-      comic->url-format
-      link-name-normalize
-      chapter-list-selector
-      manga-url-format
-      root-url
-      comic-list-selector
-      image-selector)
+    (test-data-functions-not-nil)
 
     (let [html (html/html [:div {}])
           comics (extract-comics-list html)]
