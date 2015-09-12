@@ -151,9 +151,6 @@
 ;; ## Get Page List functions
 ;; ############################################################
 
-(defn extract-image-tag [html]
-  (scrape/extract-image-tag html (image-selector)))
-
 (defn gen-extract-pages-list-normalize [base-url]
   (util/html-fn {[name] :content}
     (if-let [page-number (re-find (page-normalize-pattern)
@@ -183,5 +180,10 @@
 ;; ## Get Image Data functions
 ;; ############################################################
 
-(defn get-image-data [comic-id chapter page]
-  [])
+(defn extract-image-tag [html]
+  (scrape/extract-image-tag html (image-selector)))
+
+(defn get-image-data [{page-url :url}]
+  (-> page-url
+      scrape/fetch-url
+      extract-image-tag))
