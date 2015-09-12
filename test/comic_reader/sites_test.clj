@@ -2,7 +2,8 @@
   (:require [clojure.test :refer :all]
             [comic-reader.sites :refer :all]
             [comic-reader.scrape :as scrape]
-            [net.cgrand.enlive-html :as html]))
+            [net.cgrand.enlive-html :as html]
+            [clj-http.client :as client]))
 
 (defmacro test-data-functions-not-nil []
   `(are [selector] (is (not= (selector)
@@ -28,9 +29,18 @@
      page-normalize-format
      page-normalize-pattern))
 
+(defmacro test-url-format-strings []
+  `(are [url-fn] (is (= (:status (client/head (url-fn)))
+                        200)
+                     (str (url-fn) "does not appear to exist."))
+     root-url
+     manga-url
+     manga-list-url))
+
 (deftest extract-comics-list-test
   (binding [options (read-site-options "manga-fox")]
     (test-data-functions-not-nil)
+    (test-url-format-strings)
 
     (let [html (html/html [:div {}])
           comics (extract-comics-list html)]
