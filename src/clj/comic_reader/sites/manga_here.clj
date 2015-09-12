@@ -12,7 +12,7 @@
   (get-page-list [this comic-chapter]
     [])
 
-  (get-image-data [this comic-id chapter page]
+  (get-image-data [this page]
     []))
 
 (def manga-here

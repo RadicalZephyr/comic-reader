@@ -115,7 +115,7 @@
           scrape/fetch-url
           (extract-pages-list chapter-url))))
 
-  (get-image-data [this comic-id chapter page]
+  (get-image-data [this page]
     []))
 
 (def manga-reader

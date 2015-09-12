@@ -12,5 +12,5 @@
   (get-page-list [this comic-chapter]
     "Retrieve the list of all pages in a chapter.")
 
-  (get-image-data [this comic-id chapter page]
+  (get-image-data [this page]
     "Retrieve the image tag for displaying a particular page."))
