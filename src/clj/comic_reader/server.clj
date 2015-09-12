@@ -1,6 +1,7 @@
 (ns comic-reader.server
   (:gen-class)
-  (:require [comic-reader.sites :as sites]
+  (:require [comic-reader.sites.protocol :refer :all]
+            [comic-reader.sites :refer [sites]]
             [comic-reader.scrape :as scrape]
             [comic-reader.util :refer [safe-read-string]]
             [ring.util.response :as response]
@@ -26,25 +27,13 @@
 
 (defn get-comics-list [{{:keys [site]} :params
                         :as request}]
-  (let [site (keyword site)]
-    (if-let [comic-list (scrape/fetch-list
-                         (sites/comic-list-data site))]
-      (edn-response comic-list)
-      (edn-response (gen-error-data request) 404))))
+  )
 
 (defn get-comic-chapter [site comic chapter]
-  (first
-   (drop (dec chapter)
-         (sort-by :ch-num
-                  (scrape/fetch-list
-                   (sites/chapter-list-data site
-                                            comic))))))
+  )
 
 (defn get-following-pages [site comic chapter-map page]
-  (drop (dec page)
-        (scrape/fetch-list
-         (sites/page-list-data site
-                               (:url chapter-map)))))
+  )
 
 (defn get-comic-pages [{{:keys [site comic chapter page]} :params
                         :as request}]
@@ -83,28 +72,20 @@
   (c/context "/api/v1" []
     (c/GET "/sites" []
       (edn-response
-       (vec (map #(select-keys % [:id :name :url])
-                 sites/list))))
+       ))
 
-    (c/GET "/comics/:site" request
-      (get-comics-list request))
+    (c/GET "/comics/:site" [site]
+      )
 
     (c/GET "/pages/:site/:comic/:chapter{\\d+}/:page{\\d+}"
         request
-      (get-comic-pages request))
+      )
 
     (c/POST "/img" {{:keys [site]
                      {:keys [chapter page url]} :page-info}
                     :edn-params
                     :as request}
-      (let [site (keyword site)]
-        (if-let [img-tag (scrape/fetch-image-tag
-                          (sites/image-data site
-                                            url))]
-          (edn-response {:chapter chapter
-                         :page    page
-                         :tag     img-tag})
-          (edn-response (gen-error-data request) 404)))))
+      ))
 
   (route/resources "/"))
 
