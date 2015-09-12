@@ -115,8 +115,10 @@
           scrape/fetch-url
           (extract-pages-list chapter-url))))
 
-  (get-image-data [this page]
-    []))
+  (get-image-data [this {page-url :url}]
+    (-> page-url
+        scrape/fetch-url
+        extract-image-tag)))
 
 (def manga-reader
   (MangaReader.))
