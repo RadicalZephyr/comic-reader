@@ -4,50 +4,78 @@
             [comic-reader.util :refer [safe-read-string]]
             [clojure.string :as s]))
 
+(def ^:dynamic options
+  {:chapter-list-selector [:div#chapters :ul.chlist :li :div #{:h4 :h3} :a]
+   :chapter-number-match-pattern #"/c0*(\d+)/"
+   :chapter-number-pattern #"/\d+\.html"
+
+   :comic->url-format "%s%s/"
+   :comic-list-selector [:div.manga_list :ul :li :a]
+
+   :image-selector [:div#viewer :img#image]
+
+   :link-name-normalize clojure.core/first
+   :link-url-normalize  clojure.core/identity
+
+   :manga-list-format "%s/manga/"
+   :manga-pattern-match-portion "(.*?)/"
+   :manga-url-format "%s/manga/"
+
+   :page-list-selector [:div#top_center_bar :form#top_bar :select.m :option]
+   :page-normalize-format "%s/%s.html"
+   :page-normalize-pattern #"^\d+$"
+
+   :root-url "http://mangafox.me"})
+
+
+;;; Data functions
+
 (defn comic->url-format []
-  "%s%s/")
+  (:comic->url-format options))
 
 (defn comic-list-selector []
-  [:div.manga_list :ul :li :a])
+  (:comic-list-selector options))
 
 (defn chapter-number-match-pattern []
-  #"/c0*(\d+)/")
+  (:chapter-number-match-pattern options))
 
 (defn chapter-list-selector []
-  [:div#chapters :ul.chlist :li :div #{:h3 :h4} :a])
+  (:chapter-list-selector options))
 
 (defn page-normalize-pattern []
-  #"^\d+$")
+  (:page-normalize-pattern options))
 
 (defn page-normalize-format []
-  "%s/%s.html")
+  (:page-normalize-format options))
 
 (defn chapter-number-pattern []
-  #"/\d+\.html")
+  (:chapter-number-pattern options))
 
 (defn page-list-selector []
-  [:div#top_center_bar :form#top_bar :select.m :option])
+  (:page-list-selector options))
 
 (defn image-selector []
-  [:div#viewer :img#image])
+  (:image-selector options))
 
 (defn root-url []
-  "http://mangafox.me")
+  (:root-url options))
 
 (defn link-url-normalize []
-  identity)
+  (:link-url-normalize options))
 
 (defn link-name-normalize []
-  first)
+  (:link-name-normalize options))
 
 (defn manga-pattern-match-portion []
-  "(.*?)/")
+  (:manga-pattern-match-portion options))
 
 (defn manga-list-format []
-  "%s/manga/")
+  (:manga-list-format options))
 
 (defn manga-url-format []
-  "%s/manga/")
+  (:manga-url-format options))
+
+;;; Real functions
 
 (defn manga-url []
   (format (manga-url-format) (root-url)))
