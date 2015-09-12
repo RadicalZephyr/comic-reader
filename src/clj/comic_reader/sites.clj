@@ -7,21 +7,26 @@
             [clojure.string :as s]))
 
 (def ^:dynamic options
-  {:chapter-number-match-pattern nil
-   :page-list-selector nil
-   :link-url-normalize nil
-   :manga-pattern-match-portion nil
-   :page-normalize-format nil
-   :manga-list-format nil
-   :page-normalize-pattern nil
-   :chapter-number-pattern nil
-   :comic->url-format nil
-   :link-name-normalize nil
-   :chapter-list-selector nil
-   :manga-url-format nil
-   :root-url nil
-   :comic-list-selector nil
-   :image-selector nil})
+  {:root-url                     nil
+   :manga-list-format            nil
+   :manga-url-format             nil
+   :manga-pattern-match-portion  nil
+
+   :comic->url-format            nil
+
+   :chapter-list-selector        nil
+   :comic-list-selector          nil
+   :image-selector               nil
+   :page-list-selector           nil
+
+   :chapter-number-pattern       nil
+   :chapter-number-match-pattern nil
+
+   :link-name-normalize          nil
+   :link-url-normalize           nil
+
+   :page-normalize-format        nil
+   :page-normalize-pattern       nil})
 
 
 ;;; Data functions
