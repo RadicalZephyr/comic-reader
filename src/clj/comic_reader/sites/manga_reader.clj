@@ -97,7 +97,7 @@
   (format comic->url-format manga-url comic-id))
 
 (deftype MangaReader []
-  MangaSite
+  PMangaSite
   (get-comic-list [this]
     (-> manga-list-url
         scrape/fetch-url

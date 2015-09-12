@@ -1,8 +1,8 @@
 (ns comic-reader.sites.manga-here
-  (:require [comic-reader.sites.protocol :refer [MangaSite]]))
+  (:require [comic-reader.sites.protocol :refer [PMangaSite]]))
 
 (deftype MangaHere []
-  MangaSite
+  PMangaSite
   (get-comic-list [this]
     [])
 
