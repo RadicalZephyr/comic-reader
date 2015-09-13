@@ -13,8 +13,7 @@
          "four")))
 
 (deftest get-all-sites-test
-  (is (= (get-all-sites)
-         ["manga-fox" "test-site"])))
+  (is (some #{"test-site"} (get-all-sites))))
 
 (deftest read-site-options-test
   (is (thrown?
