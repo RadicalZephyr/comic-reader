@@ -14,21 +14,44 @@
 
 (deftest get-all-sites-test
   (is (= (get-all-sites)
-         ["manga-fox"])))
+         ["manga-fox" "test-site"])))
 
 (deftest read-site-options-test
   (is (thrown?
        java.lang.IllegalArgumentException
        (read-site-options "non-existent")))
-  (is (= (class (read-site-options "manga-fox"))
-         clojure.lang.PersistentHashMap)))
+  (is (= (class (read-site-options "test-site"))
+         clojure.lang.PersistentArrayMap)))
 
 (deftest make-site-entry-test
   (is (= (make-site-entry "non-existent")
          [nil nil]))
 
-  (let [[label opts] (make-site-entry "manga-fox")]
+  (let [[label opts] (make-site-entry "test-site")]
     (is (= label
-           "manga-fox"))
+           "test-site"))
     (is (= (class opts)
            comic_reader.sites.MangaSite))))
+
+(defn expect-opts-are-map [site]
+  (try
+    (let [opts (read-site-options site)]
+      (is (= (class opts)
+             clojure.lang.PersistentHashMap)
+          (str "Contents of `sites/" site ".clj'"
+               " must be a map literal")))
+    (catch java.lang.RuntimeException re
+      nil)))
+
+(defn testdef-form [site-name]
+  `(deftest ~(symbol (str site-name "-test"))
+     (expect-opts-are-map ~site-name)))
+
+(defmacro defsite-tests []
+  (try
+   (let [site-names (map first sites)]
+     `(do ~@(map testdef-form site-names)))
+   (catch RuntimeException e
+     `(do))))
+
+(defsite-tests)

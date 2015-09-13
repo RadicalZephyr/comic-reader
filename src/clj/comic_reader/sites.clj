@@ -229,6 +229,8 @@
   (try
     [site-name (->MangaSite (read-site-options site-name))]
     (catch IllegalArgumentException e
+      [nil nil])
+    (catch RuntimeException e
       [nil nil])))
 
 (def sites
