@@ -25,7 +25,7 @@
 
 (deftest make-site-entry-test
   (is (= (make-site-entry "non-existent")
-         [nil nil]))
+         ["non-existent" nil]))
 
   (let [[label opts] (make-site-entry "test-site")]
     (is (= label
@@ -36,12 +36,13 @@
 (defn expect-opts-are-map [site]
   (try
     (let [opts (read-site-options site)]
-      (is (= (class opts)
-             clojure.lang.PersistentHashMap)
+      (is (map? opts)
           (str "Contents of `sites/" site ".clj'"
                " must be a map literal")))
     (catch java.lang.RuntimeException re
-      nil)))
+      (is false
+          (str "Contents of `sites/" site ".clj'"
+               " cannot be empty")))))
 
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
@@ -49,9 +50,11 @@
 
 (defmacro defsite-tests []
   (try
-   (let [site-names (map first sites)]
-     `(do ~@(map testdef-form site-names)))
-   (catch RuntimeException e
-     `(do))))
+    (let [site-names (->> sites
+                          (map first)
+                          (filter (complement #{"test-site"})))]
+      `(do ~@(map testdef-form site-names)))
+    (catch RuntimeException e
+      `(do))))
 
 (defsite-tests)
