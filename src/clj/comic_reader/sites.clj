@@ -209,8 +209,23 @@
 (defn make-site-entry [site-name]
   [site-name (->MangaSite (read-site-options site-name))])
 
+(defn base-name [file]
+  (let [[_ base-name]
+        (->> file
+             io/as-file
+             .getName
+             (re-matches #"^(.*)\..*?$"))]
+    base-name))
+
+(defn get-all-sites []
+  (->> (io/resource "sites")
+       io/as-file
+       file-seq
+       (filter (complement (memfn isDirectory)))
+       (map base-name)))
+
 (def sites
-  (->> ["manga-fox"]
+  (->> (get-all-sites)
        (map make-site-entry)
        flatten
        (apply hash-map)))
