@@ -2,7 +2,8 @@
   (:require [clojure.test :refer :all]
             [comic-reader.sites :refer :all]
             [clj-http.client :as client]
-            [loom.graph :as graph]))
+            [loom.graph :as graph]
+            [loom.alg :as alg]))
 
 (defmacro test-data-functions-not-nil []
   `(are [selector] (is (not= (selector)
@@ -88,3 +89,33 @@
    [:manga-url :root-url]
    [:manga-url :manga-url-format]
    ))
+
+(def data-function?
+  #{:root-url
+    :manga-list-format
+    :manga-url-format
+    :manga-pattern-match-portion
+
+    :comic->url-format
+
+    :chapter-list-selector
+    :comic-list-selector
+    :image-selector
+    :page-list-selector
+
+    :chapter-number-pattern
+    :chapter-number-match-pattern
+
+    :link-name-normalize
+    :link-url-normalize
+
+    :page-normalize-format
+    :page-normalize-pattern})
+
+(defmacro ensure-dependencies-defined [fn-name]
+  `(are [selector] (is (not= (selector)
+                             nil))
+     ~@(->> (keyword fn-name)
+            (alg/topsort dependecy-dag)
+            (filter data-function?)
+            (map (comp symbol name)))))
