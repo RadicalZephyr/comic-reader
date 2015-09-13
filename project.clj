@@ -37,7 +37,8 @@
           :nrepl {:start? true :port 4500}
           :port 8090}
 
-  :profiles {:dev {:dependencies [[figwheel "0.3.8"]]
+  :profiles {:dev {:dependencies [[figwheel "0.3.8"]
+                                  [aysylu/loom "0.5.4"]]
                    :plugins [[lein-figwheel "0.3.8"
                               :exclusions [[cider/cider-nrepl
                                             :extensions "jar"]]]]
