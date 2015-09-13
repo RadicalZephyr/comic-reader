@@ -199,16 +199,6 @@
           scrape/fetch-url
           extract-image-tag))))
 
-(defn read-site-options [site-name]
-  (with-open [r (-> (str "sites/" site-name ".clj")
-                    io/resource
-                    io/reader
-                    java.io.PushbackReader.)]
-    (read r)))
-
-(defn make-site-entry [site-name]
-  [site-name (->MangaSite (read-site-options site-name))])
-
 (defn base-name [file]
   (let [[_ base-name]
         (->> file
@@ -223,6 +213,23 @@
        file-seq
        (filter (complement (memfn isDirectory)))
        (map base-name)))
+
+(defn read-site-options [site-name]
+  (if-let [file (-> (str "sites/" site-name ".clj")
+                    io/resource)]
+    (with-open [r (-> file
+                      io/reader
+                      java.io.PushbackReader.)]
+      (read r))
+    (throw (IllegalArgumentException.
+            (str "`sites/" site-name "' "
+                 "was not found in the resources.")))))
+
+(defn make-site-entry [site-name]
+  (try
+    [site-name (->MangaSite (read-site-options site-name))]
+    (catch IllegalArgumentException e
+      [nil nil])))
 
 (def sites
   (->> (get-all-sites)
