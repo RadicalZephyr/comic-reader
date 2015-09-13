@@ -1,8 +1,9 @@
 (ns comic-reader.sites.integration-test
   (:require [clojure.test :refer :all]
             [comic-reader.sites.protocol  :refer :all]
-            [comic-reader.sites.manga-fox :refer [manga-fox]]
-            [comic-reader.sites.manga-reader :refer [manga-reader]]))
+            [comic-reader.sites :refer :all]))
+
+(def manga-fox (sites "manga-fox"))
 
 (deftest ^:integration get-comics-list-test
   (let [comics (get-comic-list manga-fox)]
@@ -15,24 +16,24 @@
                    comics)
              comic-6mm))))
 
-  (let [comics (get-comic-list manga-reader)]
-    (is (> (count comics)
-           4000))
-    (let [comic-mfm {:name "A Man for Megan",
-                     :url "http://mangareader.net/a-man-for-megan",
-                     :id "a-man-for-megan"}]
-      (is (= (some #{comic-mfm}
-                   comics)
-             comic-mfm)))))
+  #_(let [comics (get-comic-list manga-reader)]
+      (is (> (count comics)
+             4000))
+      (let [comic-mfm {:name "A Man for Megan",
+                       :url "http://mangareader.net/a-man-for-megan",
+                       :id "a-man-for-megan"}]
+        (is (= (some #{comic-mfm}
+                     comics)
+               comic-mfm)))))
 
 (deftest ^:integration get-chapter-list-test
   (let [chapters (get-chapter-list "the_gamer" manga-fox)]
     (is (>= (count chapters)
             97)))
 
-  (let [chapters (get-chapter-list manga-reader "the-gamer")]
-    (is (>= (count chapters)
-            97))))
+  #_(let [chapters (get-chapter-list manga-reader "the-gamer")]
+      (is (>= (count chapters)
+              97))))
 
 (deftest ^:integration get-page-list-test
   (let [pages (get-page-list manga-fox
@@ -42,8 +43,8 @@
     (is (= (count pages)
            23)))
 
-  (let [pages (get-page-list manga-reader {:name "The Gamer",
-                                           :url "http://www.mangareader.net/the-gamer/1"
-                                           :id "the-gamer"})]
-    (is (= (count pages)
-           23))))
+  #_(let [pages (get-page-list manga-reader {:name "The Gamer",
+                                             :url "http://www.mangareader.net/the-gamer/1"
+                                             :id "the-gamer"})]
+      (is (= (count pages)
+             23))))
