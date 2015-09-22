@@ -3,6 +3,10 @@
 (defprotocol PMangaSite
   "A protocol for traversing a manga site."
 
+  (call-with-options [this f]
+    "Apply the given arguments to the given function within a dynamic
+    context where the sites options are bound.")
+
   (get-comic-list [this]
     "Retrieve the list of all comics available at the site.")
 
