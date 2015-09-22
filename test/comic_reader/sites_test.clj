@@ -1,6 +1,7 @@
 (ns comic-reader.sites-test
   (:require [clojure.test :refer :all]
-            [comic-reader.sites :refer :all]))
+            [comic-reader.sites :refer :all]
+            [clojure.java.io :as io]))
 
 (deftest base-name-test
   (is (= (base-name "abc.123")
@@ -43,9 +44,29 @@
           (str "Contents of `sites/" site ".clj'"
                " cannot be empty")))))
 
+(defn site-test-folder [site-name]
+  (format "test/%s" site-name))
+
+(defn has-test-folder? [site-name]
+  (some->
+   site-name
+   site-test-folder
+   io/resource
+   io/as-file
+   .exists))
+
+(defn error-must-have-test-data [site-name]
+  (is false
+      (str "There must be a site test data folder at "
+           "`resources/test/" site-name "'")))
+
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
-     (expect-opts-are-map ~site-name)))
+     (expect-opts-are-map ~site-name)
+     (if (has-test-folder? ~site-name)
+       (do
+         )
+       (error-must-have-test-data ~site-name))))
 
 (defmacro defsite-tests []
   (try
