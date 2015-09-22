@@ -57,6 +57,14 @@
           io/as-file
           .exists))
 
+(defn site-resource [resource]
+  (let [resource-path (format "%s/%s"
+                              (site-test-folder)
+                              resource)]
+    (if (resource-exists? resource-path)
+      (io/resource resource-path)
+      nil)))
+
 (defn has-test-folder? []
   (some-> (site-test-folder)
           resource-exists?))
@@ -67,10 +75,8 @@
            "`resources/test/" site-name "'")))
 
 (defn image-page-html []
-  (let [image-path (format "%s/image.html" (site-test-folder))]
-    (if (resource-exists? image-path)
-      (html/html-resource image-path)
-      nil)))
+  (when-let [image-resource (site-resource "image.html")]
+    (html/html-resource image-resource)))
 
 (defn test-extract-image-tag []
   (if-let [html (image-page-html)]
