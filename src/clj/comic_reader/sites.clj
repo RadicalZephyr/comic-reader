@@ -214,13 +214,17 @@
        (filter (complement (memfn isDirectory)))
        (map base-name)))
 
+(defn read-file [file]
+  (when-let [r1 (some-> file
+                        io/reader
+                        java.io.PushbackReader.)]
+    (with-open [r r1]
+      (read r))))
+
 (defn read-site-options [site-name]
   (if-let [file (-> (str "sites/" site-name ".clj")
                     io/resource)]
-    (with-open [r (-> file
-                      io/reader
-                      java.io.PushbackReader.)]
-      (read r))
+    (read-file file)
     (throw (IllegalArgumentException.
             (str "`sites/" site-name "' "
                  "was not found in the resources.")))))
