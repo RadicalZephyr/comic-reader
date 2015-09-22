@@ -173,6 +173,10 @@
 (deftype MangaSite [opt-map]
   PMangaSite
 
+  (call-with-options [this f]
+    (binding [options opt-map]
+      (f)))
+
   (get-comic-list [this]
     (binding [options opt-map]
       (-> (manga-list-url)
