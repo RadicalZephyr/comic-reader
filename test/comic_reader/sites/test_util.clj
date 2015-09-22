@@ -1,6 +1,7 @@
 (ns comic-reader.sites.test-util
   (:require [clojure.test :refer :all]
             [comic-reader.sites :refer :all]
+            [clojure.template :refer [do-template]]
             [clj-http.client :as client]
             [loom.graph :as graph]
             [loom.alg :as alg]))
@@ -97,10 +98,24 @@
     manga-url
     manga-list-url))
 
+(defmacro are-with-msg [argv expr & args]
+  (if (or
+       ;; (are [] true) is meaningless but ok
+       (and (empty? argv) (empty? args))
+       ;; Catch wrong number of args
+       (and (pos? (count argv))
+            (pos? (count args))
+            (zero? (mod (count args) (count argv)))))
+    `(do-template ~argv ~expr ~@args)
+    (throw (IllegalArgumentException. "The number of args doesn't match are's argv."))))
+
 (defmacro ensure-dependencies-defined [fn-name]
-  `(are [selector] (is (not= (selector)
-                             nil))
-     ~@(->> (keyword fn-name)
-            (alg/topsort dependecy-dag)
-            (filter data-function?)
-            (map key->sym))))
+  `(are-with-msg [selector#]
+                 (is (not= (selector#)
+                           nil)
+                     (str "Data function " 'selector#
+                          " cannot be undefined"))
+                 ~@(->> (keyword fn-name)
+                        (alg/topsort dependecy-dag)
+                        (filter data-function?)
+                        (map key->sym))))
