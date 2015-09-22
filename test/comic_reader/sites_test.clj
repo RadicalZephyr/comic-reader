@@ -87,13 +87,15 @@
 
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
-     (binding [~'site-name ~site-name]
-       (expect-opts-are-map ~site-name)
-       (if (has-test-folder?)
-         (do
-           (test-extract-image-tag)
-           )
-         (error-must-have-test-data)))))
+     (is
+      (binding [~'site-name ~site-name]
+        (expect-opts-are-map ~site-name)
+        (if (has-test-folder?)
+          (do
+            (test-extract-image-tag)
+            )
+          (error-must-have-test-data))
+        true))))
 
 (defmacro defsite-tests []
   (try
