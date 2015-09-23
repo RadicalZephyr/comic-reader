@@ -110,13 +110,17 @@
     (throw (IllegalArgumentException. "The number of args doesn't match are's argv."))))
 
 (defmacro ensure-dependencies-defined [fn-name]
-  `(are-with-msg [selector#]
-                 (is (not= (selector#)
-                           nil)
-                     (str "Site config "
-                          "`" 'selector# "'"
-                          " cannot be undefined"))
-                 ~@(->> (keyword fn-name)
-                        (alg/topsort dependecy-dag)
-                        (filter data-function?)
-                        (map key->sym))))
+  (let [fn-keyword (keyword fn-name)]
+    (if (graph/has-node? dependecy-dag fn-keyword)
+      `(are-with-msg [selector#]
+                     (is (not= (selector#)
+                               nil)
+                         (str "Site config "
+                              "`" 'selector# "'"
+                              " cannot be undefined"))
+                     ~@(->> fn-keyword
+                            (alg/topsort dependecy-dag)
+                            (filter data-function?)
+                            (map key->sym)))
+      (throw (IllegalArgumentException.
+              (str fn-name " is not a valid function name."))))))
