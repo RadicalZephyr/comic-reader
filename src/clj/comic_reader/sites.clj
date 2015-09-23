@@ -241,8 +241,10 @@
     (catch RuntimeException e
       [site-name nil])))
 
-(def sites
+(defn get-sites []
   (->> (get-all-sites)
        (map make-site-entry)
        flatten
        (apply hash-map)))
+
+(def sites (dissoc (get-sites) "test-site"))
