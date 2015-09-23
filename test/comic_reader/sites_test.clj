@@ -87,15 +87,19 @@
   (when-let [image-resource (site-resource "image.html")]
     (html/html-resource image-resource)))
 
-(defn test-extract-image-tag []
-  (let [site (sites site-name)]
-    (call-with-options
-     site
-     #(tu/ensure-dependencies-defined extract-image-tag))
+(defn test-extract-image-tag [html image-tag]
+  (tu/ensure-dependencies-defined extract-image-tag)
+  (is (= image-tag
+         (extract-image-tag html))))
+
+(defn test-image-page-extraction []
+  (let [site (sites site-name)
+        results (try-read-file (site-resource "image.clj"))]
     (if-let [html (image-page-html)]
-      (is (= (try-read-file (site-resource "image.clj"))
-             (call-with-options site
-                                #(extract-image-tag html))))
+      (call-with-options
+       site
+       (fn []
+         (test-extract-image-tag html (:image-tag results))))
       (is false
           (str "There must be a sample image html page at "
                "`resources/test/" site-name "/image.html'")))))
@@ -107,8 +111,7 @@
         (expect-opts-are-map ~site-name)
         (if (has-test-folder?)
           (do
-            (test-extract-image-tag)
-            )
+            (test-image-page-extraction))
           (error-must-have-test-data))
         true))))
 
