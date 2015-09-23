@@ -93,7 +93,7 @@
          (extract-image-tag html))))
 
 (defn test-image-page-extraction []
-  (let [site (sites site-name)
+  (let [site ((get-sites) site-name)
         results (try-read-file (site-resource "image.clj"))]
     (if-let [html (image-page-html)]
       (call-with-options
@@ -117,7 +117,7 @@
 
 (defmacro defsite-tests []
   (try
-    (let [site-names (->> sites
+    (let [site-names (->> (get-sites)
                           (map first)
                           (filter (complement #{"test-site"})))]
       `(do ~@(map testdef-form site-names)))
