@@ -91,6 +91,10 @@
   (when-let [image-resource (site-test-resource "chapter_list.html")]
     (html/html-resource image-resource)))
 
+(defn comic-list-html []
+  (when-let [image-resource (site-test-resource "comic_list.html")]
+    (html/html-resource image-resource)))
+
 (defn test-extract-image-tag [html image-tag]
   (and
    (tu/ensure-dependencies-defined extract-image-tag)
@@ -132,6 +136,21 @@
           (str "There must be a sample chapter list html page "
                "at `resources/test/" site-name "/image.html'")))))
 
+(defn test-extract-comic-list []
+  (let [site ((get-sites) site-name)
+        results (try-read-file
+                 (site-test-resource "comic_list.clj"))]
+    (if-let [html (comic-list-html)]
+      (call-with-options
+       site
+       #(and
+         (tu/ensure-dependencies-defined extract-comics-list)
+         (is (= (:comic-list results)
+                (extract-comics-list html)))))
+      (is false
+          (str "There must be a sample chapter list html page "
+               "at `resources/test/" site-name "/image.html'")))))
+
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
      (is
@@ -140,7 +159,8 @@
         (if (has-test-folder?)
           (and
             (test-image-page-extraction)
-            (test-extract-chapters-list))
+            (test-extract-chapters-list)
+            (test-extract-comic-list))
           (error-must-have-test-data))
         true))))
 
