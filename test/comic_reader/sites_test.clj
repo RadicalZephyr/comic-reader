@@ -66,7 +66,7 @@
           io/as-file
           .exists))
 
-(defn site-resource [resource]
+(defn site-test-resource [resource]
   (let [resource-path (format "%s/%s"
                               (site-test-folder)
                               resource)]
@@ -84,11 +84,11 @@
            "`resources/test/" site-name "'")))
 
 (defn image-page-html []
-  (when-let [image-resource (site-resource "image.html")]
+  (when-let [image-resource (site-test-resource "image.html")]
     (html/html-resource image-resource)))
 
 (defn chapter-list-html []
-  (when-let [image-resource (site-resource "chapter_list.html")]
+  (when-let [image-resource (site-test-resource "chapter_list.html")]
     (html/html-resource image-resource)))
 
 (defn test-extract-image-tag [html image-tag]
@@ -105,7 +105,8 @@
 
 (defn test-image-page-extraction []
   (let [site ((get-sites) site-name)
-        results (try-read-file (site-resource "image.clj"))]
+        results (try-read-file
+                 (site-test-resource "image.clj"))]
     (if-let [html (image-page-html)]
       (call-with-options
        site
@@ -119,7 +120,7 @@
 (defn test-extract-chapters-list []
   (let [site ((get-sites) site-name)
         results (try-read-file
-                 (site-resource "chapter_list.clj"))]
+                 (site-test-resource "chapter_list.clj"))]
     (if-let [html (chapter-list-html)]
       (call-with-options
        site
