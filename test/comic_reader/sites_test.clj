@@ -128,7 +128,7 @@
               (extract-chapters-list html ""))))
       (is false
           (str "There must be a sample chapter list html page "
-               "at `resources/test/" site-name "/image.html'")))))
+               "at `resources/test/" site-name "/chapter_list.html'")))))
 
 (defn test-extract-comic-list []
   (let [results (try-read-file
@@ -140,7 +140,7 @@
               (extract-comics-list html))))
       (is false
           (str "There must be a sample chapter list html page "
-               "at `resources/test/" site-name "/image.html'")))))
+               "at `resources/test/" site-name "/comic_list.html'")))))
 
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
