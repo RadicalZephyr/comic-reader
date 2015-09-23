@@ -88,9 +88,16 @@
     (html/html-resource image-resource)))
 
 (defn test-extract-image-tag [html image-tag]
-  (tu/ensure-dependencies-defined extract-image-tag)
-  (is (= image-tag
-         (extract-image-tag html))))
+  (and
+   (tu/ensure-dependencies-defined extract-image-tag)
+   (is (= image-tag
+          (extract-image-tag html)))))
+
+(defn test-extract-pages-list [html pages-list]
+  (and
+   (tu/ensure-dependencies-defined extract-pages-list)
+   (is (= pages-list
+          (extract-pages-list html "")))))
 
 (defn test-image-page-extraction []
   (let [site ((get-sites) site-name)
@@ -98,8 +105,9 @@
     (if-let [html (image-page-html)]
       (call-with-options
        site
-       (fn []
-         (test-extract-image-tag html (:image-tag results))))
+       #(and
+         (test-extract-image-tag html (:image-tag results))
+         (test-extract-pages-list html (:pages-list results))))
       (is false
           (str "There must be a sample image html page at "
                "`resources/test/" site-name "/image.html'")))))
