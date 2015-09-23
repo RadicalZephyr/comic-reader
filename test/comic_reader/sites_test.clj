@@ -1,5 +1,6 @@
 (ns comic-reader.sites-test
   (:require [clojure.test :refer :all]
+            [comic-reader.sites.protocol :refer :all]
             [comic-reader.sites :refer :all]
             [comic-reader.sites.test-util :as tu]
             [clojure.java.io :as io]
@@ -87,11 +88,17 @@
     (html/html-resource image-resource)))
 
 (defn test-extract-image-tag []
-  (if-let [html (image-page-html)]
-    (do)
-    (is false
-        (str "There must be a sample image html page at "
-             "`resources/test/" site-name "/image.html'"))))
+  (let [site (sites site-name)]
+    (call-with-options
+     site
+     #(tu/ensure-dependencies-defined extract-image-tag))
+    (if-let [html (image-page-html)]
+      (is (= (try-read-file (site-resource "image.clj"))
+             (call-with-options site
+                                #(extract-image-tag html))))
+      (is false
+          (str "There must be a sample image html page at "
+               "`resources/test/" site-name "/image.html'")))))
 
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
