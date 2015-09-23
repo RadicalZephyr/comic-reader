@@ -108,45 +108,36 @@
           (extract-pages-list html "")))))
 
 (defn test-image-page-extraction []
-  (let [site ((get-sites) site-name)
-        results (try-read-file
+  (let [results (try-read-file
                  (site-test-resource "image.clj"))]
     (if-let [html (image-page-html)]
-      (call-with-options
-       site
-       #(and
-         (test-extract-image-tag html (:image-tag results))
-         (test-extract-pages-list html (:pages-list results))))
+      (and
+       (test-extract-image-tag html (:image-tag results))
+       (test-extract-pages-list html (:pages-list results)))
       (is false
           (str "There must be a sample image html page at "
                "`resources/test/" site-name "/image.html'")))))
 
 (defn test-extract-chapters-list []
-  (let [site ((get-sites) site-name)
-        results (try-read-file
+  (let [results (try-read-file
                  (site-test-resource "chapter_list.clj"))]
     (if-let [html (chapter-list-html)]
-      (call-with-options
-       site
-       #(and
-         (tu/ensure-dependencies-defined extract-chapters-list)
-         (is (= (:chapter-list results)
-                (extract-chapters-list html "")))))
+      (and
+       (tu/ensure-dependencies-defined extract-chapters-list)
+       (is (= (:chapter-list results)
+              (extract-chapters-list html ""))))
       (is false
           (str "There must be a sample chapter list html page "
                "at `resources/test/" site-name "/image.html'")))))
 
 (defn test-extract-comic-list []
-  (let [site ((get-sites) site-name)
-        results (try-read-file
+  (let [results (try-read-file
                  (site-test-resource "comic_list.clj"))]
     (if-let [html (comic-list-html)]
-      (call-with-options
-       site
-       #(and
-         (tu/ensure-dependencies-defined extract-comics-list)
-         (is (= (:comic-list results)
-                (extract-comics-list html)))))
+      (and
+       (tu/ensure-dependencies-defined extract-comics-list)
+       (is (= (:comic-list results)
+              (extract-comics-list html))))
       (is false
           (str "There must be a sample chapter list html page "
                "at `resources/test/" site-name "/image.html'")))))
@@ -157,10 +148,12 @@
       (binding [~'site-name ~site-name]
         (expect-opts-are-map ~site-name)
         (if (has-test-folder?)
-          (and
-            (test-image-page-extraction)
-            (test-extract-chapters-list)
-            (test-extract-comic-list))
+          (call-with-options
+           ((get-sites) site-name)
+           #(and
+             (test-image-page-extraction)
+             (test-extract-chapters-list)
+             (test-extract-comic-list)))
           (error-must-have-test-data))
         true))))
 
