@@ -8,4 +8,9 @@
  :chapter-list-selector [:div#chapters :ul.chlist :li :div #{:h4 :h3} :a]
  :chapter-number-match-pattern #"/c0*(\d+)/"
  :link-name-normalize clojure.core/first
- :link-url-normalize  clojure.core/identity}
+ :link-url-normalize  clojure.core/identity
+
+ :root-url "http://mangafox.me"
+ :manga-url-format "%s/manga/"
+ :manga-pattern-match-portion "(.*?)/"
+ :comic-list-selector [:div.manga_list :ul :li :a]}
