@@ -113,7 +113,8 @@
   `(are-with-msg [selector#]
                  (is (not= (selector#)
                            nil)
-                     (str "Data function " 'selector#
+                     (str "Site config "
+                          "`" 'selector# "'"
                           " cannot be undefined"))
                  ~@(->> (keyword fn-name)
                         (alg/topsort dependecy-dag)
