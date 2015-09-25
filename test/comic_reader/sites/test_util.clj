@@ -6,7 +6,7 @@
             [loom.graph :as graph]
             [loom.alg :as alg]))
 
-(def dependecy-dag
+(def dependency-dag
   (graph/digraph
    [:get-image-data :extract-image-tag]
 
@@ -111,7 +111,7 @@
 
 (defmacro ensure-dependencies-defined [fn-name]
   (let [fn-keyword (keyword fn-name)]
-    (if (graph/has-node? dependecy-dag fn-keyword)
+    (if (graph/has-node? dependency-dag fn-keyword)
       `(are-with-msg [selector#]
                      (is (not= (selector#)
                                nil)
@@ -119,7 +119,7 @@
                               "`" 'selector# "'"
                               " cannot be undefined"))
                      ~@(->> fn-keyword
-                            (alg/topsort dependecy-dag)
+                            (alg/topsort dependency-dag)
                             (filter data-function?)
                             (map key->sym)))
       (throw (IllegalArgumentException.
