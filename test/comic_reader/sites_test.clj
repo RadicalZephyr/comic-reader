@@ -142,6 +142,34 @@
           (str "There must be a sample chapter list html page "
                "at `resources/test/" site-name "/comic_list.html'")))))
 
+(defn connected-to-network? []
+  (try
+    (slurp (io/as-url "http://www.google.com"))
+    true
+    (catch java.net.SocketException e
+      false)
+    (catch java.net.UnknownHostException e
+      false)))
+
+(def run-network-tests? true)
+
+(defn try-fetch-url [url]
+  (some-> url
+          slurp))
+
+(defmacro test-url [url-fn-sym]
+  `(and
+    (tu/ensure-dependencies-defined ~url-fn-sym)
+    (is (not (nil? (try-fetch-url (~url-fn-sym)))))))
+
+(defn test-scrape-urls []
+  (and
+   run-network-tests?
+
+   (test-url root-url)
+   (test-url manga-url)
+   (test-url manga-list-url)))
+
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
      (is
@@ -155,6 +183,10 @@
              (test-extract-chapters-list)
              (test-extract-comic-list)))
           (error-must-have-test-data))
+        (when (connected-to-network?)
+          (call-with-options
+           ((get-sites) site-name)
+           #(test-scrape-urls)))
         true))))
 
 (defmacro defsite-tests []
