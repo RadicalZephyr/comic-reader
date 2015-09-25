@@ -181,21 +181,24 @@
     (binding [options opt-map]
       (-> (manga-list-url)
           scrape/fetch-url
-          extract-comics-list)))
+          extract-comics-list
+          doall)))
 
   (get-chapter-list [this comic-id]
     (binding [options opt-map]
       (let [comic-url (comic->url comic-id)]
         (-> comic-url
             scrape/fetch-url
-            (extract-chapters-list comic-url)))))
+            (extract-chapters-list comic-url)
+            doall))))
 
   (get-page-list [this comic-chapter]
     (binding [options opt-map]
       (let [chapter-url (:url comic-chapter)]
         (-> chapter-url
             scrape/fetch-url
-            (extract-pages-list chapter-url)))))
+            (extract-pages-list chapter-url)
+            doall))))
 
   (get-image-data [this {page-url :url}]
     (binding [options opt-map]
