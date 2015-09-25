@@ -13,4 +13,6 @@
  :root-url "http://mangafox.me"
  :manga-url-format "%s/manga/"
  :manga-pattern-match-portion "(.*?)/"
- :comic-list-selector [:div.manga_list :ul :li :a]}
+ :comic-list-selector [:div.manga_list :ul :li :a]
+
+ :manga-list-format "%s/manga/"}
