@@ -175,18 +175,17 @@
      (is
       (binding [~'site-name ~site-name]
         (expect-opts-are-map ~site-name)
-        (if (has-test-folder?)
-          (call-with-options
-           ((get-sites) site-name)
-           #(and
-             (test-image-page-extraction)
-             (test-extract-chapters-list)
-             (test-extract-comic-list)))
-          (error-must-have-test-data))
-        (when (connected-to-network?)
-          (call-with-options
-           ((get-sites) site-name)
-           #(test-scrape-urls)))
+        (call-with-options
+         ((get-sites) site-name)
+         #(and
+           (if (has-test-folder?)
+             (and
+              (test-image-page-extraction)
+              (test-extract-chapters-list)
+              (test-extract-comic-list))
+             (error-must-have-test-data))
+           (when (connected-to-network?)
+             (test-scrape-urls))))
         true))))
 
 (defmacro defsite-tests []
