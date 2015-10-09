@@ -186,7 +186,7 @@
 
   (get-chapter-list [this comic-id]
     (binding [options opt-map]
-      (let [comic-url (comic->url comic-id)]
+      (if-let [comic-url (comic->url comic-id)]
         (-> comic-url
             scrape/fetch-url
             (extract-chapters-list comic-url)
@@ -194,7 +194,7 @@
 
   (get-page-list [this comic-chapter]
     (binding [options opt-map]
-      (let [chapter-url (:url comic-chapter)]
+      (if-let [chapter-url (:url comic-chapter)]
         (-> chapter-url
             scrape/fetch-url
             (extract-pages-list chapter-url)
