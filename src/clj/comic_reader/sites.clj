@@ -10,7 +10,7 @@
   {:root-url                     nil
    :manga-list-format            nil
    :manga-url-format             nil
-   :manga-pattern-match-portion  nil
+   :manga-url-suffix-pattern     nil
 
    :comic->url-format            nil
 
@@ -30,6 +30,11 @@
 
 
 ;;; Data functions
+
+(defn manga-url-suffix-pattern []
+  "A regular expression to match the comic-id portion of a comics
+  chapter list URL."
+  (:manga-url-suffix-pattern options))
 
 (defn comic->url-format []
   (:comic->url-format options))
@@ -67,9 +72,6 @@
 (defn link-name-normalize []
   (eval (:link-name-normalize options)))
 
-(defn manga-pattern-match-portion []
-  (:manga-pattern-match-portion options))
-
 (defn manga-list-format []
   (:manga-list-format options))
 
@@ -88,7 +90,7 @@
   (format (manga-list-format) (root-url)))
 
 (defn manga-pattern []
-  (re-pattern (str (manga-url) (manga-pattern-match-portion))))
+  (re-pattern (str (manga-url) (manga-url-suffix-pattern))))
 
 (defn link->map [{name :content
                   {url :href} :attrs}]
@@ -251,3 +253,11 @@
        (apply hash-map)))
 
 (def sites (dissoc (get-sites) "test-site"))
+
+
+;;; maybe use component
+
+;; more to the point, just pass in the data.  potentially have
+;; sublevel protocols and structs for each slice of
+;; functionality. Then it is just more explicit, and avoids the
+;; dynamic binding issues.

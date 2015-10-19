@@ -50,7 +50,7 @@
    [:link->map :link-url-normalize]
 
    [:manga-pattern :manga-url]
-   [:manga-pattern :manga-pattern-match-portion]
+   [:manga-pattern :manga-url-suffix-pattern]
 
    [:manga-list-url :root-url]
    [:manga-list-url :manga-list-format]
@@ -63,7 +63,7 @@
   #{:root-url
     :manga-list-format
     :manga-url-format
-    :manga-pattern-match-portion
+    :manga-url-suffix-pattern
 
     :comic->url-format
 
