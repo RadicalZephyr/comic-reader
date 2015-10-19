@@ -109,6 +109,13 @@
     `(do-template ~argv ~expr ~@args)
     (throw (IllegalArgumentException. "The number of args doesn't match are's argv."))))
 
+(defn get-doc-string [sym]
+  (let [sites-ns (find-ns 'comic-reader.sites)
+        doc-var (ns-resolve sites-ns sym)]
+    (-> doc-var
+        meta
+        :doc)))
+
 (defmacro ensure-dependencies-defined [fn-name]
   (let [fn-keyword (keyword fn-name)]
     (if (graph/has-node? dependency-dag fn-keyword)
@@ -117,7 +124,10 @@
                                nil)
                          (str "Site config "
                               "`" 'selector# "'"
-                              " cannot be undefined"))
+                              " cannot be undefined.\n"
+                              "Should be: "
+                              (get-doc-string 'selector#)))
+
                      ~@(->> fn-keyword
                             (alg/topsort dependency-dag)
                             (filter data-function?)
