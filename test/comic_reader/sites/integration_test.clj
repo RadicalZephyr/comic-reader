@@ -27,7 +27,7 @@
                comic-mfm)))))
 
 (deftest ^:integration get-chapter-list-test
-  (let [chapters (get-chapter-list "the_gamer" manga-fox)]
+  (let [chapters (get-chapter-list manga-fox "the_gamer")]
     (is (>= (count chapters)
             97)))
 
