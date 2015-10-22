@@ -15,4 +15,6 @@
  :manga-url-suffix-pattern "(.*?)/"
  :comic-list-selector [:div.manga_list :ul :li :a]
 
- :manga-list-format "%s/manga/"}
+ :manga-list-format "%s/manga/"
+
+ :comic->url-format "%s%s/"}
