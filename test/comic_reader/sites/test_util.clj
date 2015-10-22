@@ -125,8 +125,9 @@
                          (str "Site config "
                               "`" 'selector# "'"
                               " cannot be undefined.\n"
-                              "Should be: "
-                              (get-doc-string 'selector#)))
+                              "Should be:\n"
+                              (get-doc-string 'selector#)
+                              "\n"))
 
                      ~@(->> fn-keyword
                             (alg/topsort dependency-dag)
