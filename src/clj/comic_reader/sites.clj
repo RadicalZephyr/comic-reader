@@ -55,7 +55,7 @@
   (:manga-url-suffix-pattern options))
 
 (defn comic->url-format
-  "A format string that when used to format the root URL and a comic
+  "A format string that when used to format the manga URL and a comic
   id will produce the URL of a comics chapter page."
   []
   (:comic->url-format options))
