@@ -177,20 +177,21 @@
   (tu/ensure-dependencies-defined get-image-data))
 
 (defn test-full-site-traversal [site]
-  (call-with-options site #(ensure-all-dependencies))
+  (and
+   (call-with-options site #(ensure-all-dependencies))
 
-  (is (not
-       (nil?
-        (let [site ((get-sites) site-name)
-              comic-list (get-comic-list site)
-              first-comic (first comic-list)
+   (is (not
+        (nil?
+         (let [site ((get-sites) site-name)
+               comic-list (get-comic-list site)
+               first-comic (first comic-list)
 
-              chapter-list (get-chapter-list site (:id first-comic))
-              last-chapter (last chapter-list)
+               chapter-list (get-chapter-list site (:id first-comic))
+               last-chapter (last chapter-list)
 
-              page-list (get-page-list site last-chapter)
-              third-page (nth 3 page-list)]
-          (get-image-data site third-page))))))
+               page-list (get-page-list site last-chapter)
+               third-page (nth 3 page-list)]
+           (get-image-data site third-page)))))))
 
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
