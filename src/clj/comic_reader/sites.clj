@@ -1,5 +1,6 @@
 (ns comic-reader.sites
   (:require [comic-reader.sites.protocol :refer :all]
+            [comic-reader.sites.read :as site-read]
             [comic-reader.sites.util :as util]
             [comic-reader.scrape :as scrape]
             [comic-reader.util :refer [safe-read-string]]
@@ -247,46 +248,17 @@
           scrape/fetch-url
           extract-image-tag))))
 
-(defn base-name [file]
-  (let [[_ base-name]
-        (->> file
-             io/as-file
-             .getName
-             (re-matches #"^(.*)\..*?$"))]
-    base-name))
-
-(defn get-all-sites []
-  (->> (io/resource "sites")
-       io/as-file
-       file-seq
-       (filter (complement (memfn isDirectory)))
-       (map base-name)))
-
-(defn read-file [file]
-  (when-let [r1 (some-> file
-                        io/reader
-                        java.io.PushbackReader.)]
-    (with-open [r r1]
-      (read r))))
-
-(defn read-site-options [site-name]
-  (if-let [file (-> (str "sites/" site-name ".clj")
-                    io/resource)]
-    (read-file file)
-    (throw (IllegalArgumentException.
-            (str "`sites/" site-name "' "
-                 "was not found in the resources.")))))
 
 (defn make-site-entry [site-name]
   (try
-    [site-name (->MangaSite (read-site-options site-name))]
+    [site-name (->MangaSite (site-read/read-site-options site-name))]
     (catch IllegalArgumentException e
       [site-name nil])
     (catch RuntimeException e
       [site-name nil])))
 
 (defn get-sites []
-  (->> (get-all-sites)
+  (->> (site-read/get-all-sites)
        (map make-site-entry)
        flatten
        (apply hash-map)))
