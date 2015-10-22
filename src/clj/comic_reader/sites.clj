@@ -61,8 +61,8 @@
   (:comic->url-format options))
 
 (defn comic-list-selector
-  "An enlive selector for selecting all of the links for each comics
-  information."
+  "An enlive selector for selecting all of the links to comics on the
+  comic list page."
   []
   (:comic-list-selector options))
 
