@@ -178,23 +178,21 @@
 
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
-     (is
-      (binding [~'site-name ~site-name]
-        (expect-opts-are-map ~site-name)
-        (call-with-options
-         ((get-sites) site-name)
-         #(and
-           (if (has-test-folder?)
-             (and
-              (test-image-page-extraction)
-              (test-extract-chapters-list)
-              (test-extract-comic-list))
-             (error-must-have-test-data))
-           (when (connected-to-network?)
-             (test-scrape-urls))))
-        (when (connected-to-network?)
-          (test-full-site-traversal ((get-sites) site-name)))
-        true))))
+     (binding [~'site-name ~site-name]
+       (expect-opts-are-map ~site-name)
+       (call-with-options
+        ((get-sites) site-name)
+        #(and
+          (if (has-test-folder?)
+            (and
+             (test-image-page-extraction)
+             (test-extract-chapters-list)
+             (test-extract-comic-list))
+            (error-must-have-test-data))
+          (when (connected-to-network?)
+            (test-scrape-urls))))
+       (when (connected-to-network?)
+         (test-full-site-traversal ((get-sites) site-name))))))
 
 (defmacro defsite-tests []
   (try
