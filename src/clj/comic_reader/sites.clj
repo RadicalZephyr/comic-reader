@@ -183,9 +183,9 @@
 ;; ############################################################
 
 (defn gen-extract-pages-list-normalize [base-url]
-  (util/html-fn {[name] :content}
-    (if-let [page-number (re-find (page-normalize-pattern)
-                                  name)]
+  (util/html-fn {[name] :content {:keys [value]} :attrs}
+    (let [page-number (re-find (page-normalize-pattern)
+                               value)]
       {:name name
        :url (format (page-normalize-format)
                     base-url
