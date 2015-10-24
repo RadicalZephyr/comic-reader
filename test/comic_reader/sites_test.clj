@@ -82,11 +82,11 @@
    (is (= image-tag
           (extract-image-tag html)))))
 
-(defn test-extract-pages-list [html pages-list]
+(defn test-extract-pages-list [html pages-list chapter-url]
   (and
    (tu/ensure-dependencies-defined extract-pages-list)
    (is (= pages-list
-          (extract-pages-list html "")))))
+          (extract-pages-list html chapter-url)))))
 
 (defn test-image-page-extraction []
   (let [results (try-read-file
@@ -94,7 +94,9 @@
     (if-let [html (image-page-html)]
       (and
        (test-extract-image-tag html (:image-tag results))
-       (test-extract-pages-list html (:pages-list results)))
+       (test-extract-pages-list html
+                                (:pages-list results)
+                                (:chapter-url results)))
       (is false
           (str "There must be a sample image html page at "
                "`resources/test/" site-name "/image.html'")))))

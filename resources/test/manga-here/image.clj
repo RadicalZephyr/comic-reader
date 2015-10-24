@@ -1,4 +1,5 @@
-{:image-tag [:img
+{:chapter-url "http://www.mangahere.co/manga/the_gamer/c095/"
+ :image-tag [:img
              {:src "http://a.mhcdn.net/store/manga/13739/095.0/compressed/rthe-gamer-5978533.jpg?v=1440085982"
               :alt "The Gamer 95 Page 1"}]
  :pages-list [{:name "1", :url  "http://www.mangahere.co/manga/the_gamer/c095/"}
