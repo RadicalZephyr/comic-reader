@@ -2,12 +2,12 @@
  :manga-list-format "%s/mangalist/"
  :comic-list-selector [div.list_manga ul li a.manga_info]
 
- :page-normalize-pattern #".*"
- :page-normalize-format "%sc%3d/"
+ :page-normalize-pattern #"(?:\d+\.html)?$"
+ :page-normalize-format "%s/%s"
 
- :chapter-number-pattern #"c0*\d*/"
+ :chapter-number-pattern #"/\d*$"
 
- :page-list-selector [:select.wid60 :option]
+ :page-list-selector [:section.readpage_top :div :span :select.wid60 :option]
 
  :root-url "http://www.mangahere.co/"
  :manga-url-format "%s/manga/"
