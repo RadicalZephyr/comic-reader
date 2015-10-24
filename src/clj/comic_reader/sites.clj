@@ -160,8 +160,9 @@
 (defn chapter-link-add-ch-num [{:keys [url]
                                 :as comic-map}]
   (let [[_ data] (re-find (chapter-number-match-pattern) url)]
-    (assoc comic-map
-           :ch-num (safe-read-string data))))
+    (->  comic-map
+     (update-in [:name] s/trim)
+     (assoc :ch-num (safe-read-string data)))))
 
 (defn chapter-link-normalize [link]
   (-> link
