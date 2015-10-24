@@ -33,7 +33,7 @@
    [:extract-chapters-list :chapter-list-selector]
    [:extract-chapters-list :chapter-link-normalize]
 
-   [:chapter-link-normalize :link->map]
+   [:chapter-link-normalize :chapter-link->map]
    [:chapter-link-normalize :chapter-link-add-ch-num]
 
    [:chapter-link-add-ch-num :chapter-number-match-pattern]
@@ -41,13 +41,16 @@
    [:extract-comics-list :comic-list-selector]
    [:extract-comics-list :comic-link-normalize]
 
-   [:comic-link-normalize :link->map]
+   [:comic-link-normalize :comic-link->map]
    [:comic-link-normalize :comic-link-add-id]
 
    [:comic-link-add-id :manga-pattern]
 
-   [:link->map :link-name-normalize]
-   [:link->map :link-url-normalize]
+   [:comic-link->map :comic-link-name-normalize]
+   [:comic-link->map :comic-link-url-normalize]
+
+   [:chapter-link->map :chapter-link-name-normalize]
+   [:chapter-link->map :chapter-link-url-normalize]
 
    [:manga-pattern :manga-url]
    [:manga-pattern :manga-url-suffix-pattern]

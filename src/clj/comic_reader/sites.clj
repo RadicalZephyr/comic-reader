@@ -23,8 +23,11 @@
    :chapter-number-pattern       nil
    :chapter-number-match-pattern nil
 
-   :link-name-normalize          nil
-   :link-url-normalize           nil
+   :comic-link-name-normalize    nil
+   :comic-link-url-normalize     nil
+
+   :chapter-link-name-normalize  nil
+   :chapter-link-url-normalize   nil
 
    :page-normalize-format        nil
    :page-normalize-pattern       nil})
@@ -106,17 +109,29 @@
   []
   (:image-selector options))
 
-(defn link-url-normalize
+(defn comic-link-url-normalize
   "An expression that evals to a function that will normalize the link
   url."
   []
-  (eval (:link-url-normalize options)))
+  (eval (:comic-link-url-normalize options)))
 
-(defn link-name-normalize
+(defn comic-link-name-normalize
   "An expression that evals to a function that will normalize the link
   name."
   []
-  (eval (:link-name-normalize options)))
+  (eval (:comic-link-name-normalize options)))
+
+(defn chapter-link-url-normalize
+  "An expression that evals to a function that will normalize the link
+  url."
+  []
+  (eval (:chapter-link-url-normalize options)))
+
+(defn chapter-link-name-normalize
+  "An expression that evals to a function that will normalize the link
+  name."
+  []
+  (eval (:chapter-link-name-normalize options)))
 
 
 ;; ############################################################
@@ -132,10 +147,10 @@
 (defn manga-pattern []
   (re-pattern (str (manga-url) (manga-url-suffix-pattern))))
 
-(defn link->map [{name :content
+(defn comic-link->map [{name :content
                   {url :href} :attrs}]
-  {:name ((link-name-normalize) name)
-   :url  ((link-url-normalize)  url)})
+  {:name ((comic-link-name-normalize) name)
+   :url  ((comic-link-url-normalize)  url)})
 
 (defn comic-link-add-id [{:keys [url] :as comic-map}]
   (let [[_ data] (re-find (manga-pattern) url)]
@@ -144,7 +159,7 @@
 
 (defn comic-link-normalize [link]
   (-> link
-      link->map
+      comic-link->map
       comic-link-add-id))
 
 (defn extract-comics-list [html]
@@ -157,16 +172,19 @@
 ;; ## Get Chapter List functions
 ;; ############################################################
 
+(defn chapter-link->map [{name :content
+                          {url :href} :attrs}]
+  {:name ((chapter-link-name-normalize) name)
+   :url  ((chapter-link-url-normalize)  url)})
+
 (defn chapter-link-add-ch-num [{:keys [url]
                                 :as comic-map}]
   (let [[_ data] (re-find (chapter-number-match-pattern) url)]
-    (->  comic-map
-     (update-in [:name] s/trim)
-     (assoc :ch-num (safe-read-string data)))))
+    (assoc comic-map :ch-num (safe-read-string data))))
 
 (defn chapter-link-normalize [link]
   (-> link
-      link->map
+      chapter-link->map
       chapter-link-add-ch-num))
 
 (defn extract-chapters-list [html comic-url]
