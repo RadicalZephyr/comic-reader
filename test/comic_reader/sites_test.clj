@@ -132,7 +132,7 @@
     (catch java.net.UnknownHostException e
       false)))
 
-(def run-network-tests? true)
+(defonce run-network-tests? (atom false))
 
 (defn try-fetch-url [url]
   (some-> url
@@ -145,7 +145,7 @@
 
 (defn test-scrape-urls []
   (and
-   run-network-tests?
+   @run-network-tests?
 
    (test-url root-url)
    (test-url manga-url)
@@ -160,7 +160,7 @@
 (defn test-full-site-traversal [site]
   (and
    (call-with-options site #(ensure-all-dependencies))
-   run-network-tests?
+   @run-network-tests?
 
    (is (not
         (nil?
