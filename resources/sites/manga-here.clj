@@ -1,6 +1,6 @@
 {:image-selector [:section#viewer.read_img :a :img]
  :manga-list-format "%s/mangalist/"
- :comic-list-selector [div.list_manga ul li a.manga_info]
+ :comic-list-selector [:li :a.manga_info]
 
  :page-normalize-pattern #"(?:\d+\.html)?$"
  :page-normalize-format "%s/%s"
@@ -10,9 +10,9 @@
  :page-list-selector [:section.readpage_top :div :span :select.wid60 :option]
 
  :root-url "http://www.mangahere.co/"
- :manga-url-format "%s/manga/"
+ :manga-url-format "%smanga/"
 
- :manga-url-suffix-pattern #"(.*?)/c\d*/$"
+ :manga-url-suffix-pattern "(.*?)/$"
 
  :comic-link-name-normalize second
  :comic-link-url-normalize identity
