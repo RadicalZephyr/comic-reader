@@ -149,9 +149,8 @@
   (and
    @run-network-tests?
 
-   (test-url root-url)
-   (test-url manga-url)
-   (test-url manga-list-url)))
+   (is (not (nil? (test-url root-url))))
+   (is (not (nil? (test-url manga-list-url))))))
 
 (defn ensure-all-dependencies []
   (tu/ensure-dependencies-defined get-comic-list)
