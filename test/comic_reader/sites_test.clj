@@ -160,6 +160,7 @@
 (defn test-full-site-traversal [site]
   (and
    (call-with-options site #(ensure-all-dependencies))
+   run-network-tests?
 
    (is (not
         (nil?
