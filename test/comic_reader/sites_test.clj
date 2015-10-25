@@ -173,7 +173,7 @@
                last-chapter (last chapter-list)
 
                page-list (get-page-list site last-chapter)
-               third-page (nth 3 page-list)]
+               third-page (nth page-list 3)]
            (get-image-data site third-page)))))))
 
 (defn testdef-form [site-name]
