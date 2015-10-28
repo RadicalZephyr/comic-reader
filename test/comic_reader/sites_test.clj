@@ -80,13 +80,15 @@
   (and
    (tu/ensure-dependencies-defined extract-image-tag)
    (is (= image-tag
-          (extract-image-tag html)))))
+          (extract-image-tag html))
+       (tu/display-dependent-data-values extract-image-tag))))
 
 (defn test-extract-pages-list [html pages-list chapter-url]
   (and
    (tu/ensure-dependencies-defined extract-pages-list)
    (is (= pages-list
-          (extract-pages-list html chapter-url)))))
+          (extract-pages-list html chapter-url))
+       (tu/display-dependent-data-values extract-pages-list))))
 
 (defn test-image-page-extraction []
   (let [results (try-read-file
@@ -108,7 +110,8 @@
       (and
        (tu/ensure-dependencies-defined extract-chapters-list)
        (is (= (:chapter-list results)
-              (extract-chapters-list html ""))))
+              (extract-chapters-list html ""))
+           (tu/display-dependent-data-values extract-chapters-list)))
       (is false
           (str "There must be a sample chapter list html page "
                "at `resources/test/" site-name "/chapter_list.html'")))))
@@ -120,7 +123,8 @@
       (and
        (tu/ensure-dependencies-defined extract-comics-list)
        (is (= (:comic-list results)
-              (extract-comics-list html))))
+              (extract-comics-list html))
+           (tu/display-dependent-data-values extract-comics-list)))
       (is false
           (str "There must be a sample chapter list html page "
                "at `resources/test/" site-name "/comic_list.html'")))))
@@ -163,6 +167,11 @@
    (call-with-options site #(ensure-all-dependencies))
    @run-network-tests?
 
+   ;; Figure out how to make this a better experience Right now it
+   ;; breaks in a very opaque manner. It's not even remotely clear
+   ;; where the traversal is breaking down, and the reporting is shit
+
+   ;; Maybe a macro that expands to binding forms and is-not-nil assertions?
    (is (not
         (nil?
          (let [site ((get-sites) site-name)
