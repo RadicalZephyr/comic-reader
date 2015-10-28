@@ -133,6 +133,17 @@
   (has (not (format-specifiers? "%s%d" ["%s" "%f"])))
   (has (not (format-specifiers? "%sabc%d" ["%d" "%s"]))))
 
+(defn test-format-strings []
+  (and
+   (has (format-specifiers? (manga-list-format)
+                            ["%s"]))
+   (has (format-specifiers? (manga-url-format)
+                            ["%s"]))
+   (has (format-specifiers? (comic->url-format)
+                            ["%s" "%s"]))
+   (has (format-specifiers? (page-normalize-format)
+                            ["%s" "%s"]))))
+
 (defn test-extract-image-tag [html image-tag]
   (and
    (tu/ensure-dependencies-defined extract-image-tag)
@@ -253,6 +264,7 @@
           (test-regexes)
           (test-enlive-selectors)
           (test-normalize-functions)
+          (test-format-strings)
 
           (if (has-test-folder?)
             (and
