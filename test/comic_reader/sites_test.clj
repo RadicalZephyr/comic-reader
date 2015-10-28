@@ -76,6 +76,18 @@
   (when-let [image-resource (site-test-resource "comic_list.html")]
     (html/html-resource image-resource)))
 
+(defn num-groups [regex]
+  (-> regex
+      (.matcher "")
+      (.groupCount)))
+
+(defn test-regexes []
+  (and
+   (is (= 1 (num-groups (manga-pattern))))
+   (is (= 1 (num-groups (chapter-number-match-pattern))))
+   (is (= 0 (num-groups (page-normalize-pattern))))
+   (is (= 0 (num-groups (chapter-number-pattern))))))
+
 (defn valid-selector? [selector]
   (and
    (not (empty? selector))
@@ -207,6 +219,7 @@
        (call-with-options
         ((get-sites) site-name)
         #(and
+          (test-regexes)
           (test-enlive-selectors)
           (if (has-test-folder?)
             (and
