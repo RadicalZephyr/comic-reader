@@ -113,6 +113,26 @@
                    chapter-link-name-normalize
                    chapter-link-url-normalize))
 
+(defn format-specifiers? [fmt specs]
+  (loop [m (re-matcher (re-pattern (first specs)) fmt)
+         specs (rest specs)]
+    (if (.find m)
+      (if (seq specs)
+        (recur (.usePattern m (re-pattern (first specs)))
+               (rest specs))
+        true)
+      false)))
+
+(def #^{:macro true} has #'is)
+
+(deftest test-format-specifiers?
+  (has (format-specifiers? "%s" ["%s"]))
+  (has (format-specifiers? "abc%s %def %y" ["%s" "%d" "%y"]))
+
+  (has (not (format-specifiers? "%d" ["%s"])))
+  (has (not (format-specifiers? "%s%d" ["%s" "%f"])))
+  (has (not (format-specifiers? "%sabc%d" ["%d" "%s"]))))
+
 (defn test-extract-image-tag [html image-tag]
   (and
    (tu/ensure-dependencies-defined extract-image-tag)
