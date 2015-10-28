@@ -1,5 +1,6 @@
 (ns comic-reader.sites.test-util
-  (:require [clojure.test :refer :all]
+  (:require [clojure.string :as str]
+            [clojure.test :refer :all]
             [comic-reader.sites :refer :all]
             [clojure.template :refer [do-template]]
             [clj-http.client :as client]
@@ -136,5 +137,31 @@
                             (alg/topsort dependency-dag)
                             (filter data-function?)
                             (map key->sym)))
+      (throw (IllegalArgumentException.
+              (str fn-name " is not a valid function name."))))))
+
+(defn has-zero-arity? [fn-sym]
+  (let [sites-ns (find-ns 'comic-reader.sites)
+        fn-var (ns-resolve sites-ns fn-sym)]
+    (some #{[]}
+          (-> fn-var
+              meta
+              :arglists))))
+
+(defn render-print-data-function [fn-sym]
+  `(str ~(str fn-sym) ": '" (~fn-sym) "'"))
+
+(defmacro display-dependent-data-values [fn-name]
+  (let [fn-keyword (keyword fn-name)]
+    (if (graph/has-node? dependency-dag fn-keyword)
+      `(str ~(str fn-name) " depends on these data values:\n"
+            (str/join "\n"
+                      ~(->> fn-keyword
+                            (alg/topsort dependency-dag)
+                            (map key->sym)
+                            (filter has-zero-arity?)
+                            (mapv render-print-data-function)))
+            "\n")
+
       (throw (IllegalArgumentException.
               (str fn-name " is not a valid function name."))))))

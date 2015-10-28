@@ -9,8 +9,8 @@
 
  :page-list-selector [:section.readpage_top :div :span :select.wid60 :option]
 
- :root-url "http://www.mangahere.co/"
- :manga-url-format "%smanga/"
+ :root-url "http://www.mangahere.co"
+ :manga-url-format "%s/manga/"
 
  :manga-url-suffix-pattern "(.*?)/$"
 
