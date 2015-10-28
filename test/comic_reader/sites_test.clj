@@ -105,7 +105,7 @@
 
 (defn test-normalize-functions []
   (tu/are-with-msg [norm-fn]
-                   (is (function? norm-fn)
+                   (is (function? (norm-fn))
                        "Normalize values should eval to a function.")
                    comic-link-name-normalize
                    comic-link-url-normalize
@@ -228,18 +228,23 @@
        (expect-opts-are-map ~site-name)
        (call-with-options
         ((get-sites) site-name)
+
         #(and
           (test-regexes)
           (test-enlive-selectors)
           (test-normalize-functions)
+
           (if (has-test-folder?)
             (and
              (test-image-page-extraction)
              (test-extract-chapters-list)
              (test-extract-comic-list))
+
             (error-must-have-test-data))
+
           (when (connected-to-network?)
             (test-scrape-urls))))
+
        (when (connected-to-network?)
          (test-full-site-traversal ((get-sites) site-name))))))
 
