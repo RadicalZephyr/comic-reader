@@ -76,6 +76,21 @@
   (when-let [image-resource (site-test-resource "comic_list.html")]
     (html/html-resource image-resource)))
 
+(defn valid-selector? [selector]
+  (and
+   (not (empty? selector))
+   (every? keyword? selector)))
+
+(defn test-enlive-selectors []
+  (tu/are-with-msg [sel-fn]
+                   (is (valid-selector? (sel-fn))
+                                (str "All elements of a selector "
+                                     "must be keywords."))
+    comic-list-selector
+    chapter-list-selector
+    page-list-selector
+    image-selector))
+
 (defn test-extract-image-tag [html image-tag]
   (and
    (tu/ensure-dependencies-defined extract-image-tag)
@@ -192,6 +207,7 @@
        (call-with-options
         ((get-sites) site-name)
         #(and
+          (test-enlive-selectors)
           (if (has-test-folder?)
             (and
              (test-image-page-extraction)
