@@ -47,7 +47,7 @@
     (is (= (extract-list html [:div :p] :attrs)
            [{}]))
     (is (= (extract-list html [:div :p] (comp seq :content))
-           [nil]))))
+           []))))
 
 (deftest fetch-list-test
   (let [html (html [:div {} [:p {}]])]
