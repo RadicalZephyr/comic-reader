@@ -114,23 +114,35 @@
                    chapter-link-url-normalize))
 
 (defn format-specifiers? [fmt specs]
-  (loop [m (re-matcher (re-pattern (first specs)) fmt)
-         specs (rest specs)]
-    (if (.find m)
-      (if (seq specs)
-        (recur (.usePattern m (re-pattern (first specs)))
-               (rest specs))
-        true)
-      false)))
+  (let [intermediate-matcher (re-matcher #"%[^%]" fmt)]
+    (if (seq specs)
+      (loop [m (re-matcher (re-pattern (first specs)) fmt)
+             specs (rest specs)
+             start 0]
+        (if (.find m)
+          (let [end (.start m)]
+            (.region intermediate-matcher start end)
+            (if (.find intermediate-matcher)
+              false
+              (if (seq specs)
+                (recur (.usePattern m (re-pattern (first specs)))
+                       (rest specs)
+                       (.end m))
+                true)))
+          false))
+      (not (.find intermediate-matcher)))))
 
 (def #^{:macro true} has #'is)
 
 (deftest test-format-specifiers?
+  (has (format-specifiers? "abc euth123 ][908" []))
   (has (format-specifiers? "%s" ["%s"]))
   (has (format-specifiers? "abc%s %def %y" ["%s" "%d" "%y"]))
 
+  (has (not (format-specifiers? "%d" [])))
   (has (not (format-specifiers? "%d" ["%s"])))
   (has (not (format-specifiers? "%s%d" ["%s" "%f"])))
+  (has (not (format-specifiers? "%sabc%d" ["%d"])))
   (has (not (format-specifiers? "%sabc%d" ["%d" "%s"]))))
 
 (defn test-format-strings []
