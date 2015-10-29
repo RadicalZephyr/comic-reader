@@ -15,7 +15,9 @@
 
   :exclusions [org.clojure/clojure
                org.clojure/clojurescript
-               commons-codec]
+               commons-codec
+               org.apache.httpcomponents/httpclient
+               org.apache.httpcomponents/httpcore]
 
   :dependencies [[org.clojure/clojure "1.7.0"]
 
@@ -24,6 +26,8 @@
                  [com.datomic/datomic-pro "0.9.5327" :exclusions
                   [joda-time]]
                  [environ "1.0.1"]
+                 [org.apache.httpcomponents/httpclient "4.3.5"]
+                 [org.apache.httpcomponents/httpcore "4.3.2"]
                  [commons-codec "1.10"]
 
                  ;; Web server
@@ -33,9 +37,7 @@
                  [hiccup "1.0.5"]
 
                  ;; Comic scraping
-                 [clj-http "2.0.0" :exclusions
-                  [org.apache.httpcomponents/httpclient
-                   org.apache.httpcomponents/httpcore]]
+                 [clj-http "2.0.0"]
                  [tempfile "0.2.0"]
                  [enlive "1.1.6"]
 
@@ -47,9 +49,7 @@
                                 :extension "jar"]]]
                  [secretary "1.2.3"]
                  [cljsjs/waypoints "3.1.1-0"]
-                 [cljs-ajax "0.5.1" :exclusions
-                  [org.apache.httpcomponents/httpclient
-                   org.apache.httpcomponents/httpcore]]]
+                 [cljs-ajax "0.5.1"]]
 
   :plugins      [[lein-ring "0.9.7"]
                  [lein-cljsbuild "1.1.0"]]
