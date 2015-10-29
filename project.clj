@@ -1,6 +1,8 @@
 (defproject comic-reader "0.1.0-SNAPSHOT"
   :description "An app for reading comics/manga on or offline"
-  :url "http://example.com/FIXME"
+  :url "https://github.com/radicalzephyr/comic-reader"
+  :scm {:name "git"
+        :url "https://github.com/radicalzephyr/comic-reader"}
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
