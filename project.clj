@@ -8,6 +8,9 @@
   :uberjar-name "comic-reader.jar"
   :source-paths ["src/clj"]
 
+  :repositories {"my-datomic" {:url "https://my.datomic.com/repo"
+                               :creds :gpg}}
+
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [ring "1.4.0"]
                  [fogus/ring-edn "0.3.0"]
@@ -17,6 +20,7 @@
                  [tempfile "0.2.0"]
                  [enlive "1.1.6"]
                  [environ "1.0.0"]
+                 [com.datomic/datomic-pro "0.9.5327"]
 
                  [org.clojure/clojurescript "1.7.48"]
                  [reagent "0.5.0"]
