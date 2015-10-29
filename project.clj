@@ -12,16 +12,24 @@
                                :creds :gpg}}
 
   :dependencies [[org.clojure/clojure "1.7.0"]
+
+                 ;; Core app dependencies
+                 [com.stuartsierra/component "0.3.0"]
+                 [com.datomic/datomic-pro "0.9.5327"]
+                 [environ "1.0.1"]
+
+                 ;; Web server
                  [ring "1.4.0"]
                  [fogus/ring-edn "0.3.0"]
                  [compojure "1.4.0"]
                  [hiccup "1.0.5"]
+
+                 ;; Comic scraping
                  [clj-http "2.0.0"]
                  [tempfile "0.2.0"]
                  [enlive "1.1.6"]
-                 [environ "1.0.1"]
-                 [com.datomic/datomic-pro "0.9.5327"]
 
+                 ;; Clojurescript frontend
                  [org.clojure/clojurescript "1.7.145"]
                  [reagent "0.5.0"]
                  [re-frame "0.5.0-alpha1"
