@@ -114,7 +114,7 @@
                    chapter-link-url-normalize))
 
 (defn format-specifiers? [fmt specs]
-  (let [intermediate-matcher (re-matcher #"%[^%]" fmt)]
+  (let [intermediate-matcher (re-matcher #"(?<!%)%(?!%)" fmt)]
     (if (seq specs)
       (loop [m (re-matcher (re-pattern (first specs)) fmt)
              specs (rest specs)
@@ -136,8 +136,10 @@
 
 (deftest test-format-specifiers?
   (has (format-specifiers? "abc euth123 ][908" []))
+  (has (format-specifiers? "abc %%euth123 ][908" []))
   (has (format-specifiers? "%s" ["%s"]))
   (has (format-specifiers? "abc%s %def %y" ["%s" "%d" "%y"]))
+  (has (format-specifiers? "abc%s %% %de" ["%s" "%d"]))
 
   (has (not (format-specifiers? "%d" [])))
   (has (not (format-specifiers? "%d" ["%s"])))
