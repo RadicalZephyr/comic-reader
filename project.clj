@@ -19,19 +19,19 @@
                  [clj-http "2.0.0"]
                  [tempfile "0.2.0"]
                  [enlive "1.1.6"]
-                 [environ "1.0.0"]
+                 [environ "1.0.1"]
                  [com.datomic/datomic-pro "0.9.5327"]
 
-                 [org.clojure/clojurescript "1.7.48"]
+                 [org.clojure/clojurescript "1.7.145"]
                  [reagent "0.5.0"]
-                 [re-frame "0.4.1"
+                 [re-frame "0.5.0-alpha1"
                   :exclusions [[org.clojure/clojurescript
                                 :extension "jar"]]]
                  [secretary "1.2.3"]
                  [cljsjs/waypoints "3.1.1-0"]
-                 [cljs-ajax "0.3.10"]]
+                 [cljs-ajax "0.5.1"]]
 
-  :plugins      [[lein-ring "0.9.6"]
+  :plugins      [[lein-ring "0.9.7"]
                  [lein-cljsbuild "1.1.0"]]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled"]
@@ -41,9 +41,9 @@
           :nrepl {:start? true :port 4500}
           :port 8090}
 
-  :profiles {:dev {:dependencies [[figwheel "0.3.8"]
+  :profiles {:dev {:dependencies [[figwheel "0.4.1"]
                                   [aysylu/loom "0.5.4"]]
-                   :plugins [[lein-figwheel "0.3.8"
+                   :plugins [[lein-figwheel "0.4.1"
                               :exclusions [[cider/cider-nrepl
                                             :extensions "jar"]]]]
                    :figwheel {:http-server-root "public"
