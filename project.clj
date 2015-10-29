@@ -11,12 +11,18 @@
   :repositories {"my-datomic" {:url "https://my.datomic.com/repo"
                                :creds :gpg}}
 
+  :exclusions [org.clojure/clojure
+               org.clojure/clojurescript
+               commons-codec]
+
   :dependencies [[org.clojure/clojure "1.7.0"]
 
                  ;; Core app dependencies
                  [com.stuartsierra/component "0.3.0"]
-                 [com.datomic/datomic-pro "0.9.5327"]
+                 [com.datomic/datomic-pro "0.9.5327" :exclusions
+                  [joda-time]]
                  [environ "1.0.1"]
+                 [commons-codec "1.10"]
 
                  ;; Web server
                  [ring "1.4.0"]
@@ -25,19 +31,23 @@
                  [hiccup "1.0.5"]
 
                  ;; Comic scraping
-                 [clj-http "2.0.0"]
+                 [clj-http "2.0.0" :exclusions
+                  [org.apache.httpcomponents/httpclient
+                   org.apache.httpcomponents/httpcore]]
                  [tempfile "0.2.0"]
                  [enlive "1.1.6"]
 
                  ;; Clojurescript frontend
                  [org.clojure/clojurescript "1.7.145"]
                  [reagent "0.5.0"]
-                 [re-frame "0.5.0-alpha1"
-                  :exclusions [[org.clojure/clojurescript
+                 [re-frame "0.5.0-alpha1" :exclusions
+                  [[org.clojure/clojurescript
                                 :extension "jar"]]]
                  [secretary "1.2.3"]
                  [cljsjs/waypoints "3.1.1-0"]
-                 [cljs-ajax "0.5.1"]]
+                 [cljs-ajax "0.5.1" :exclusions
+                  [org.apache.httpcomponents/httpclient
+                   org.apache.httpcomponents/httpcore]]]
 
   :plugins      [[lein-ring "0.9.7"]
                  [lein-cljsbuild "1.1.0"]]
@@ -52,9 +62,10 @@
   :profiles {:dev {:dependencies [[ring/ring-mock "0.3.0"]
                                   [figwheel "0.4.1"]
                                   [aysylu/loom "0.5.4"]]
-                   :plugins [[lein-figwheel "0.4.1"
-                              :exclusions [[cider/cider-nrepl
-                                            :extensions "jar"]]]]
+                   :plugins [[lein-figwheel "0.4.1" :exclusions
+                              [[cider/cider-nrepl
+                                :extensions "jar"]
+                               org.codehaus.plexus/plexus-utils]]]
                    :figwheel {:http-server-root "public"
                               :css-dirs ["resources/public/css"]
                               :nrepl-port 7888}
