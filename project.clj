@@ -41,7 +41,8 @@
           :nrepl {:start? true :port 4500}
           :port 8090}
 
-  :profiles {:dev {:dependencies [[figwheel "0.4.1"]
+  :profiles {:dev {:dependencies [[ring/ring-mock "0.3.0"]
+                                  [figwheel "0.4.1"]
                                   [aysylu/loom "0.5.4"]]
                    :plugins [[lein-figwheel "0.4.1"
                               :exclusions [[cider/cider-nrepl
