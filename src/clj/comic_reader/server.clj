@@ -10,7 +10,7 @@
     (if server
       component
       (do
-        (println "Starting web server...")
+        (println ";; Starting web server...")
         (assoc component
                :server (run-jetty (:routes web-app)
                                   {:port port
@@ -22,7 +22,7 @@
       (do
         (when (or (not (.isStopped server))
                   (not (.isStopping server)))
-          (println "Shutting down web server...")
+          (println ";; Shutting down web server...")
           (.stop server))
         (assoc component
                :web-app nil

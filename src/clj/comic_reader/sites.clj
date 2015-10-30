@@ -294,9 +294,9 @@
   component/Lifecycle
 
   (start [component]
-    (println "Loading site definitions...")
+    (println ";; Loading site definitions...")
     (let [sites (dissoc (get-sites) "test-site")]
-      (println "Found sites: " (str/join ", " (keys sites)))
+      (println ";;   Found sites: " (str/join ", " (keys sites)))
       (assoc component :sites sites)))
 
   (stop [component]))
