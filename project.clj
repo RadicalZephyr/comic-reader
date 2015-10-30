@@ -14,7 +14,8 @@
   :source-paths ["src/clj"]
 
   :repositories {"my-datomic" {:url "https://my.datomic.com/repo"
-                               :creds :gpg}}
+                               :username [:env/datomic_username :gpg]
+                               :password [:env/datomic_password :gpg]}}
 
   :pedantic? :warn
   :exclusions [org.clojure/clojure
