@@ -7,11 +7,11 @@
             [environ.core :refer [env]]))
 
 (defn comic-reader-system [config-options]
-  (let [{:keys [app port]} config-options]
+  (let [{:keys [port]} config-options]
     (component/system-map
      :site-scraper (sites/new-site-scraper)
      :server       (component/using
-                    (server/new-server app port)
+                    (server/new-server port)
                     [:site-scraper]))))
 
 (def system nil)
@@ -29,8 +29,7 @@
 
 (defn go [& [port]]
   (let [port (Integer. (or port (env :port) 10555))]
-    (init {:app server/app
-           :port port})
+    (init {:port port})
     (start)))
 
 (defn reset []
