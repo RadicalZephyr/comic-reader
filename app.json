@@ -1,0 +1,13 @@
+{
+  "name":"comic-reader",
+  "scripts":{},
+  "env":{
+    "DATOMIC_PASSWORD":{
+      "required":true
+    },
+    "DATOMIC_USERNAME":{
+      "required":true
+    }
+  },
+  "addons":[]
+}
