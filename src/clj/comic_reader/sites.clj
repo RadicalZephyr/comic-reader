@@ -4,9 +4,12 @@
             [comic-reader.sites.util :as util]
             [comic-reader.scrape :as scrape]
             [comic-reader.util :refer [safe-read-string]]
+            [com.stuartsierra.component :as component]
             [clojure.java.io :as io]
             [clojure.string :as s]))
 
+;; TODO: Remove this dynamic var.  Pass the options through all of the
+;; function calls explicitly.
 (def ^:dynamic options
   {:root-url                     nil
    :manga-list-format            nil
@@ -286,10 +289,14 @@
 
 (def sites (dissoc (get-sites) "test-site"))
 
+(defrecord SiteScraper [sites]
+  component/Lifecycle
 
-;;; maybe use component
+  (start [component]
+    (let [sites (dissoc (get-sites) "test-site")]
+      (assoc component :sites sites)))
 
-;; more to the point, just pass in the data.  potentially have
-;; sublevel protocols and structs for each slice of
-;; functionality. Then it is just more explicit, and avoids the
-;; dynamic binding issues.
+  (stop [component]))
+
+(defn new-site-scraper []
+  (map->SiteScraper {:sites nil}))
