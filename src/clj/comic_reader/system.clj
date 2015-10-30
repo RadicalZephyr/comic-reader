@@ -32,7 +32,7 @@
 
 (defn reset []
   (stop)
-  (refresh :after 'comic-reader.system/go))
+  (refresh :after 'comic-reader.system/-main))
 
 (defn -main [& [port]]
   (let [port (Integer. (or port (env :port) 10555))]
