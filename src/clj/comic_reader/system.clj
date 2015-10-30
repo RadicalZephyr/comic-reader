@@ -1,4 +1,5 @@
 (ns comic-reader.system
+  (:gen-class)
   (:require [clojure.tools.namespace.repl :refer [refresh]]
             [comic-reader.server :as server]
             [comic-reader.sites :as sites]

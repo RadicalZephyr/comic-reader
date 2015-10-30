@@ -1,5 +1,4 @@
 (ns comic-reader.server
-  (:gen-class)
   (:require [compojure.core :as c]
             [compojure.route :as route]
             [com.stuartsierra.component :as component]
