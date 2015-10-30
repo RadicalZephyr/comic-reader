@@ -92,6 +92,8 @@
 
              :uberjar {:omit-source true
                        :aot :all
+                       :hooks [leiningen.cljsbuild]
+
                        :cljsbuild
                        {:builds {:client {:compiler
                                           {:main comic-reader.main
