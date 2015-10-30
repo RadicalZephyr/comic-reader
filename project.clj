@@ -16,6 +16,7 @@
   :repositories {"my-datomic" {:url "https://my.datomic.com/repo"
                                :creds :gpg}}
 
+  :pedantic? :warn
   :exclusions [org.clojure/clojure
                org.clojure/clojurescript
                commons-codec
@@ -52,7 +53,7 @@
                     :extension "jar"]]]
                  [secretary "1.2.3"]
                  [cljsjs/waypoints "3.1.1-0"]
-                 [cljs-ajax "0.5.1"]]
+                 [cljs-ajax "0.5.1" :exclusions [commons-logging]]]
 
   :plugins      [[lein-cljsbuild "1.1.0"]]
 
@@ -71,8 +72,8 @@
                                   [aysylu/loom "0.5.4"]]
 
                    :plugins [[lein-figwheel "0.4.1" :exclusions
-                              [[cider/cider-nrepl
-                                :extensions "jar"]
+                              [cider/cider-nrepl
+                               org.clojure/clojure
                                org.codehaus.plexus/plexus-utils]]]
 
                    :repl-options {:init-ns comic-reader.system}
