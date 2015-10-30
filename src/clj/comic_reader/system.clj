@@ -26,15 +26,15 @@
   (alter-var-root #'system
     (fn [s] (when s (component/stop s)))))
 
-(defn go [config-options]
-  (init config-options)
-  (start))
+(defn go [& [port]]
+  (let [port (Integer. (or port (env :port) 10555))]
+    (init {:app server/app
+           :port port})
+    (start)))
 
 (defn reset []
   (stop)
-  (refresh :after 'comic-reader.system/-main))
+  (refresh :after 'comic-reader.system/go))
 
-(defn -main [& [port]]
-  (let [port (Integer. (or port (env :port) 10555))]
-    (go {:app server/app
-         :port port})))
+(defn -main [& args]
+  (apply go args))
