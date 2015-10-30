@@ -1,0 +1,16 @@
+language: clojure
+lein: lein2
+sudo: false
+script: bin/ci.sh
+install:
+  - mkdir $HOME/travis-phantomjs
+  - wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -O $HOME/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2
+  - tar -xvf $HOME/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -C $HOME/travis-phantomjs
+  - export PATH=$HOME/travis-phantomjs:$PATH
+cache:
+  directories:
+    - $HOME/.m2
+notifications:
+  email:
+    on_success: never
+    on_failure: change
