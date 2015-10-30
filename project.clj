@@ -51,15 +51,9 @@
                  [cljsjs/waypoints "3.1.1-0"]
                  [cljs-ajax "0.5.1"]]
 
-  :plugins      [[lein-ring "0.9.7"]
-                 [lein-cljsbuild "1.1.0"]]
+  :plugins      [[lein-cljsbuild "1.1.0"]]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled"]
-
-  :hooks [leiningen.cljsbuild]
-  :ring  {:handler comic-reader.server/app
-          :nrepl {:start? true :port 4500}
-          :port 8090}
 
   :profiles {:dev {:dependencies [[ring/ring-mock "0.3.0"]
                                   [figwheel "0.4.1"]
