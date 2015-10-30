@@ -2,6 +2,7 @@
   (:gen-class)
   (:require [clojure.tools.namespace.repl :refer [refresh]]
             [comic-reader.server :as server]
+            [comic-reader.web-app :as web-app]
             [comic-reader.sites :as sites]
             [com.stuartsierra.component :as component]
             [environ.core :refer [env]]))
@@ -10,9 +11,12 @@
   (let [{:keys [port]} config-options]
     (component/system-map
      :site-scraper (sites/new-site-scraper)
+     :web-app      (component/using
+                    (web-app/new-web-app)
+                    [:site-scraper])
      :server       (component/using
                     (server/new-server port)
-                    [:site-scraper]))))
+                    [:web-app]))))
 
 (def system nil)
 
