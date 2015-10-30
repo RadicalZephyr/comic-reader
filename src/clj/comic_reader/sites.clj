@@ -1,12 +1,13 @@
 (ns comic-reader.sites
-  (:require [comic-reader.sites.protocol :refer :all]
+  (:require [clojure.java.io :as io]
+            [clojure.string :as s]
+            [clojure.string :as str]
+            [comic-reader.scrape :as scrape]
+            [comic-reader.sites.protocol :refer :all]
             [comic-reader.sites.read :as site-read]
             [comic-reader.sites.util :as util]
-            [comic-reader.scrape :as scrape]
             [comic-reader.util :refer [safe-read-string]]
-            [com.stuartsierra.component :as component]
-            [clojure.java.io :as io]
-            [clojure.string :as s]))
+            [com.stuartsierra.component :as component]))
 
 ;; TODO: Remove this dynamic var.  Pass the options through all of the
 ;; function calls explicitly.
