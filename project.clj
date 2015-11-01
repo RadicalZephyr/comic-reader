@@ -13,27 +13,11 @@
 
   :source-paths ["src/clj"]
 
-  :repositories {"my-datomic" {:url "https://my.datomic.com/repo"
-                               :username [:env/datomic_username :gpg]
-                               :password [:env/datomic_password :gpg]}}
-
-  :pedantic? :warn
-  :exclusions [org.clojure/clojure
-               org.clojure/clojurescript
-               commons-codec
-               org.apache.httpcomponents/httpclient
-               org.apache.httpcomponents/httpcore]
-
   :dependencies [[org.clojure/clojure "1.7.0"]
 
                  ;; Core app dependencies
                  [com.stuartsierra/component "0.3.0"]
-                 [com.datomic/datomic-pro "0.9.5327" :exclusions
-                  [joda-time]]
                  [environ "1.0.1"]
-                 [org.apache.httpcomponents/httpclient "4.3.5"]
-                 [org.apache.httpcomponents/httpcore "4.3.2"]
-                 [commons-codec "1.10"]
 
                  ;; Web server
                  [ring "1.4.0"]
@@ -47,14 +31,15 @@
                  [enlive "1.1.6"]
 
                  ;; Clojurescript frontend
-                 [org.clojure/clojurescript "1.7.145"]
-                 [reagent "0.5.0"]
-                 [re-frame "0.5.0-alpha1" :exclusions
-                  [[org.clojure/clojurescript
-                    :extension "jar"]]]
-                 [secretary "1.2.3"]
-                 [cljsjs/waypoints "3.1.1-0"]
-                 [cljs-ajax "0.5.1" :exclusions [commons-logging]]]
+                 ;; [org.clojure/clojurescript "1.7.145"]
+                 ;; [reagent "0.5.0"]
+                 ;; [re-frame "0.5.0-alpha1" :exclusions
+                 ;;  [[org.clojure/clojurescript
+                 ;;    :extension "jar"]]]
+                 ;; [secretary "1.2.3"]
+                 ;; [cljsjs/waypoints "3.1.1-0"]
+                 ;; [cljs-ajax "0.5.1"]
+                 ]
 
   :plugins      [[lein-cljsbuild "1.1.0"]]
 
@@ -72,10 +57,7 @@
                                   [figwheel "0.4.1"]
                                   [aysylu/loom "0.5.4"]]
 
-                   :plugins [[lein-figwheel "0.4.1" :exclusions
-                              [cider/cider-nrepl
-                               org.clojure/clojure
-                               org.codehaus.plexus/plexus-utils]]]
+                   :plugins [[lein-figwheel "0.4.1"]]
 
                    :repl-options {:init-ns comic-reader.system}
 
