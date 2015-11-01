@@ -1,7 +1,7 @@
-(ns comic-reader.sites-test
+(ns comic-reader.site-scraper-test
   (:require [clojure.test :refer :all]
             [comic-reader.sites.protocol :refer :all]
-            [comic-reader.sites :refer :all]
+            [comic-reader.site-scraper :refer :all]
             [comic-reader.sites.read :refer :all]
             [comic-reader.sites.test-util :as tu]
             [clojure.java.io :as io]
@@ -15,7 +15,7 @@
     (is (= label
            "test-site"))
     (is (= (class opts)
-           comic_reader.sites.MangaSite))))
+           comic_reader.site_scraper.MangaSite))))
 
 (defn expect-opts-are-map [site]
   (try

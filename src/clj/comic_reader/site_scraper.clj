@@ -1,4 +1,4 @@
-(ns comic-reader.sites
+(ns comic-reader.site-scraper
   (:require [clojure.java.io :as io]
             [clojure.string :as s]
             [clojure.string :as str]

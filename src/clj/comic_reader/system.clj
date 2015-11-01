@@ -3,7 +3,7 @@
   (:require [clojure.tools.namespace.repl :refer [refresh]]
             [comic-reader.server :as server]
             [comic-reader.web-app :as web-app]
-            [comic-reader.sites :as sites]
+            [comic-reader.site-scraper :as sites]
             [com.stuartsierra.component :as component]
             [environ.core :refer [env]]))
 
