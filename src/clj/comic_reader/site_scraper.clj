@@ -291,13 +291,17 @@
 (def sites (dissoc (get-sites) "test-site"))
 
 (defprotocol ISiteScraper
-  (list-sites [this] "Return the list of sites this scraper supports."))
+  (list-sites  [this]           "Returns the list of sites this scraper supports.")
+  (list-comics [this site-name] "Returns the list of comics available at this site."))
 
 (defrecord SiteScraper [sites]
   ISiteScraper
 
   (list-sites [this]
     (keys sites))
+
+  (list-comics [this site-name]
+    (get-comic-list (get sites site-name)))
 
   component/Lifecycle
 

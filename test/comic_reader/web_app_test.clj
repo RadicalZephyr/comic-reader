@@ -16,7 +16,10 @@
   site-scraper/ISiteScraper
 
   (list-sites [this]
-    (:sites this)))
+    (:sites this))
+
+  (list-comics [this site-name]
+    (get-in this [:comics site-name])))
 
 (defn test-system [scraper]
   (-> (server-test-system scraper)
@@ -30,11 +33,32 @@
           ((app-routes (test-system {})) (mock/request :get "/")))
          200)))
 
+(def edn-content-type {"Content-Type" "application/edn"})
+
 (deftest test-api
   (testing "/api/v1"
+
     (testing "/sites"
-      (let [handle (app-routes (test-system {:sites '("site-one" "site-two" "site-three")}))]
+      (let [handle (app-routes
+                    (test-system {:sites '("site-one"
+                                           "site-two"
+                                           "site-three")}))]
         (is (= (handle (mock/request :get "/api/v1/sites"))
                {:status 200
-                :headers {"Content-Type" "application/edn"}
-                :body "(\"site-one\" \"site-two\" \"site-three\")"}))))))
+                :headers edn-content-type
+                :body "(\"site-one\" \"site-two\" \"site-three\")"}))))
+
+    (testing "/:site-name/comics"
+      (let [handle (app-routes
+                    (test-system {:comics {"manga-here"
+                                           [{:id "the_gamer"
+                                             :name "The Gamer"
+                                             :url "real_url"}
+                                            {:id "other_comic"
+                                             :name "Other Comic"
+                                             :url "another_url"}]}}))]
+        (is (= (handle (mock/request :get "/api/v1/manga-here/comics"))
+               {:status 200
+                :headers edn-content-type
+                :body (str "[{:id \"the_gamer\", :name \"The Gamer\", :url \"real_url\"}"
+                           " {:id \"other_comic\", :name \"Other Comic\", :url \"another_url\"}]")}))))))
