@@ -1,5 +1,6 @@
 (ns comic-reader.server
-  (:require [com.stuartsierra.component :as component]
+  (:require [comic-reader.web-app :as web-app]
+            [com.stuartsierra.component :as component]
             [ring.adapter.jetty :refer [run-jetty]])
   (:import org.eclipse.jetty.server.Server))
 
@@ -12,7 +13,7 @@
       (do
         (println ";; Starting web server...")
         (assoc component
-               :server (run-jetty (:routes web-app)
+               :server (run-jetty (web-app/get-routes web-app)
                                   {:port port
                                    :join? false})))))
 

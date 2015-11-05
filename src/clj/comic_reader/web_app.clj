@@ -6,12 +6,12 @@
             [ring.middleware.edn :refer [wrap-edn-params]]
             [ring.middleware.params :refer [wrap-params]]))
 
-(defn edn-response [data & [status]]
+(defn- edn-response [data & [status]]
   {:status (or status 200)
    :headers {"Content-Type" "application/edn"}
    :body (pr-str data)})
 
-(defn make-api-routes [site-scraper]
+(defn- make-api-routes [site-scraper]
   (c/routes
     (c/GET "/sites" []
       (edn-response ()
@@ -30,7 +30,7 @@
                     :as request}
       )))
 
-(defn make-routes [site-scraper]
+(defn- make-routes [site-scraper]
   (c/routes
     (c/GET "/" []
       (page/html5
@@ -68,3 +68,6 @@
 
 (defn new-web-app []
   (map->WebApp {}))
+
+(defn get-routes [web-app]
+  (:routes web-app))
