@@ -1,5 +1,6 @@
 (ns comic-reader.web-app
-  (:require [compojure.core :as c]
+  (:require [comic-reader.site-scraper :as scraper]
+            [compojure.core :as c]
             [compojure.route :as route]
             [com.stuartsierra.component :as component]
             [hiccup.page :as page]
@@ -14,8 +15,7 @@
 (defn- make-api-routes [site-scraper]
   (c/routes
     (c/GET "/sites" []
-      (edn-response ()
-                    ))
+      (edn-response (scraper/list-sites site-scraper)))
 
     (c/GET "/comics/:site" [site]
       )
