@@ -290,7 +290,15 @@
 
 (def sites (dissoc (get-sites) "test-site"))
 
+(defprotocol ISiteScraper
+  (list-sites [this] "Return the list of sites this scraper supports."))
+
 (defrecord SiteScraper [sites]
+  ISiteScraper
+
+  (list-sites [this]
+    (keys sites))
+
   component/Lifecycle
 
   (start [component]
