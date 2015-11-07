@@ -1,7 +1,7 @@
 (ns comic-reader.sites.test-util
   (:require [clojure.string :as str]
             [clojure.test :refer :all]
-            [comic-reader.site-scraper :refer :all]
+            [comic-reader.sites :refer :all]
             [clojure.template :refer [do-template]]
             [clj-http.client :as client]
             [loom.graph :as graph]
@@ -114,7 +114,7 @@
     (throw (IllegalArgumentException. "The number of args doesn't match are's argv."))))
 
 (defn get-doc-string [sym]
-  (let [sites-ns (find-ns 'comic-reader.site-scraper)
+  (let [sites-ns (find-ns 'comic-reader.sites)
         doc-var (ns-resolve sites-ns sym)]
     (-> doc-var
         meta
@@ -141,7 +141,7 @@
               (str fn-name " is not a valid function name."))))))
 
 (defn has-zero-arity? [fn-sym]
-  (let [sites-ns (find-ns 'comic-reader.site-scraper)
+  (let [sites-ns (find-ns 'comic-reader.sites)
         fn-var (ns-resolve sites-ns fn-sym)]
     (some #{[]}
           (-> fn-var
