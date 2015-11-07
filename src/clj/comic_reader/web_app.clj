@@ -20,6 +20,9 @@
     (c/GET "/:site-name/comics" [site-name]
       (edn-response (scraper/list-comics site-scraper site-name)))
 
+    (c/GET "/:site-name/:comic-id/chapters" [site-name comic-id]
+      (edn-response (scraper/list-chapters site-scraper site-name comic-id)))
+
     (c/GET "/pages/:site/:comic/:chapter{\\d+}/:page{\\d+}"
         request
       )
