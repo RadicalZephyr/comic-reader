@@ -292,7 +292,8 @@
 
 (defprotocol ISiteScraper
   (list-sites  [this]           "Returns the list of sites this scraper supports.")
-  (list-comics [this site-name] "Returns the list of comics available at this site."))
+  (list-comics [this site-name] "Returns the list of comics available at this site.")
+  (list-chapters [this site-name comic-id] "Returns the list of chapter ids for the given comic at the given site."))
 
 (defrecord SiteScraper [sites]
   ISiteScraper
@@ -302,6 +303,9 @@
 
   (list-comics [this site-name]
     (get-comic-list (get sites site-name)))
+
+  (list-chapters [this site-name comic-id]
+    (get-chapter-list (get sites site-name) comic-id))
 
   component/Lifecycle
 

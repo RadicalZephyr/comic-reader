@@ -19,7 +19,10 @@
     (:sites this))
 
   (list-comics [this site-name]
-    (get-in this [:comics site-name])))
+    (get-in this [:comics site-name]))
+
+  (list-chapters [this site-name comic-id]
+    (get-in this [:chapters site-name comic-id])))
 
 (defn test-system [scraper]
   (-> (server-test-system scraper)
@@ -61,4 +64,13 @@
                {:status 200
                 :headers edn-content-type
                 :body (str "[{:id \"the_gamer\", :name \"The Gamer\", :url \"real_url\"}"
-                           " {:id \"other_comic\", :name \"Other Comic\", :url \"another_url\"}]")}))))))
+                           " {:id \"other_comic\", :name \"Other Comic\", :url \"another_url\"}]")}))))
+
+    (testing "/:site-name/:comic-id/chapters"
+      (let [handle (app-routes
+                    (test-system {:chapters {"manga-here"
+                                             {"the_gamer" ["0" "1" "1.1"]}}}))]
+        (is (= (handle (mock/request :get "/api/v1/manga-here/the_gamer/chapters"))
+               {:status 200
+                :headers edn-content-type
+                :body (str "[\"0\" \"1\" \"1.1\"]")}))))))
