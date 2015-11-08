@@ -26,11 +26,8 @@
     (c/POST "/:site-name/pages" [site-name comic-chapter]
       (edn-response (scraper/list-pages site-scraper site-name comic-chapter)))
 
-    (c/POST "/img" {{:keys [site]
-                     {:keys [chapter page url]} :page-info}
-                    :edn-params
-                    :as request}
-      )))
+    (c/POST "/:site-name/image" [site-name comic-page]
+      (edn-response (scraper/get-page-image site-scraper site-name comic-page)))))
 
 (defn- make-routes [site-scraper]
   (c/routes
