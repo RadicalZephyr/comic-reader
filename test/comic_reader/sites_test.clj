@@ -17,7 +17,8 @@
     (catch java.lang.RuntimeException re
       (is false
           (str "Contents of `sites/" site ".clj'"
-               " cannot be empty")))))
+               " cannot be empty. Should be a map "
+               "literal (i.e. `{}')")))))
 
 (defn try-read-file [filename error-message]
   (try
