@@ -22,7 +22,10 @@
     (get-in this [:comics site-name]))
 
   (list-chapters [this site-name comic-id]
-    (get-in this [:chapters site-name comic-id])))
+    (get-in this [:chapters site-name comic-id]))
+
+  (list-pages [this site-name comic-chapter]
+    (get-in this [:pages site-name comic-chapter])))
 
 (defn test-system [scraper]
   (-> (server-test-system scraper)
@@ -69,8 +72,40 @@
     (testing "/:site-name/:comic-id/chapters"
       (let [handle (app-routes
                     (test-system {:chapters {"manga-here"
-                                             {"the_gamer" ["0" "1" "1.1"]}}}))]
+                                             {"the_gamer" [{:name "The Gamer 1",
+                                                            :url "http://www.mangahere.co/manga/the_gamer/c001/",
+                                                            :ch-num 1}
+                                                           {:name "The Gamer 2",
+                                                            :url "http://www.mangahere.co/manga/the_gamer/c002/",
+                                                            :ch-num 2}]}}}))]
         (is (= (handle (mock/request :get "/api/v1/manga-here/the_gamer/chapters"))
                {:status 200
                 :headers edn-content-type
-                :body (str "[\"0\" \"1\" \"1.1\"]")}))))))
+                :body (str
+                       "[{:name \"The Gamer 1\","
+                       " :url \"http://www.mangahere.co/manga/the_gamer/c001/\","
+                       " :ch-num 1} "
+                       "{:name \"The Gamer 2\","
+                       " :url \"http://www.mangahere.co/manga/the_gamer/c002/\","
+                       " :ch-num 2}]")}))))
+
+    (testing "/:site-name/:comic-id/pages"
+      (let [handle (app-routes
+                    (test-system {:pages {"manga-here"
+                                          {{:name "The Gamer 2", :url "http://www.mangahere.co/manga/the_gamer/c002/", :ch-num 2}
+                                           [{:name "1", :url  "http://www.mangahere.co/manga/the_gamer/c002/"}
+                                            {:name "2", :url  "http://www.mangahere.co/manga/the_gamer/c002/2.html"}]}}}))]
+        (is (= (handle (-> (mock/request :post "/api/v1/manga-here/pages"
+                                         (str
+                                          "{:comic-chapter"
+                                          " {:name \"The Gamer 2\","
+                                          " :url \"http://www.mangahere.co/manga/the_gamer/c002/\","
+                                          " :ch-num 2}}"))
+                           (mock/content-type "application/edn")))
+               {:status 200
+                :headers edn-content-type
+                :body (str
+                       "[{:name \"1\", :url \"http://www.mangahere.co/manga/the_gamer/c002/\"}"
+                       " {:name \"2\", :url \"http://www.mangahere.co/manga/the_gamer/c002/2.html\"}]")}))))
+
+    (testing "/image")))

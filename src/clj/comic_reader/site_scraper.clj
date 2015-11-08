@@ -20,9 +20,14 @@
        (apply hash-map)))
 
 (defprotocol ISiteScraper
-  (list-sites  [this]           "Returns the list of sites this scraper supports.")
-  (list-comics [this site-name] "Returns the list of comics available at this site.")
-  (list-chapters [this site-name comic-id] "Returns the list of chapter ids for the given comic at the given site."))
+  (list-sites  [this]
+               "Returns the list of sites this scraper supports.")
+  (list-comics [this site-name]
+               "Returns the list of comics available at this site.")
+  (list-chapters [this site-name comic-id]
+                 "Returns the list of chapter data for the given comic at the given site.")
+  (list-pages [this site-name comic-chapter]
+              "Returns the list of page data for the given site, comic and chapter."))
 
 (defrecord SiteScraper [sites]
   ISiteScraper
@@ -35,6 +40,9 @@
 
   (list-chapters [this site-name comic-id]
     (get-chapter-list (get sites site-name) comic-id))
+
+  (list-pages [this site-name comic-chapter]
+    (get-page-list (get sites site-name) comic-chapter))
 
   component/Lifecycle
 
