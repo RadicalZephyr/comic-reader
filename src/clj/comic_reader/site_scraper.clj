@@ -19,8 +19,6 @@
        flatten
        (apply hash-map)))
 
-(def sites (dissoc (get-sites) "test-site"))
-
 (defprotocol ISiteScraper
   (list-sites  [this]           "Returns the list of sites this scraper supports.")
   (list-comics [this site-name] "Returns the list of comics available at this site.")
