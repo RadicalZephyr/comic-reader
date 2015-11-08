@@ -221,7 +221,7 @@
     (catch java.net.UnknownHostException e
       false)))
 
-(defonce run-network-tests? (atom true))
+(defonce run-network-tests? (atom false))
 
 (defn try-fetch-url [url]
   (some-> url
