@@ -52,6 +52,7 @@
                     (test-system {:sites '("site-one"
                                            "site-two"
                                            "site-three")}))]
+
         (is (= (handle (mock/request :get "/api/v1/sites"))
                {:status 200
                 :headers edn-content-type
@@ -66,6 +67,7 @@
                                             {:id "other_comic"
                                              :name "Other Comic"
                                              :url "another_url"}]}}))]
+
         (is (= (handle (mock/request :get "/api/v1/manga-here/comics"))
                {:status 200
                 :headers edn-content-type
@@ -81,6 +83,7 @@
                                                            {:name "The Gamer 2",
                                                             :url "http://www.mangahere.co/manga/the_gamer/c002/",
                                                             :ch-num 2}]}}}))]
+
         (is (= (handle (mock/request :get "/api/v1/manga-here/the_gamer/chapters"))
                {:status 200
                 :headers edn-content-type
@@ -98,6 +101,7 @@
                                           {{:name "The Gamer 2", :url "http://www.mangahere.co/manga/the_gamer/c002/", :ch-num 2}
                                            [{:name "1", :url  "http://www.mangahere.co/manga/the_gamer/c002/"}
                                             {:name "2", :url  "http://www.mangahere.co/manga/the_gamer/c002/2.html"}]}}}))]
+
         (is (= (handle (-> (mock/request :post "/api/v1/manga-here/pages"
                                          (str
                                           "{:comic-chapter"
@@ -119,6 +123,7 @@
                                              {:src (str "http://a.mhcdn.net/store/manga/13739/095.0/compressed"
                                                         "/rthe-gamer-5978533.jpg?v=1440085982")
                                               :alt "The Gamer 95 Page 1"}]}}}))]
+
         (is (= (handle (-> (mock/request :post "/api/v1/manga-here/image"
                                          (str "{:comic-page {:name \"1\", :url "
                                               "\"http://www.mangahere.co/manga/the_gamer/c095/\"}}"))
