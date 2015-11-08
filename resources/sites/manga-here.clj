@@ -12,7 +12,7 @@
  :root-url "http://www.mangahere.co"
  :manga-url-format "%s/manga/"
 
- :manga-url-suffix-pattern "(.*?)/$"
+ :manga-url-suffix-pattern #"(.*?)/$"
 
  :comic-link-name-normalize second
  :comic-link-url-normalize identity

@@ -58,7 +58,7 @@
   "A regular expression to match the comic-id portion of a comics
   chapter list URL."
   []
-  (:manga-url-suffix-pattern options))
+  (str (:manga-url-suffix-pattern options)))
 
 (defn comic->url-format
   "A format string that when used to format the manga URL and a comic
