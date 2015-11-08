@@ -76,10 +76,14 @@
 
 (defn test-regexes []
   (and
-   (is (= 1 (num-groups (manga-pattern))))
-   (is (= 1 (num-groups (chapter-number-match-pattern))))
-   (is (= 0 (num-groups (page-normalize-pattern))))
-   (is (= 0 (num-groups (chapter-number-pattern))))))
+   (is (= 1 (num-groups (manga-pattern)))
+       "There should be exactly 1 matching group in the `manga-pattern' regex.")
+   (is (= 1 (num-groups (chapter-number-match-pattern)))
+       "There should be exactly 1 matching group in the `chapter-number-match-pattern' regex.")
+   (is (= 0 (num-groups (page-normalize-pattern)))
+       "There should not be any matching groups in the `page-normalize-pattern' regex.")
+   (is (= 0 (num-groups (chapter-number-pattern)))
+       "There should not be any matching groups in the `page-normalize-pattern' regex.")))
 
 (defn valid-selector? [selector]
   (and
