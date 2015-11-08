@@ -13,6 +13,8 @@
 
   :source-paths ["src/clj"]
 
+  :main comic-reader.system
+
   :dependencies [[org.clojure/clojure "1.7.0"]
 
                  ;; Core app dependencies
