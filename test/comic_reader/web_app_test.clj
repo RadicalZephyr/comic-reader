@@ -25,7 +25,10 @@
     (get-in this [:chapters site-name comic-id]))
 
   (list-pages [this site-name comic-chapter]
-    (get-in this [:pages site-name comic-chapter])))
+    (get-in this [:pages site-name comic-chapter]))
+
+  (get-page-image [this site-name comic-page]
+    (get-in this [:images site-name comic-page])))
 
 (defn test-system [scraper]
   (-> (server-test-system scraper)
@@ -108,4 +111,21 @@
                        "[{:name \"1\", :url \"http://www.mangahere.co/manga/the_gamer/c002/\"}"
                        " {:name \"2\", :url \"http://www.mangahere.co/manga/the_gamer/c002/2.html\"}]")}))))
 
-    (testing "/image")))
+    (testing "/:site-name/image"
+      (let [handle (app-routes
+                    (test-system {:images {"manga-here"
+                                           {{:name "1", :url "http://www.mangahere.co/manga/the_gamer/c095/"}
+                                            [:img
+                                             {:src (str "http://a.mhcdn.net/store/manga/13739/095.0/compressed"
+                                                        "/rthe-gamer-5978533.jpg?v=1440085982")
+                                              :alt "The Gamer 95 Page 1"}]}}}))]
+        (is (= (handle (-> (mock/request :post "/api/v1/manga-here/image"
+                                         (str "{:comic-page {:name \"1\", :url "
+                                              "\"http://www.mangahere.co/manga/the_gamer/c095/\"}}"))
+                           (mock/content-type "application/edn")))
+               {:status 200
+                :headers edn-content-type
+                :body (str "[:img "
+                           "{:src \"http://a.mhcdn.net/store/manga/13739/095.0/compressed"
+                           "/rthe-gamer-5978533.jpg?v=1440085982\", "
+                           ":alt \"The Gamer 95 Page 1\"}]")}))))))

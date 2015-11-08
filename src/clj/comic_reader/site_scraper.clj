@@ -27,7 +27,9 @@
   (list-chapters [this site-name comic-id]
                  "Returns the list of chapter data for the given comic at the given site.")
   (list-pages [this site-name comic-chapter]
-              "Returns the list of page data for the given site, comic and chapter."))
+              "Returns the list of page data for the given site, comic and chapter.")
+  (get-page-image [this site-name comic-page]
+                  "Returns the hiccup image tag for the given site, and page url."))
 
 (defrecord SiteScraper [sites]
   ISiteScraper
@@ -43,6 +45,9 @@
 
   (list-pages [this site-name comic-chapter]
     (get-page-list (get sites site-name) comic-chapter))
+
+  (get-page-image [this site-name comic-page]
+    (get-image-data (get sites site-name) comic-page))
 
   component/Lifecycle
 
