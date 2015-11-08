@@ -19,13 +19,14 @@
           (str "Contents of `sites/" site ".clj'"
                " cannot be empty")))))
 
-(defn try-read-file [filename]
+(defn try-read-file [filename error-message]
   (try
     (read-file filename)
     (catch java.lang.RuntimeException re
       (is false
           (str "Contents of `" filename "'"
-               " cannot be empty")))))
+               " cannot be empty.\n"
+               error-message)))))
 
 (def ^:dynamic site-name)
 
@@ -165,7 +166,9 @@
 
 (defn test-image-page-extraction []
   (let [results (try-read-file
-                 (site-test-resource "image.clj"))]
+                 (site-test-resource "image.clj")
+                 (str "Please add a map with keys for :image-tag,"
+                      " :pages-list and :chapter-url."))]
     (if-let [html (image-page-html)]
       (and
        (test-extract-image-tag html (:image-tag results))
@@ -178,7 +181,8 @@
 
 (defn test-extract-chapters-list []
   (let [results (try-read-file
-                 (site-test-resource "chapter_list.clj"))]
+                 (site-test-resource "chapter_list.clj")
+                 "Please add a map with a :chapter-list key.")]
     (if-let [html (chapter-list-html)]
       (and
        (tu/ensure-dependencies-defined extract-chapters-list)
@@ -191,7 +195,8 @@
 
 (defn test-extract-comic-list []
   (let [results (try-read-file
-                 (site-test-resource "comic_list.clj"))]
+                 (site-test-resource "comic_list.clj")
+                 "Please add a map with a :comic-list key.")]
     (if-let [html (comic-list-html)]
       (and
        (tu/ensure-dependencies-defined extract-comics-list)
