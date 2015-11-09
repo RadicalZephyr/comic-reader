@@ -9,16 +9,16 @@
             [net.cgrand.enlive-html :as html]))
 
 (defn expect-opts-are-map [site]
-  (try
-    (let [opts (read-site-options site)]
-      (is (map? opts)
-          (str "Contents of `sites/" site ".clj'"
-               " must be a map literal")))
-    (catch java.lang.RuntimeException re
-      (is false
-          (str "Contents of `sites/" site ".clj'"
-               " cannot be empty. Should be a map "
-               "literal (i.e. `{}')")))))
+  (is
+   (try
+     (let [opts (read-site-options site)]
+       (map? opts))
+     (catch java.lang.RuntimeException re
+       nil))
+
+   (str "Contents of `resources/sites/" site ".clj'"
+        "cannot be empty. It must contain exactly "
+        "one map literal.")))
 
 (defn try-read-file [filename error-message]
   (try
@@ -290,29 +290,30 @@
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
      (binding [~'site-name ~site-name]
-       (expect-opts-are-map ~site-name)
-       (call-with-options
-        ((scraper/get-sites) site-name)
+       (and
+        (expect-opts-are-map site-name)
+        (call-with-options
+         ((scraper/get-sites) site-name)
 
-        #(and
-          (test-regexes)
-          (test-enlive-selectors)
-          (test-normalize-functions)
-          (test-format-strings)
+         #(and
+           (test-regexes)
+           (test-enlive-selectors)
+           (test-normalize-functions)
+           (test-format-strings)
 
-          (if (has-test-folder?)
-            (and
-             (test-image-page-extraction)
-             (test-extract-chapters-list)
-             (test-extract-comic-list))
+           (if (has-test-folder?)
+             (and
+              (test-image-page-extraction)
+              (test-extract-chapters-list)
+              (test-extract-comic-list))
 
-            (error-must-have-test-data))
+             (error-must-have-test-data))
 
-          (when (connected-to-network?)
-            (test-scrape-urls))))
+           (when (connected-to-network?)
+             (test-scrape-urls))))
 
-       (when (connected-to-network?)
-         (test-full-site-traversal ((scraper/get-sites) site-name))))))
+        (when (connected-to-network?)
+          (test-full-site-traversal ((scraper/get-sites) site-name)))))))
 
 (defmacro defsite-tests []
   (try
