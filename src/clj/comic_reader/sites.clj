@@ -86,7 +86,8 @@
   (:chapter-list-selector options))
 
 (defn page-normalize-pattern
-  "A regular expression to extract the page number from the content."
+  "A regular expression to extract the page number from the page
+  select option value."
   []
   (:page-normalize-pattern options))
 
