@@ -1,6 +1,7 @@
 (ns comic-reader.sites.test-util
   (:require [clojure.string :as str]
             [clojure.test :refer :all]
+            [clojure.template :as template]
             [comic-reader.sites :refer :all]
             [clojure.template :refer [do-template]]
             [clj-http.client :as client]
@@ -102,6 +103,11 @@
     manga-url
     manga-list-url))
 
+(defmacro and-template [argv expr & values]
+  (let [c (count argv)]
+    `(and ~@(map (fn [a] (template/apply-template argv expr a))
+                 (partition c values)))))
+
 (defmacro are-with-msg [argv expr & args]
   (if (or
        ;; (are [] true) is meaningless but ok
@@ -110,7 +116,7 @@
        (and (pos? (count argv))
             (pos? (count args))
             (zero? (mod (count args) (count argv)))))
-    `(do-template ~argv ~expr ~@args)
+    `(and-template ~argv ~expr ~@args)
     (throw (IllegalArgumentException. "The number of args doesn't match are's argv."))))
 
 (defn get-doc-string [sym]
