@@ -22,7 +22,8 @@
 
 (defn try-read-file [filename error-message]
   (try
-    (read-file filename)
+    (when filename
+      (read-file filename))
     (catch java.lang.RuntimeException re
       (is false
           (str "Contents of `" filename "'"
@@ -46,7 +47,8 @@
                               resource)]
     (if (resource-exists? resource-path)
       (io/resource resource-path)
-      nil)))
+      (is false (str "There must be a test resource file at `resources/"
+                     resource-path "'")))))
 
 (defn has-test-folder? []
   (some-> (site-test-folder)
@@ -169,29 +171,44 @@
           (extract-pages-list html chapter-url))
        (tu/display-dependent-data-values extract-pages-list))))
 
+(defmacro is-defined-in-file [data-symbol file-expr]
+  `(let [file# ~file-expr]
+     (when file#
+       (is ~data-symbol (str ~(keyword data-symbol)
+                             " must be defined in "
+                             file#)))))
+
 (defn test-image-page-extraction []
-  (let [results (try-read-file
-                 (site-test-resource "image.clj")
-                 (str "Please add a map with keys for :image-tag,"
-                      " :pages-list and :chapter-url."))]
+  (let [image-test-resource (site-test-resource "image.clj")
+        {:keys [image-tag pages-list chapter-url]}
+        (try-read-file
+         image-test-resource
+         (str "Please add a map with keys for :image-tag,"
+              " :pages-list and :chapter-url."))]
     (if-let [html (image-page-html)]
       (and
-       (test-extract-image-tag html (:image-tag results))
-       (test-extract-pages-list html
-                                (:pages-list results)
-                                (:chapter-url results)))
+       (is-defined-in-file image-tag (site-test-resource "image.clj"))
+       (test-extract-image-tag html image-tag)
+
+       (is-defined-in-file pages-list (site-test-resource "image.clj"))
+       (is-defined-in-file chapter-url (site-test-resource "image.clj"))
+       (test-extract-pages-list html pages-list chapter-url))
+
       (is false
           (str "There must be a sample image html page at "
                "`resources/test/" site-name "/image.html'")))))
 
 (defn test-extract-chapters-list []
-  (let [results (try-read-file
-                 (site-test-resource "chapter_list.clj")
-                 "Please add a map with a :chapter-list key.")]
+  (let [chapter-test-resource (site-test-resource "chapter_list.clj")
+        {:keys [chapter-list]}
+        (try-read-file
+         chapter-test-resource
+         "Please add a map with a :chapter-list key.")]
     (if-let [html (chapter-list-html)]
       (and
        (tu/ensure-dependencies-defined extract-chapters-list)
-       (is (= (:chapter-list results)
+       (is-defined-in-file chapter-list chapter-test-resource)
+       (is (= chapter-list
               (extract-chapters-list html ""))
            (tu/display-dependent-data-values extract-chapters-list)))
       (is false
@@ -199,13 +216,16 @@
                "at `resources/test/" site-name "/chapter_list.html'")))))
 
 (defn test-extract-comic-list []
-  (let [results (try-read-file
-                 (site-test-resource "comic_list.clj")
-                 "Please add a map with a :comic-list key.")]
+  (let [comic-test-resource (site-test-resource "comic_list.clj")
+        {:keys [comic-list]}
+        (try-read-file
+         comic-test-resource
+         "Please add a map with a :comic-list key.")]
     (if-let [html (comic-list-html)]
       (and
        (tu/ensure-dependencies-defined extract-comics-list)
-       (is (= (:comic-list results)
+       (is-defined-in-file comic-list comic-test-resource)
+       (is (= comic-list
               (extract-comics-list html))
            (tu/display-dependent-data-values extract-comics-list)))
       (is false
