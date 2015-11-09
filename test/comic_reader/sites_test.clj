@@ -17,7 +17,7 @@
      (catch java.lang.RuntimeException re
        nil))
 
-   (str "Contents of `resources/sites/" site ".clj'"
+   (str "Contents of `resources/sites/" site ".clj' "
         "cannot be empty. It must contain exactly "
         "one map literal.")))
 
@@ -183,7 +183,7 @@
                              file#)))))
 
 (defn success-message [message]
-  (println (style (str "\u2713 " message)
+  (println (style (str "\t\u2713 " message)
                   :green))
   true)
 
@@ -303,6 +303,7 @@
 
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
+     (println (style ~(str "\n" site-name ":") :yellow))
      (binding [~'site-name ~site-name]
        (and
         (expect-opts-are-map site-name)
@@ -310,11 +311,6 @@
          ((scraper/get-sites) site-name)
 
          #(and
-           (test-regexes)
-           (test-enlive-selectors)
-           (test-normalize-functions)
-           (test-format-strings)
-
            (if (has-test-folder?)
              (and
               (test-image-page-extraction)
@@ -322,6 +318,11 @@
               (test-extract-comic-list))
 
              (error-must-have-test-data))
+
+           (test-regexes)
+           (test-enlive-selectors)
+           (test-normalize-functions)
+           (test-format-strings)
 
            (when (connected-to-network?)
              (test-scrape-urls))))
