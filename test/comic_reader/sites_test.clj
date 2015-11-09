@@ -5,8 +5,9 @@
             [comic-reader.sites.protocol  :refer :all]
             [comic-reader.sites.read      :refer :all]
             [comic-reader.sites.test-util :as tu]
-            [comic-reader.site-scraper :as scraper]
-            [net.cgrand.enlive-html :as html]))
+            [comic-reader.site-scraper    :as scraper]
+            [clansi.core                  :refer [style]]
+            [net.cgrand.enlive-html       :as html]))
 
 (defn expect-opts-are-map [site]
   (is
@@ -181,6 +182,11 @@
                              " must be defined in "
                              file#)))))
 
+(defn success-message [message]
+  (println (style (str "\u2713 " message)
+                  :green))
+  true)
+
 (defn test-image-page-extraction []
   (let [image-test-resource (site-test-resource "image.clj")
         {:keys [image-tag pages-list chapter-url]}
@@ -195,7 +201,8 @@
 
        (is-defined-in-file pages-list (site-test-resource "image.clj"))
        (is-defined-in-file chapter-url (site-test-resource "image.clj"))
-       (test-extract-pages-list html pages-list chapter-url))
+       (test-extract-pages-list html pages-list chapter-url)
+       (success-message "Image page extraction test passed!"))
 
       (is false
           (str "There must be a sample image html page at "
@@ -213,7 +220,9 @@
        (is-defined-in-file chapter-list chapter-test-resource)
        (is (= chapter-list
               (extract-chapters-list html ""))
-           (tu/display-dependent-data-values extract-chapters-list)))
+           (tu/display-dependent-data-values extract-chapters-list))
+       (success-message "Chapters list extraction test passed!"))
+
       (is false
           (str "There must be a sample chapter list html page "
                "at `resources/test/" site-name "/chapter_list.html'")))))
@@ -230,7 +239,9 @@
        (is-defined-in-file comic-list comic-test-resource)
        (is (= comic-list
               (extract-comics-list html))
-           (tu/display-dependent-data-values extract-comics-list)))
+           (tu/display-dependent-data-values extract-comics-list))
+       (success-message "Comic list extraction test passed!"))
+
       (is false
           (str "There must be a sample chapter list html page "
                "at `resources/test/" site-name "/comic_list.html'")))))
