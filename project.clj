@@ -57,10 +57,13 @@
 
   :profiles {:dev {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
                    :source-paths ["dev-src/clj"]
+
                    :dependencies [[org.clojure/tools.namespace "0.2.11"]
+                                  [radicalzephyr/clansi "1.2.0"]
+                                  [aysylu/loom "0.5.4"]
+
                                   [ring/ring-mock "0.3.0"]
-                                  [figwheel "0.4.1"]
-                                  [aysylu/loom "0.5.4"]]
+                                  [figwheel "0.4.1"]]
 
                    :plugins [[lein-figwheel "0.4.1"]]
 
