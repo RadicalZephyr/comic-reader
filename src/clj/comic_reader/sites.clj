@@ -214,7 +214,7 @@
       {:name name
        :url (format (page-normalize-format)
                     base-url
-                    page-number)})))
+                    (or page-number ""))})))
 
 (defn extract-pages-list [html chapter-url]
   (let [base-url (str/replace chapter-url
