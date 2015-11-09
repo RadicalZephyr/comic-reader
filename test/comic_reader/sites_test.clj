@@ -1,11 +1,11 @@
 (ns comic-reader.sites-test
-  (:require [clojure.test :refer :all]
-            [comic-reader.sites.protocol :refer :all]
-            [comic-reader.sites :refer :all]
-            [comic-reader.sites.read :refer :all]
+  (:require [clojure.java.io :as io]
+            [clojure.test                 :refer :all]
+            [comic-reader.sites           :refer :all]
+            [comic-reader.sites.protocol  :refer :all]
+            [comic-reader.sites.read      :refer :all]
             [comic-reader.sites.test-util :as tu]
             [comic-reader.site-scraper :as scraper]
-            [clojure.java.io :as io]
             [net.cgrand.enlive-html :as html]))
 
 (defn expect-opts-are-map [site]
