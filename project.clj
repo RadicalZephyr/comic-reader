@@ -55,7 +55,9 @@
                  :output-dir "resources/public/js/compiled/out"
                  :asset-path "js/compiled/out"}}}}
 
-  :profiles {:dev {:dependencies [[ring/ring-mock "0.3.0"]
+  :profiles {:dev {:source-paths ["dev-src/clj"]
+                   :dependencies [[org.clojure/tools.namespace "0.2.11"]
+                                  [ring/ring-mock "0.3.0"]
                                   [figwheel "0.4.1"]
                                   [aysylu/loom "0.5.4"]]
 
@@ -68,7 +70,7 @@
                               :nrepl-port 7888}
 
                    :cljsbuild
-                   {:builds {:client {:source-paths ["devsrc"]
+                   {:builds {:client {:source-paths ["dev-src/cljs"]
                                       :compiler
                                       {:main comic-reader.dev
                                        :optimizations :none
