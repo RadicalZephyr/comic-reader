@@ -55,7 +55,8 @@
                  :output-dir "resources/public/js/compiled/out"
                  :asset-path "js/compiled/out"}}}}
 
-  :profiles {:dev {:source-paths ["dev-src/clj"]
+  :profiles {:dev {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
+                   :source-paths ["dev-src/clj"]
                    :dependencies [[org.clojure/tools.namespace "0.2.11"]
                                   [ring/ring-mock "0.3.0"]
                                   [figwheel "0.4.1"]
