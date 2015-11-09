@@ -93,12 +93,12 @@
 (defn test-enlive-selectors []
   (tu/are-with-msg [sel-fn]
                    (is (valid-selector? (sel-fn))
-                                (str "All elements of a selector "
-                                     "must be keywords."))
-    comic-list-selector
-    chapter-list-selector
-    page-list-selector
-    image-selector))
+                       (str "All elements of a selector "
+                            "must be keywords."))
+                   comic-list-selector
+                   chapter-list-selector
+                   page-list-selector
+                   image-selector))
 
 (defn test-normalize-functions []
   (tu/are-with-msg [norm-fn]
