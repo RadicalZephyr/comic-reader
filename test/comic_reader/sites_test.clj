@@ -15,7 +15,9 @@
      (let [opts (read-site-options site)]
        (map? opts))
      (catch java.lang.RuntimeException re
-       nil))
+       (when (not= (.getMessage re)
+                   "EOF while reading")
+         (throw re))))
 
    (str "Contents of `resources/sites/" site ".clj' "
         "cannot be empty. It must contain exactly "
