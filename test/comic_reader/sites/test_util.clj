@@ -80,8 +80,11 @@
     :chapter-number-pattern
     :chapter-number-match-pattern
 
-    :link-name-normalize
-    :link-url-normalize
+    :chapter-link-name-normalize
+    :chapter-link-url-normalize
+
+    :comic-link-name-normalize
+    :comic-link-url-normalize
 
     :page-normalize-format
     :page-normalize-pattern})
