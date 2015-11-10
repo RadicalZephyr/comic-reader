@@ -127,8 +127,8 @@
   (eval (:comic-link-name-normalize options)))
 
 (defn chapter-link-url-normalize
-  "An expression that evals to a function that will normalize the link
-  url."
+  "An expression that evals to a function that will normalize the
+  chapter link url."
   []
   (eval (:chapter-link-url-normalize options)))
 
