@@ -22,3 +22,8 @@ From here, the basic pattern is this: call `(run-site-tests)`, see
 what fails, then go and fix it. For the most part the error messages
 from failing tests should be a sufficient guide to help you implement
 scraping for your new site.
+
+Once you've gotten all of the tests running, you should turn the
+network tests on by running
+`(swap! comic-reader.site-dev/run-network-tests? not)`,
+and then running the tests again.
