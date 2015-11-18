@@ -25,5 +25,5 @@ scraping for your new site.
 
 Once you've gotten all of the tests running, you should turn the
 network tests on by running
-`(swap! comic-reader.site-dev/run-network-tests? not)`,
+`(swap! comic-reader.sites-test/run-network-tests? not)`,
 and then running the tests again.
