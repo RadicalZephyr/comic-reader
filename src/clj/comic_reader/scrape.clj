@@ -12,8 +12,7 @@
 
 (defn extract-list [html selector normalize]
   (->> (html/select html selector)
-       (map normalize)
-       (filter identity)))
+       (keep normalize)))
 
 (defn fetch-list [{:keys [url selector normalize]}]
   (when (every? (complement nil?) [url selector normalize])
