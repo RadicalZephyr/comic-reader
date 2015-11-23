@@ -67,7 +67,12 @@
 
                    :plugins [[lein-figwheel "0.4.1"]]
 
-                   :repl-options {:init-ns comic-reader.system}
+                   :repl-options {:init-ns comic-reader.system
+                                  :welcome (println (str "To start developing a new site definition, "
+                                                         "run:\n (require 'comic-reader.site-dev)"
+                                                         "\n (in-ns   'comic-reader.site-dev)"
+                                                         "\n\nThen use `(run-site-tests)' until all tests pass."
+                                                         "\nSee doc/adding-a-new-site.md for more details."))}
 
                    :figwheel {:http-server-root "public"
                               :css-dirs ["resources/public/css"]
