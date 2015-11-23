@@ -210,8 +210,24 @@
           (str "There must be a sample image html page at "
                "`resources/test/" site-name "/image.html'")))))
 
+(defn make-retry-selector-fn [file-name]
+  (fn [html selector]
+    (if (seq selector)
+      (if-let [selection (seq
+                          (html/select html
+                                       selector))]
+        (do
+          (printf (str "Found selection with partial"
+                       " selector: '%s' in %s")
+                  selector
+                  file-name)
+          selection)
+        (recur html (butlast selector)))
+      (throw (ex-info "No partial selection found for selector." {})))))
+
 (defn test-extract-chapters-list []
-  (let [chapter-test-resource (site-test-resource "chapter_list.clj")
+  (let [chapter-list-html-path (str "resources/test/" site-name "/chapter_list.html")
+        chapter-test-resource (site-test-resource "chapter_list.clj")
         {:keys [chapter-list]}
         (try-read-file
          chapter-test-resource
@@ -220,14 +236,17 @@
       (and
        (tu/ensure-dependencies-defined extract-chapters-list)
        (is-defined-in-file chapter-list chapter-test-resource)
-       (is (= chapter-list
-              (extract-chapters-list html ""))
-           (tu/display-dependent-data-values extract-chapters-list))
+       (binding [comic-reader.scrape/raise-null-selection-error
+                 (make-retry-selector-fn chapter-list-html-path)]
+         (is (= chapter-list
+                (extract-chapters-list html ""))
+             (tu/display-dependent-data-values extract-chapters-list)))
        (success-message "Chapters list extraction test passed!"))
 
       (is false
-          (str "There must be a sample chapter list html page "
-               "at `resources/test/" site-name "/chapter_list.html'")))))
+          (format
+           "There must be a sample chapter list html page at `%s'"
+           chapter-list-html-path)))))
 
 (defn test-extract-comic-list []
   (let [comic-test-resource (site-test-resource "comic_list.clj")
