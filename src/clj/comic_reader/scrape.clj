@@ -6,13 +6,18 @@
             [net.cgrand.enlive-html :as html])
   (:import java.net.URL))
 
+(defn ^:dynamic raise-null-selection-error [html selector]
+  (throw (ex-info "No selection found." {:html html
+                                         :selector selector})))
+
 (defn fetch-url [url]
   (with-tempfile [html-file (tempfile (:body (client/get url)))]
    (html/html-resource html-file)))
 
 (defn extract-list [html selector normalize]
-  (->> (html/select html selector)
-       (keep normalize)))
+  (if-let [selection (seq (html/select html selector))]
+    (keep normalize selection)
+    (raise-null-selection-error html selector)))
 
 (defn fetch-list [{:keys [url selector normalize]}]
   (when (every? (complement nil?) [url selector normalize])
