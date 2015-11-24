@@ -119,27 +119,30 @@
                    chapter-link-url-normalize))
 
 (defn format-specifiers? [fmt specs]
-  (let [intermediate-matcher (re-matcher #"(?<!%)%(?!%)" fmt)]
-    (if (seq specs)
-      (loop [m (re-matcher (re-pattern (first specs)) fmt)
-             specs (rest specs)
-             start 0]
-        (if (.find m)
-          (let [end (.start m)]
-            (.region intermediate-matcher start end)
-            (if (.find intermediate-matcher)
-              false
-              (if (seq specs)
-                (recur (.usePattern m (re-pattern (first specs)))
-                       (rest specs)
-                       (.end m))
-                true)))
-          false))
-      (not (.find intermediate-matcher)))))
+  (and
+   fmt
+   (let [intermediate-matcher (re-matcher #"(?<!%)%(?!%)" fmt)]
+     (if (seq specs)
+       (loop [m (re-matcher (re-pattern (first specs)) fmt)
+              specs (rest specs)
+              start 0]
+         (if (.find m)
+           (let [end (.start m)]
+             (.region intermediate-matcher start end)
+             (if (.find intermediate-matcher)
+               false
+               (if (seq specs)
+                 (recur (.usePattern m (re-pattern (first specs)))
+                        (rest specs)
+                        (.end m))
+                 true)))
+           false))
+       (not (.find intermediate-matcher))))))
 
 (def #^{:macro true} has #'is)
 
 (deftest test-format-specifiers?
+  (has (not (format-specifiers? nil [])))
   (has (format-specifiers? "abc euth123 ][908" []))
   (has (format-specifiers? "abc %%euth123 ][908" []))
   (has (format-specifiers? "%s" ["%s"]))
@@ -238,8 +241,8 @@
        (is-defined-in-file chapter-list chapter-test-resource)
        (binding [comic-reader.scrape/raise-null-selection-error
                  (make-retry-selector-fn chapter-list-html-path)]
-         (is (= chapter-list
-                (extract-chapters-list html ""))
+         (is (= (sort-by :ch-num chapter-list)
+                (sort-by :ch-num (extract-chapters-list html "")))
              (tu/display-dependent-data-values extract-chapters-list)))
        (success-message "Chapters list extraction test passed!"))
 
@@ -258,8 +261,8 @@
       (and
        (tu/ensure-dependencies-defined extract-comics-list)
        (is-defined-in-file comic-list comic-test-resource)
-       (is (= comic-list
-              (extract-comics-list html))
+       (is (= (sort-by :id comic-list)
+              (sort-by :id (extract-comics-list html)))
            (tu/display-dependent-data-values extract-comics-list))
        (success-message "Comic list extraction test passed!"))
 
