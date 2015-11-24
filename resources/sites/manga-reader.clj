@@ -14,8 +14,11 @@
  :chapter-link-name-normalize first
  :chapter-link-url-normalize identity
 
- ;; :root-url "http://www.mangareader.net"
- ;; :manga-url-format "%s/"
- ;; :manga-url-suffix-pattern #"/(.*?)$"
+ :comic-list-selector [:div#container :div#wrapper_body :ul.series_alpha :li :a]
+ :root-url "http://www.mangareader.net"
+ :manga-url-format "%s/"
+ :manga-url-suffix-pattern #"/(.*?)$"
 
+ :comic-link-name-normalize (comp clojure.string/trim first)
+ :comic-link-url-normalize identity
  }
