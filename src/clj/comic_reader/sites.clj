@@ -158,9 +158,10 @@
    :url  ((comic-link-url-normalize)  url)})
 
 (defn comic-link-add-id [{:keys [url] :as comic-map}]
-  (let [[_ data] (re-find (manga-pattern) url)]
-    (assoc comic-map
-           :id data)))
+  (when url
+    (let [[_ data] (re-find (manga-pattern) url)]
+      (assoc comic-map
+             :id data))))
 
 (defn comic-link-normalize [link]
   (-> link
@@ -193,11 +194,12 @@
       chapter-link-add-ch-num))
 
 (defn extract-chapters-list [html comic-url]
-  (->> (scrape/extract-list html
-                            (chapter-list-selector)
-                            chapter-link-normalize)
-       (filter :ch-num)
-       (sort-by :ch-num)))
+  (if-let [raw-list (seq (scrape/extract-list html
+                                              (chapter-list-selector)
+                                              chapter-link-normalize))]
+    (->> raw-list
+         (filter :ch-num)
+         (sort-by :ch-num))))
 
 (defn comic->url [comic-id]
   (format (comic->url-format) (manga-url) comic-id))
