@@ -21,4 +21,7 @@
 
  :comic-link-name-normalize (comp clojure.string/trim first)
  :comic-link-url-normalize identity
+
+ :manga-list-format "%s/alphabetical"
+ :comic->url-format "%s%s"
  }
