@@ -7,7 +7,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :min-lein-version "2.5.1"
+  :min-lein-version "2.5.3"
 
   :uberjar-name "comic-reader.jar"
 
@@ -33,7 +33,7 @@
                  [enlive "1.1.6"]
 
                  ;; Clojurescript frontend
-                 ;; [org.clojure/clojurescript "1.7.145"]
+                 [org.clojure/clojurescript "1.7.170"]
                  ;; [reagent "0.5.0"]
                  ;; [re-frame "0.5.0-alpha1" :exclusions
                  ;;  [[org.clojure/clojurescript
@@ -63,9 +63,11 @@
                                   [aysylu/loom "0.5.4"]
 
                                   [ring/ring-mock "0.3.0"]
-                                  [figwheel "0.4.1"]]
+                                  ;; [figwheel "0.4.1"]
+                                  ]
 
-                   :plugins [[lein-figwheel "0.4.1"]]
+                   :plugins [[lein-figwheel "0.5.0-1"]
+                             [org.clojure/clojurescript "1.7.170"]]
 
                    :repl-options {:init-ns comic-reader.system
                                   :welcome (println (str "To start developing a new site definition, "
@@ -79,9 +81,9 @@
                               :nrepl-port 7888}
 
                    :cljsbuild
-                   {:builds {:client {:source-paths ["dev-src/cljs"]
+                   {:builds {:client {:figwheel true
                                       :compiler
-                                      {:main comic-reader.dev
+                                      {:main "comic-reader.main"
                                        :optimizations :none
                                        :source-map true
                                        :source-map-timestamp true}}}}}
