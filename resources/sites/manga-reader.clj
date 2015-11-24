@@ -7,11 +7,15 @@
 
  :page-list-selector [:div#selectpage :select#pageMenu :option]
 
+ :chapter-list-selector [:table#listing :tr :td :a]
+
+ :chapter-number-match-pattern #"/(\d+)$"
+
+ :chapter-link-name-normalize first
+ :chapter-link-url-normalize identity
+
  ;; :root-url "http://www.mangareader.net"
  ;; :manga-url-format "%s/"
  ;; :manga-url-suffix-pattern #"/(.*?)$"
-
- ;; :chapter-number-match-pattern #"/(\d+)$"
-
 
  }
