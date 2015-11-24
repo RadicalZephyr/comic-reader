@@ -150,7 +150,7 @@
   (format (manga-list-format) (root-url)))
 
 (defn manga-pattern []
-  (re-pattern (str "(?:" (manga-url) ")?"
+  (re-pattern (str (manga-url)
                    (manga-url-suffix-pattern))))
 
 (defn comic-link->map [{name :content
