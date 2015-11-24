@@ -118,6 +118,8 @@
                    chapter-link-name-normalize
                    chapter-link-url-normalize))
 
+(def #^{:macro true} has #'is)
+
 (defn format-specifiers? [fmt specs]
   (and
    fmt
@@ -139,32 +141,16 @@
            false))
        (not (.find intermediate-matcher))))))
 
-(def #^{:macro true} has #'is)
-
-(deftest test-format-specifiers?
-  (has (not (format-specifiers? nil [])))
-  (has (format-specifiers? "abc euth123 ][908" []))
-  (has (format-specifiers? "abc %%euth123 ][908" []))
-  (has (format-specifiers? "%s" ["%s"]))
-  (has (format-specifiers? "abc%s %def %y" ["%s" "%d" "%y"]))
-  (has (format-specifiers? "abc%s %% %de" ["%s" "%d"]))
-
-  (has (not (format-specifiers? "%d" [])))
-  (has (not (format-specifiers? "%d" ["%s"])))
-  (has (not (format-specifiers? "%s%d" ["%s" "%f"])))
-  (has (not (format-specifiers? "%sabc%d" ["%d"])))
-  (has (not (format-specifiers? "%sabc%d" ["%d" "%s"]))))
-
 (defn test-format-strings []
   (and
-   (has (format-specifiers? (manga-list-format)
-                            ["%s"]))
-   (has (format-specifiers? (manga-url-format)
-                            ["%s"]))
-   (has (format-specifiers? (comic->url-format)
-                            ["%s" "%s"]))
-   (has (format-specifiers? (page-normalize-format)
-                            ["%s" "%s"]))))
+   (has (tu/format-specifiers? (manga-list-format)
+                               ["%s"]))
+   (has (tu/format-specifiers? (manga-url-format)
+                               ["%s"]))
+   (has (tu/format-specifiers? (comic->url-format)
+                               ["%s" "%s"]))
+   (has (tu/format-specifiers? (page-normalize-format)
+                               ["%s" "%s"]))))
 
 (defn test-extract-image-tag [html image-tag]
   (and
