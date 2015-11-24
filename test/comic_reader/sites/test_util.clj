@@ -174,3 +174,24 @@
 
       (throw (IllegalArgumentException.
               (str fn-name " is not a valid function name."))))))
+
+(defn format-specifiers? [fmt specs]
+  (and
+   fmt
+   (let [intermediate-matcher (re-matcher #"(?<!%)%(?!%)" fmt)]
+     (if (seq specs)
+       (loop [m (re-matcher (re-pattern (first specs)) fmt)
+              specs (rest specs)
+              start 0]
+         (if (.find m)
+           (let [end (.start m)]
+             (.region intermediate-matcher start end)
+             (if (.find intermediate-matcher)
+               false
+               (if (seq specs)
+                 (recur (.usePattern m (re-pattern (first specs)))
+                        (rest specs)
+                        (.end m))
+                 true)))
+           false))
+       (not (.find intermediate-matcher))))))
