@@ -12,16 +12,20 @@
  :chapter-number-match-pattern #"/(\d+)$"
 
  :chapter-link-name-normalize first
- :chapter-link-url-normalize identity
+ :chapter-link-url-normalize (fn [segment]
+                               (str (comic-reader.sites/root-url)
+                                    segment))
 
  :comic-list-selector [:div#container :div#wrapper_body :ul.series_alpha :li :a]
  :root-url "http://www.mangareader.net"
- :manga-url-format "%s/"
- :manga-url-suffix-pattern #"/(.*?)$"
+ :manga-url-format "%s"
+ :manga-url-suffix-pattern #"/(.+?)$"
 
  :comic-link-name-normalize (comp clojure.string/trim first)
- :comic-link-url-normalize identity
+ :comic-link-url-normalize (fn [segment]
+                             (str (comic-reader.sites/root-url)
+                                  segment))
 
  :manga-list-format "%s/alphabetical"
- :comic->url-format "%s%s"
+ :comic->url-format "%s/%s"
  }
