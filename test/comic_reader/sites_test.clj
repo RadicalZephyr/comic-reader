@@ -281,7 +281,8 @@
    @run-network-tests?
 
    (is (not (nil? (test-url root-url))))
-   (is (not (nil? (test-url manga-list-url))))))
+   (is (not (nil? (test-url manga-list-url))))
+   (success-message "Scrape URL test passed!")))
 
 (defn ensure-all-dependencies []
   (tu/ensure-dependencies-defined get-comic-list)
@@ -309,7 +310,8 @@
 
                page-list (get-page-list site last-chapter)
                third-page (nth page-list 3)]
-           (get-image-data site third-page)))))))
+           (get-image-data site third-page)))))
+   (success-message "Full site traversal test passed!")))
 
 (defn testdef-form [site-name]
   `(deftest ~(symbol (str site-name "-test"))
