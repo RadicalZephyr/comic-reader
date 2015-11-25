@@ -12,6 +12,7 @@
   :uberjar-name "comic-reader.jar"
 
   :source-paths ["src/clj"]
+  :test-paths   ["test/clj"]
 
   :main comic-reader.system
 
