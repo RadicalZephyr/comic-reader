@@ -65,6 +65,7 @@
 
                                   [ring/ring-mock "0.3.0"]
                                   [figwheel-sidecar "0.5.0-1"]
+                                  [devcards "0.2.1"]
                                   [com.cemerick/piggieback "0.2.1"]]
 
                    :repl-options {:init-ns comic-reader.system
