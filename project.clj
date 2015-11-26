@@ -35,10 +35,10 @@
 
                  ;; Clojurescript frontend
                  [org.clojure/clojurescript "1.7.170"]
-                 ;; [reagent "0.5.0"]
-                 ;; [re-frame "0.5.0-alpha1" :exclusions
-                 ;;  [[org.clojure/clojurescript
-                 ;;    :extension "jar"]]]
+                 [re-frame "0.5.0" :exclusions
+                  [[org.clojure/clojurescript
+                    :extension "jar"]]]
+
                  ;; [secretary "1.2.3"]
                  ;; [cljsjs/waypoints "3.1.1-0"]
                  ;; [cljs-ajax "0.5.1"]
@@ -57,25 +57,23 @@
                  :asset-path "js/compiled/out"}}}}
 
   :profiles {:dev {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
-                   :source-paths ["dev-src/clj"]
-
+                   :source-paths ["dev-src/clj" "src/cljs"]
+                   :test-paths   ["test/cljs"]
                    :dependencies [[org.clojure/tools.namespace "0.2.11"]
                                   [radicalzephyr/clansi "1.2.0"]
                                   [aysylu/loom "0.5.4"]
 
                                   [ring/ring-mock "0.3.0"]
-                                  ;; [figwheel "0.4.1"]
-                                  ]
-
-                   :plugins [[lein-figwheel "0.5.0-1"]
-                             [org.clojure/clojurescript "1.7.170"]]
+                                  [figwheel-sidecar "0.5.0-1"]
+                                  [com.cemerick/piggieback "0.2.1"]]
 
                    :repl-options {:init-ns comic-reader.system
                                   :welcome (println (str "To start developing a new site definition, "
                                                          "run:\n (require 'comic-reader.site-dev)"
                                                          "\n (in-ns   'comic-reader.site-dev)"
                                                          "\n\nThen use `(run-site-tests)' until all tests pass."
-                                                         "\nSee doc/adding-a-new-site.md for more details."))}
+                                                         "\nSee doc/adding-a-new-site.md for more details."))
+                                  :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
                    :figwheel {:http-server-root "public"
                               :css-dirs ["resources/public/css"]
@@ -85,9 +83,21 @@
                    {:builds {:client {:figwheel true
                                       :compiler
                                       {:main "comic-reader.main"
+                                       :source-paths ["src/cljs" "test/cljs"]
                                        :optimizations :none
                                        :source-map true
-                                       :source-map-timestamp true}}}}}
+                                       :source-map-timestamp true}}
+                             :test
+                             {:source-paths ["src/cljs" "test/cljs"]
+                              :figwheel true
+                              :compiler
+                              {:main "comic-reader.runner"
+                               :optimizations :none
+                               :source-map true
+                               :source-map-timestamp true
+                               :output-to "resources/public/js/compiled/main.js"
+                               :output-dir "/Users/geoff/prog/clj/comic-reader/resources/public/js/compiled/out"
+                               :asset-path "js/compiled/out"}}}}}
 
              :uberjar {:omit-source true
                        :aot :all
