@@ -29,30 +29,39 @@
     (c/POST "/:site-name/image" [site-name comic-page]
       (edn-response (scraper/get-page-image site-scraper site-name comic-page)))))
 
+(defn- render-page [& content]
+  (page/html5
+   [:head
+    (page/include-css "css/normalize.css"
+                      "css/foundation.min.css"
+                      "css/app.css")
+    (page/include-js "js/vendor/modernizr.js")]
+   (conj (into [:body] content)
+         (page/include-js "js/vendor/jquery.js"
+                          "js/vendor/fastclick.js"
+                          "js/foundation.min.js"
+                          "js/compiled/main.js"))))
+
 (defn- make-routes [site-scraper]
   (c/routes
-    (c/GET "/" []
-      (page/html5
-       [:head
-        (page/include-css "css/normalize.css"
-                          "css/foundation.min.css"
-                          "css/app.css")
-        (page/include-js "js/vendor/modernizr.js")]
-       [:body
-        [:div.row
-         [:div#app.small-12.columns]]
-        [:input#history_state {:type "hidden"}]
-        (page/include-js "js/vendor/jquery.js"
-                         "js/vendor/fastclick.js"
-                         "js/foundation.min.js"
-                         "js/compiled/main.js")]))
+   (c/GET "/" []
+     (render-page
+      [:div.row
+       [:div#app.small-12.columns]]
+      [:input#history_state {:type "hidden"}]))
 
-    (c/context "/api/v1" []
-      (-> (make-api-routes site-scraper)
-          wrap-params
-          wrap-edn-params))
+   (c/GET "/devcards" []
+     (render-page
+      [:div.row
+       [:div#cards.small-12.columns]]
+      (page/include-js "js/compiled/devcards.js")))
 
-    (route/resources "/")))
+   (c/context "/api/v1" []
+              (-> (make-api-routes site-scraper)
+                  wrap-params
+                  wrap-edn-params))
+
+   (route/resources "/")))
 
 (defrecord WebApp [routes site-scraper]
   component/Lifecycle

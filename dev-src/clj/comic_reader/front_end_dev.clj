@@ -8,16 +8,16 @@
    :build-ids ["dev"]
    :all-builds [{:id "dev"
                  :source-paths ["src/cljs" "test/cljs"]
-                 :figwheel true
+                 :figwheel {:devcards true}
                  :compiler
-                 {:main "comic-reader.runner"
+                 {:main "comic-reader.devcards"
                   :optimizations :none
                   :source-map true
                   :source-map-timestamp true
-                  :output-to "resources/public/js/compiled/main.js"
-                  :output-dir "/Users/geoff/prog/clj/comic-reader/resources/public/js/compiled/out"
-                  :asset-path "js/compiled/out"}}]})
+                  :output-to "resources/public/js/compiled/devcards.js"
+                  :output-dir "/Users/geoff/prog/clj/comic-reader/resources/public/js/compiled/devcards_out"
+                  :asset-path "js/compiled/devcards_out"}}]})
 
-(defn start-dev [& args]
+(defn start-dev! [& args]
   (apply go args)
   (start-figwheel! figwheel-config))
