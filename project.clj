@@ -19,7 +19,7 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
 
                  ;; Core app dependencies
-                 [com.stuartsierra/component "0.3.0"]
+                 [com.stuartsierra/component "0.3.1"]
                  [environ "1.0.1"]
 
                  ;; Web server
@@ -35,7 +35,7 @@
 
                  ;; Clojurescript frontend
                  [org.clojure/clojurescript "1.7.170"]
-                 [re-frame "0.5.0" :exclusions
+                 [re-frame "0.6.0" :exclusions
                   [[org.clojure/clojurescript
                     :extension "jar"]]]
 
@@ -64,8 +64,8 @@
                                   [aysylu/loom "0.5.4"]
 
                                   [ring/ring-mock "0.3.0"]
-                                  [figwheel-sidecar "0.5.0-1"]
-                                  [devcards "0.2.1"]
+                                  [figwheel-sidecar "0.5.0-2"]
+                                  [devcards "0.2.1-2"]
                                   [com.cemerick/piggieback "0.2.1"]]
 
                    :repl-options {:init-ns comic-reader.system
