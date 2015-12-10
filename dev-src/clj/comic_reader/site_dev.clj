@@ -1,5 +1,6 @@
 (ns comic-reader.site-dev
   (:require [clojure.java.io :refer [as-file resource]]
+            [clojure.repl :refer :all]
             [clojure.test :refer [run-tests]]
             [clojure.tools.namespace.repl :refer [refresh]]))
 
