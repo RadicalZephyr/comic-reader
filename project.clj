@@ -68,12 +68,8 @@
                                   [devcards "0.2.1-2"]
                                   [com.cemerick/piggieback "0.2.1"]]
 
-                   :repl-options {:init-ns comic-reader.system
-                                  :welcome (println (str "To start developing a new site definition, "
-                                                         "run:\n (require 'comic-reader.site-dev)"
-                                                         "\n (in-ns   'comic-reader.site-dev)"
-                                                         "\n\nThen use `(run-site-tests)' until all tests pass."
-                                                         "\nSee doc/adding-a-new-site.md for more details."))
+                   :repl-options {:init-ns comic-reader.dev
+                                  :welcome (comic-reader.dev/welcome)
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
                    :figwheel {:http-server-root "public"
