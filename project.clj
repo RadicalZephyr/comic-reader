@@ -82,24 +82,13 @@
 
                    :cljsbuild
                    {:builds
-                    {:client {:figwheel true
+                    {:client {:source-paths ["src/cljs" "test/cljs"]
+                              :figwheel true
                               :compiler
                               {:main "comic-reader.main"
-                               :source-paths ["src/cljs" "test/cljs"]
                                :optimizations :none
                                :source-map true
                                :source-map-timestamp true}}
-
-                     :devcards {:figwheel {:devcards true}
-                                :compiler
-                                {:main "comic-reader.devcards"
-                                 :source-paths ["src/cljs" "test/cljs"]
-                                 :optimizations :none
-                                 :source-map true
-                                 :source-map-timestamp true
-                                 :output-to "resources/public/js/compiled/devcards.js"
-                                 :output-dir "resources/public/js/compiled/out-devcards"
-                                 :asset-path "js/compiled/out-devcards"}}
 
                      :test {:source-paths ["src/cljs" "test/cljs"]
                             :figwheel true
@@ -109,7 +98,8 @@
                              :source-map true
                              :source-map-timestamp true
                              :output-to "resources/public/js/compiled/main.js"
-                             :output-dir "/Users/geoff/prog/clj/comic-reader/resources/public/js/compiled/out"
+                             :output-dir ~(str (.getCanonicalPath (java.io.File. "."))
+                                               "/resources/public/js/compiled/out")
                              :asset-path "js/compiled/out"}}}}}
 
              :uberjar {:omit-source true
