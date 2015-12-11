@@ -1,11 +1,12 @@
 (ns comic-reader.main
   (:require [reagent.core :as reagent]))
 
-(defn loading-svg [])
+(defn loading []
+  [:img.loading {:src "img/loading.svg"}])
 
 (defn site-list []
   [:div [:h1 "Comics List"]
-   [loading-svg]])
+   [loading]])
 
 (defn main-panel
   []

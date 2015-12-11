@@ -1,8 +1,9 @@
 (ns comic-reader.devcards
-  (:require [devcards.core :refer-macros [defcard]]
+  (:require [devcards.core :refer-macros [defcard defcard-rg]]
+            [comic-reader.main :as main]
             [comic-reader.main-test]))
 
-(defcard my-first-card
-  "# Hello Devcards
-
-Things and stuff go here")
+(defcard-rg loading-card
+  "# Loading
+   This is the loading svg used everywhere on the site."
+  (main/loading))

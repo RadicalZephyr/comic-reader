@@ -9,5 +9,5 @@
 
 (deftest test-site-list
   (is (= [:div [:h1 "Comics List"]
-          [main/loading-svg]]
+          [main/loading]]
          (main/site-list))))
