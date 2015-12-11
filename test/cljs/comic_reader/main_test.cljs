@@ -6,8 +6,3 @@
 (deftest test-main-panel
   (is (= [:div "Hello Re-Frame!"]
          (main/main-panel))))
-
-(deftest test-site-list
-  (is (= [:div [:h1 "Comics List"]
-          [main/loading]]
-         (main/site-list))))
