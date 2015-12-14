@@ -1,7 +1,7 @@
 (ns comic-reader.frontend-dev
   (:require [clojure.java.browse :refer [browse-url]]
             [clojure.repl :refer :all]
-            [comic-reader.system :refer [go]]
+            [comic-reader.system :refer [go stop]]
             [figwheel-sidecar.repl-api :refer :all]))
 
 (defn- cwd []
@@ -26,4 +26,10 @@
 (defn start-dev! [& args]
   (apply go args)
   (start-figwheel! figwheel-config)
+  (start-autobuild)
   (browse-url "http://localhost:10555/devcards"))
+
+(defn stop-dev! []
+  (stop-autobuild)
+  (stop-figwheel!)
+  (stop))
