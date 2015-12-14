@@ -1,6 +1,6 @@
 (ns comic-reader.dev
   (:require [clojure.repl :refer :all]
-            [clojure.tools.namespace.repl :refer [refresh]]
+            [clojure.tools.namespace.repl :refer [clear refresh]]
             [clansi.core :refer [style]]))
 
 (declare doc-print goto-ns)
