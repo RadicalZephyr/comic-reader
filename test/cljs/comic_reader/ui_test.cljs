@@ -12,11 +12,9 @@
 
 
 (deftest test-site-list
-  (re-frame/dispatch [:initialize-db])
   (is (= [:div [:h1 "Comics List"]]
-         ((ui/site-list))))
+         (ui/site-list nil)))
 
-  (re-frame/dispatch-sync [:fetch-comic-sites])
   (is (= [:div [:h1 "Comics List"]
           [ui/loading]]
-         ((ui/site-list)))))
+         (ui/site-list :loading))))
