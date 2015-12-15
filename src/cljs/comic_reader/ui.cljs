@@ -1,7 +1,8 @@
 (ns comic-reader.ui
   (:require [re-frame.core :as re-frame]
-            [reagent.ratom :refer-macros [reaction]]
-            [comic-reader.utils :refer-macros [with-optional-tail]]))
+            [reagent.ratom :refer-macros [reaction]])
+  (:require-macros [comic-reader.macro-util :refer [defcomponent-2
+                                                    with-optional-tail]]))
 
 (defn loading []
   [:img.loading {:src "img/loading.svg"}])
