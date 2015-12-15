@@ -13,3 +13,18 @@
          "Manga Fox"))
   (is (= (keyword->title :manga-reader)
          "Manga Reader")))
+
+(deftest subscription-binding-test
+  (is (thrown? clojure.lang.ExceptionInfo
+               (subscription-binding '(a b))))
+
+  (is (= '[abc (re-frame.core/subscribe [:abc])]
+         (subscription-binding 'abc)))
+  (is (= '[abc (re-frame.core/subscribe [:def])]
+         (subscription-binding '[abc [:def]]))))
+
+(deftest container-name-test
+  (is (= 'abc-container
+         (container-name 'abc)))
+  (is (= 'abc-container
+         (container-name :abc))))
