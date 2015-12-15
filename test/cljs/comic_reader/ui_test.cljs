@@ -20,18 +20,17 @@
 
 (deftest test-site-list
   (is (= [:div [:h1 "Comics List"]]
-         (ui/site-list nil nil)))
+         (ui/site-list nil)))
 
   (is (= [:div [:h1 "Comics List"]
           [ui/loading]]
-         (ui/site-list :loading nil)))
+         (ui/site-list :loading)))
 
   (is (= [:div [:h1 "Comics List"]
             [:ul
              [:li [:a "A"]]
              [:li [:a "B"]]
              [:li [:a "C"]]]]
-         (ui/site-list :loaded
-                       [{:name "A" :id "a"}
+         (ui/site-list [{:name "A" :id "a"}
                         {:name "B" :id "b"}
                         {:name "C" :id "c"}]))))
