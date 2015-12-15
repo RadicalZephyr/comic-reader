@@ -57,7 +57,7 @@
       (println ";;   Found sites: " (str/join ", " (keys sites)))
       (assoc component :sites sites)))
 
-  (stop [component]))
+  (stop [component] component))
 
 (defn new-site-scraper []
   (map->SiteScraper {:sites nil}))
