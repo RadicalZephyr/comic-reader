@@ -1,7 +1,7 @@
 (ns comic-reader.frontend-dev
   (:require [clojure.java.browse :refer [browse-url]]
             [clojure.repl :refer :all]
-            [comic-reader.system :refer [go stop]]
+            [comic-reader.system :refer [go start stop]]
             [figwheel-sidecar.repl-api :refer :all]))
 
 (defn- cwd []
