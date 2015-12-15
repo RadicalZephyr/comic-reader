@@ -18,16 +18,18 @@
                                    :join? false})))))
 
   (stop [component]
-    (if (not server)
+    (if-not server
       component
       (do
-        (when (or (not (.isStopped server))
-                  (not (.isStopping server)))
+        (when-not (or (.isStopped server)
+                      (.isStopping server))
           (println ";; Shutting down web server...")
           (.stop server))
-        (assoc component
-               :web-app nil
-               :server nil)))))
+        (if (.isStopped server)
+          (assoc component
+                 :web-app nil
+                 :server nil)
+          component)))))
 
 (defn new-server [port]
   (map->WebServer {:port port}))
