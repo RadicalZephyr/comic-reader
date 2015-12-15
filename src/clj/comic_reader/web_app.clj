@@ -67,11 +67,11 @@
   component/Lifecycle
 
   (start [component]
-    (println ";; Generating web app...")
+    (println "Comic-Reader: Generating web app...")
     (assoc component :routes (make-routes site-scraper)))
 
   (stop [component]
-    (println ";; Tearing down web app...")
+    (println "Comic-Reader: Tearing down web app...")
     (assoc component :routes nil)))
 
 (defn new-web-app []
