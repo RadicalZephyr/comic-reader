@@ -5,8 +5,13 @@
 (defn loading []
   [:img.loading {:src "img/loading.svg"}])
 
-(defn site-list [status]
+(defn site-element [comic]
+  ^{:key (:id comic)}
+  [:li [:a (:name comic)]])
+
+(defn site-list [status comic-list]
   `[:div [:h1 "Comics List"]
     ~@(case status
         :loading [[loading]]
+        :loaded `[[:ul ~@(map site-element comic-list)]]
         nil)])
