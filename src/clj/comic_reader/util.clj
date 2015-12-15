@@ -20,3 +20,12 @@
        keyword->words
        (map s/capitalize)
        (s/join " ")))
+
+(defmacro with-optional-tail
+  "If the `content' is not falsey, append it to the `root'."
+  [root content]
+  (let [root# ~root
+        content# ~content]
+    (if content#
+      (conj root# content#)
+      content#)))

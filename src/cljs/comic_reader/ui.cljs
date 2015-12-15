@@ -1,6 +1,7 @@
 (ns comic-reader.ui
   (:require [re-frame.core :as re-frame]
-            [reagent.ratom :refer-macros [reaction]]))
+            [reagent.ratom :refer-macros [reaction]]
+            [comic-reader.utils :refer-macros [with-optional-tail]]))
 
 (defn loading []
   [:img.loading {:src "img/loading.svg"}])
@@ -10,12 +11,10 @@
   [:li [:a (:name comic)]])
 
 (defn site-list [comic-list]
-  (let [root [:div [:h1 "Comics List"]]
-        content (cond
-                  (= :loading comic-list) [loading]
-                  (seq comic-list)        (into [:ul]
-                                                (map site-element comic-list))
-                  :else nil)]
-    (if content
-      (conj root content)
-      root)))
+  (with-optional-tail
+    [:div [:h1 "Comics List"]]
+    (cond
+      (= :loading comic-list) [loading]
+      (seq comic-list)        (into [:ul]
+                                    (map site-element comic-list))
+      :else nil)))
