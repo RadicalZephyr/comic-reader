@@ -11,7 +11,7 @@
     (if server
       component
       (do
-        (println ";; Starting web server...")
+        (println "Comic-Reader: Starting web server...")
         (assoc component
                :server (run-jetty (web-app/get-routes web-app)
                                   {:port port
@@ -23,7 +23,7 @@
       (do
         (when-not (or (.isStopped server)
                       (.isStopping server))
-          (println ";; Shutting down web server...")
+          (println "Comic-Reader: Shutting down web server...")
           (.stop server))
         (if (.isStopped server)
           (assoc component

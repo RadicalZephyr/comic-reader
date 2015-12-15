@@ -52,9 +52,9 @@
   component/Lifecycle
 
   (start [component]
-    (println ";; Loading site definitions...")
+    (println "Comic-Reader: Loading site definitions...")
     (let [sites (dissoc (get-sites) "test-site")]
-      (println ";;   Found sites: " (str/join ", " (keys sites)))
+      (println "Comic-Reader:   Found sites: " (str/join ", " (keys sites)))
       (assoc component :sites sites)))
 
   (stop [component] component))
