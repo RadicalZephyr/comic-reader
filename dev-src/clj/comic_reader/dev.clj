@@ -33,3 +33,8 @@
 (defn- goto-ns [ns]
   (require ns)
   (in-ns ns))
+
+(defn attempt-server-shutdown []
+  (require 'comic-reader.system)
+  (if-let [stop-fn (find-var 'comic-reader.system/stop)]
+    (stop-fn)))
