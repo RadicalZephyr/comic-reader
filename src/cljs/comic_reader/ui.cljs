@@ -10,8 +10,16 @@
 (defn site-element [comic]
   ^{:key (:id comic)}
   [:li [:a (:name comic)]])
+(defn get-sites-list [db]
+  )
 
-(defn site-list [comic-list]
+(re-frame/register-sub
+ :sites-list
+ (fn [app-db v]
+   (reaction (get-sites-list @app-db))))
+
+(defcomponent-2 site-list
+  [comic-list]
   (with-optional-tail
     [:div [:h1 "Comics List"]]
     (cond
