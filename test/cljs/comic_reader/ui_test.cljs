@@ -36,4 +36,7 @@
                         {:name "C" :id "c"}]))))
 
 (defcard-rg site-list-card
-  (ui/site-list-container))
+  (do
+    (re-frame/dispatch [:set-site-list [{:id :a :name "Comic A"}
+                                        {:id :b :name "Comic B"}]])
+     (ui/site-list-container)))
