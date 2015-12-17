@@ -7,9 +7,10 @@
 (defn loading []
   [:img.loading {:src "img/loading.svg"}])
 
-(defn site-element [comic]
-  ^{:key (:id comic)}
-  [:li [:a (:name comic)]])
+(defn site-element [site]
+  ^{:key (:id site)}
+  [:li [:a (:name site)]])
+
 (defn get-sites-list [db]
   )
 
@@ -19,11 +20,11 @@
    (reaction (get-sites-list @app-db))))
 
 (defcomponent-2 site-list
-  [comic-list]
+  [sites-list]
   (with-optional-tail
-    [:div [:h1 "Comics List"]]
+    [:div [:h1 "Comic Sites"]]
     (cond
-      (= :loading comic-list) [loading]
-      (seq comic-list)        (into [:ul]
-                                    (map site-element comic-list))
+      (= :loading sites-list) [loading]
+      (seq sites-list)        (into [:ul]
+                                    (map site-element sites-list))
       :else nil)))

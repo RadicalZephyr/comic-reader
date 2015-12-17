@@ -6,7 +6,7 @@
             [comic-reader.main-test]))
 
 (defcard-rg loading-card
-  "# Loading
+  "## Loading
    This is the loading svg used everywhere on the site."
   (ui/loading))
 
@@ -19,14 +19,14 @@
          (meta (ui/site-element {:id "a"})))))
 
 (deftest test-site-list
-  (is (= [:div [:h1 "Comics List"]]
+  (is (= [:div [:h1 "Comic Sites"]]
          (ui/site-list nil)))
 
-  (is (= [:div [:h1 "Comics List"]
+  (is (= [:div [:h1 "Comic Sites"]
           [ui/loading]]
          (ui/site-list :loading)))
 
-  (is (= [:div [:h1 "Comics List"]
+  (is (= [:div [:h1 "Comic Sites"]
             [:ul
              [:li [:a "A"]]
              [:li [:a "B"]]
@@ -34,3 +34,6 @@
          (ui/site-list [{:name "A" :id "a"}
                         {:name "B" :id "b"}
                         {:name "C" :id "c"}]))))
+
+(defcard-rg site-list-card
+  (ui/site-list-container))
