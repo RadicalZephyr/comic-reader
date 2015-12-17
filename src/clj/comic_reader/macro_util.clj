@@ -9,13 +9,6 @@
        (conj root# content#)
        root#)))
 
-(defn symbol-spec? [subscription-spec]
-  (symbol? subscription-spec))
-
-(defn vector-spec? [subscription-spec]
-  (and (vector? subscription-spec)
-       (= 2 (count subscription-spec))))
-
 (defmulti valid-spec?
   "Validate whether this subscription spec is valid."
   class)
