@@ -1,4 +1,5 @@
-(ns comic-reader.macro-util)
+(ns comic-reader.macro-util
+  (:require [schema.core :as s]))
 
 (defmacro with-optional-tail
   "If the `content' is not falsey, append it to the `root'."
@@ -9,23 +10,14 @@
        (conj root# content#)
        root#)))
 
-(defmulti valid-spec?
-  "Validate whether this subscription spec is valid."
-  class)
+(def SubscriptionVector
+  [(s/one s/Keyword :subscription-key) s/Any])
 
-(defmethod valid-spec? :default [spec] false)
+(def SubscriptionSpec
+  (s/either s/Symbol [(s/one s/Symbol :binding-symbol) SubscriptionVector]))
 
-(defmethod valid-spec? clojure.lang.Symbol [spec] true)
-
-(defmethod valid-spec?
-  clojure.lang.PersistentVector
-  [spec]
-  (= 2 (count spec)))
-
-(defmethod valid-spec?
-  clojure.lang.PersistentUnrolledVector
-  [spec]
-  (= 2 (count spec)))
+(def valid-spec?
+  (comp not (s/checker SubscriptionSpec)))
 
 (defprotocol SubscriptionSpec
   (subscription-symbol [spec] "Extract the subscription binding symbol from this spec.")
