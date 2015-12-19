@@ -20,6 +20,7 @@
 
                  ;; Core app dependencies
                  [com.stuartsierra/component "0.3.1"]
+                 [prismatic/schema "1.0.4"]
                  [environ "1.0.1"]
 
                  ;; Web server
