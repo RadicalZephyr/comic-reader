@@ -28,7 +28,7 @@
   (is (= '[abc (re-frame.core/subscribe [:abc])]
          (sut/subscription-binding 'abc)))
   (is (= '[abc (re-frame.core/subscribe [:def])]
-         (sut/subscription-binding '[abc [:def]]))))
+         (sut/subscription-binding '[abc :def]))))
 
 (deftest container-name-test
   (is (= 'abc-container
