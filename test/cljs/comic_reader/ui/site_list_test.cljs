@@ -1,35 +1,24 @@
-(ns comic-reader.ui-test
+(ns comic-reader.ui.site-list-test
   (:require [cljs.test :refer-macros [is testing]]
             [devcards.core :refer-macros [deftest defcard-rg]]
             [re-frame.core :as re-frame]
-            [comic-reader.ui :as ui]
+            [comic-reader.ui.base :as base]
+            [comic-reader.ui.site-list :as ui]
             [comic-reader.test-helper :refer [strip-classes]]))
-
-(defcard-rg loading
-  "## Loading
-   This is the loading svg used everywhere on the site."
-  [:div {:style {"width" "4em"}}
-   (ui/loading)])
-
-(defcard-rg four-oh-four
-  (ui/four-oh-four))
-
-(defcard-rg large-button
-  (ui/large-button "Button"))
 
 (deftest test-site-list
   (is (= [:div [:h1 "Comic Sites"]]
          (ui/site-list nil)))
 
   (is (= [:div [:h1 "Comic Sites"]
-          [ui/loading]]
+          [base/loading]]
          (ui/site-list :loading)))
 
   (is (= [:div [:h1 "Comic Sites"]
           [:ul
-           [:li [ui/large-button "A"]]
-           [:li [ui/large-button "B"]]
-           [:li [ui/large-button "C"]]]]
+           [:li [base/large-button "A"]]
+           [:li [base/large-button "B"]]
+           [:li [base/large-button "C"]]]]
          (strip-classes
           (ui/site-list [{:name "A" :id "a"}
                          {:name "B" :id "b"}
