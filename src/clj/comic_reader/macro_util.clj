@@ -13,8 +13,12 @@
 (def SubscriptionVector
   [(s/one s/Keyword :subscription-key) s/Any])
 
+(def SubscriptionCallSpec
+  (s/either s/Keyword SubscriptionVector))
+
 (def SubscriptionSpec
-  (s/either s/Symbol [(s/one s/Symbol :binding-symbol) SubscriptionVector]))
+  (s/either s/Symbol [(s/one s/Symbol :binding-symbol)
+                      (s/one SubscriptionCallSpec :call-spec)]))
 
 (def valid-spec?
   (comp not (s/checker SubscriptionSpec)))
