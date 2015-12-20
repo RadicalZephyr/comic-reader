@@ -31,7 +31,11 @@
 
   clojure.lang.PersistentVector
   (subscription-symbol [spec] (first spec))
-  (subscription-key [spec] (second spec)))
+  (subscription-key [spec]
+    (let [call-spec (second spec)]
+      (if (keyword? call-spec)
+        [call-spec]
+        call-spec))))
 
 (s/defn ^:always-validate subscription-binding
   [subscription-spec :- SubscriptionSpec]
