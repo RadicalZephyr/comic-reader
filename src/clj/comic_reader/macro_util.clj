@@ -10,24 +10,21 @@
        (conj root# content#)
        root#)))
 
-(def SubscriptionVector
+(s/defschema SubscriptionVector
   [(s/one s/Keyword :subscription-key) s/Any])
 
-(def SubscriptionCallSpec
+(s/defschema SubscriptionCallSpec
   (s/either s/Keyword SubscriptionVector))
 
-(def SubscriptionSpec
+(s/defschema SubscriptionSpec
   (s/either s/Symbol [(s/one s/Symbol :binding-symbol)
                       (s/one SubscriptionCallSpec :call-spec)]))
 
-(def valid-spec?
-  (comp not (s/checker SubscriptionSpec)))
-
-(defprotocol SubscriptionSpec
+(defprotocol PSubscriptionSpec
   (subscription-symbol [spec] "Extract the subscription binding symbol from this spec.")
   (subscription-key [spec] "Extract the subscription key from this spec."))
 
-(extend-protocol SubscriptionSpec
+(extend-protocol PSubscriptionSpec
   clojure.lang.Symbol
   (subscription-symbol [spec] spec)
   (subscription-key [spec] [(keyword spec)])
@@ -36,15 +33,11 @@
   (subscription-symbol [spec] (first spec))
   (subscription-key [spec] (second spec)))
 
-(defn subscription-binding [subscription-spec]
-  (let [generate-spec (fn [spec]
-                        `[~(subscription-symbol spec)
-                          (re-frame.core/subscribe
-                           ~(subscription-key spec))])]
-    (if (valid-spec? subscription-spec)
-      (generate-spec subscription-spec)
-      (throw (ex-info "Invalid subscription spec. Must be a symbol or a two-element vector."
-                      {:spec subscription-spec})))))
+(s/defn ^:always-validate subscription-binding
+  [subscription-spec :- SubscriptionSpec]
+  `[~(subscription-symbol subscription-spec)
+    (re-frame.core/subscribe
+     ~(subscription-key subscription-spec))])
 
 (defn container-name [component-name]
   (symbol (format "%s-container"
