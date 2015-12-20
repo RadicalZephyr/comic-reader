@@ -12,26 +12,26 @@
   [:li [:a (:name site)]])
 
 (defn get-sites-list [db]
-  (get db :sites-list))
+  (get db :site-list))
 
 (re-frame/register-sub
- :sites-list
+ :site-list
  (fn [app-db v]
    (reaction (get-sites-list @app-db))))
 
 (defn set-site-list [db [_ sites]]
-  (assoc db :sites-list sites))
+  (assoc db :site-list sites))
 
 (re-frame/register-handler
  :set-site-list
  set-site-list)
 
 (defcomponent-2 site-list
-  [sites-list]
+  [[sites :site-list]]
   (with-optional-tail
     [:div [:h1 "Comic Sites"]]
     (cond
-      (= :loading sites-list) [loading]
-      (seq sites-list)        (into [:ul]
-                                    (map site-element sites-list))
+      (= :loading sites) [loading]
+      (seq sites)        (into [:ul]
+                               (map site-element sites))
       :else nil)))
