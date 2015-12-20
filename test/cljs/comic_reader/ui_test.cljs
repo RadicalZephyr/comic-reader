@@ -34,6 +34,10 @@
                         {:name "B" :id "b"}
                         {:name "C" :id "c"}]))))
 
+(deftest test-set-site-list
+  (is (= (ui/set-site-list {} [:site-site-list []])
+         {:site-list []})))
+
 (defcard-rg site-list-card
   (do
     (re-frame/dispatch [:set-site-list
