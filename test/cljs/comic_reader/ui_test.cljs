@@ -10,6 +10,9 @@
    This is the loading svg used everywhere on the site."
   (ui/loading))
 
+(defcard-rg four-oh-four-card
+  (ui/four-oh-four))
+
 (deftest test-site-element
   (is (= [:li [:a "A"]]
          (ui/site-element {:name "A"})))
