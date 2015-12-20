@@ -13,10 +13,8 @@
    "There's nothing to see here. Try checking out the "
    [:a {:href "/#"} "site list."]])
 
-(defn site-button [site]
-  ^{:key (:id site)}
-  [:li [:a.large.button.radius
-        (:name site)]])
+(defn large-button [content]
+  [:a.large.button.radius content])
 
 (defn get-sites-list [db]
   (get db :site-list))
@@ -33,12 +31,20 @@
  :set-site-list
  set-site-list)
 
+(defn map-into-list [base-el f coll]
+  (into base-el
+        (map (fn [data]
+               ^{:key (:id data)} [:li (f data)]) coll)))
+
 (defcomponent-2 site-list
   [[sites :site-list]]
   (with-optional-tail
     [:div [:h1 "Comic Sites"]]
     (cond
       (= :loading sites) [loading]
-      (seq sites)        (into [:ul.inline-list]
-                               (map site-button sites))
+      (seq sites)        (map-into-list
+                          [:ul.inline-list]
+                          (fn [site]
+                            [large-button (:name site)])
+                          sites)
       :else nil)))
