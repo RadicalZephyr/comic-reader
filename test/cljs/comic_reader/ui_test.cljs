@@ -10,7 +10,6 @@
    This is the loading svg used everywhere on the site."
   (ui/loading))
 
-
 (deftest test-site-element
   (is (= [:li [:a "A"]]
          (ui/site-element {:name "A"})))
@@ -27,16 +26,17 @@
          (ui/site-list :loading)))
 
   (is (= [:div [:h1 "Comic Sites"]
-            [:ul
-             [:li [:a "A"]]
-             [:li [:a "B"]]
-             [:li [:a "C"]]]]
+          [:ul
+           [:li [:a "A"]]
+           [:li [:a "B"]]
+           [:li [:a "C"]]]]
          (ui/site-list [{:name "A" :id "a"}
                         {:name "B" :id "b"}
                         {:name "C" :id "c"}]))))
 
 (defcard-rg site-list-card
   (do
-    (re-frame/dispatch [:set-site-list [{:id :a :name "Comic A"}
-                                        {:id :b :name "Comic B"}]])
+    (re-frame/dispatch [:set-site-list
+                        [{:id :a :name "Comic A"}
+                         {:id :b :name "Comic B"}]])
      (ui/site-list-container)))
