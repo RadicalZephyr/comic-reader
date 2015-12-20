@@ -11,6 +11,7 @@ img {
 }
 
 .sub-nav dt.active a, .sub-nav dd.active a, .sub-nav li.active a {
+  color: #FFF;
   background-color: #368a55;
   padding: 0.05rem 0.5rem;
 }

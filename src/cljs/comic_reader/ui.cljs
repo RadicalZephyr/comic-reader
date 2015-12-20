@@ -13,9 +13,10 @@
    "There's nothing to see here. Try checking out the "
    [:a {:href "/#"} "site list."]])
 
-(defn site-element [site]
+(defn site-button [site]
   ^{:key (:id site)}
-  [:li [:a (:name site)]])
+  [:li [:a.large.button.radius
+        (:name site)]])
 
 (defn get-sites-list [db]
   (get db :site-list))
@@ -38,6 +39,6 @@
     [:div [:h1 "Comic Sites"]]
     (cond
       (= :loading sites) [loading]
-      (seq sites)        (into [:ul]
-                               (map site-element sites))
+      (seq sites)        (into [:ul.inline-list]
+                               (map site-button sites))
       :else nil)))
