@@ -10,10 +10,12 @@
   (is (not (sut/valid-spec? [1 2])))
   (is (not (sut/valid-spec? [[] 2])))
   (is (not (sut/valid-spec? ['a []])))
+  (is (not (sut/valid-spec? ['a [:key] [:key]])))
 
   (is (sut/valid-spec? 'abc))
   (is (sut/valid-spec? 'def))
-  (is (sut/valid-spec? '[ghi [:abc]])))
+  (is (sut/valid-spec? '[ghi :abc]))
+  (is (sut/valid-spec? '[ghi [:abc 1 2 3]])))
 
 (deftest subscription-binding-test
   (is (thrown? clojure.lang.ExceptionInfo
