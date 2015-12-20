@@ -14,12 +14,8 @@
 (defcard-rg four-oh-four
   (ui/four-oh-four))
 
-(deftest test-site-button
-  (is (= [:li [:a "A"]]
-         (strip-classes (ui/site-button {:name "A"}))))
-
-  (is (= {:key "a"}
-         (meta (ui/site-button {:id "a"})))))
+(defcard-rg large-button
+  (ui/large-button "Button"))
 
 (deftest test-site-list
   (is (= [:div [:h1 "Comic Sites"]]
@@ -31,9 +27,9 @@
 
   (is (= [:div [:h1 "Comic Sites"]
           [:ul
-           [:li [:a "A"]]
-           [:li [:a "B"]]
-           [:li [:a "C"]]]]
+           [:li [ui/large-button "A"]]
+           [:li [ui/large-button "B"]]
+           [:li [ui/large-button "C"]]]]
          (strip-classes
           (ui/site-list [{:name "A" :id "a"}
                          {:name "B" :id "b"}
