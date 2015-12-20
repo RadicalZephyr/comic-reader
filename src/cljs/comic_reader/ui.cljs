@@ -7,6 +7,12 @@
 (defn loading []
   [:img.loading {:src "img/loading.svg"}])
 
+(defn four-oh-four []
+  [:div
+   [:h1 "Sorry!"]
+   "There's nothing to see here. Try checking out the "
+   [:a {:href "/#"} "site list."]])
+
 (defn site-element [site]
   ^{:key (:id site)}
   [:li [:a (:name site)]])
