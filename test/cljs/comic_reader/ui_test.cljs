@@ -8,7 +8,8 @@
 (defcard-rg loading-card
   "## Loading
    This is the loading svg used everywhere on the site."
-  (ui/loading))
+  [:div {:style {"width" "4em"}}
+   (ui/loading)])
 
 (defcard-rg four-oh-four-card
   (ui/four-oh-four))
