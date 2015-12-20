@@ -14,12 +14,12 @@
 (defcard-rg four-oh-four-card
   (ui/four-oh-four))
 
-(deftest test-site-element
+(deftest test-site-button
   (is (= [:li [:a "A"]]
          (strip-classes (ui/site-button {:name "A"}))))
 
   (is (= {:key "a"}
-         (meta (ui/site-element {:id "a"})))))
+         (meta (ui/site-button {:id "a"})))))
 
 (deftest test-site-list
   (is (= [:div [:h1 "Comic Sites"]]
