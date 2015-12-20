@@ -5,13 +5,13 @@
             [comic-reader.ui :as ui]
             [comic-reader.test-helper :refer [strip-classes]]))
 
-(defcard-rg loading-card
+(defcard-rg loading
   "## Loading
    This is the loading svg used everywhere on the site."
   [:div {:style {"width" "4em"}}
    (ui/loading)])
 
-(defcard-rg four-oh-four-card
+(defcard-rg four-oh-four
   (ui/four-oh-four))
 
 (deftest test-site-button
@@ -43,7 +43,7 @@
   (is (= (ui/set-site-list {} [:site-site-list []])
          {:site-list []})))
 
-(defcard-rg site-list-card
+(defcard-rg site-list
   (do
     (re-frame/dispatch [:set-site-list
                         [{:id :a :name "Comic A"}
