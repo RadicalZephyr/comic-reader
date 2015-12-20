@@ -49,7 +49,7 @@
 
 (defmacro defcomponent-2 [name subscriptions & body]
   `(do
-     (defn ~name ~subscriptions
+     (defn ~name ~(mapv subscription-symbol subscriptions)
        ~@body)
 
      (defn ~(container-name name) []
