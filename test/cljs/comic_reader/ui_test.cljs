@@ -3,7 +3,7 @@
             [devcards.core :refer-macros [deftest defcard-rg]]
             [re-frame.core :as re-frame]
             [comic-reader.ui :as ui]
-            [comic-reader.main-test]))
+            [comic-reader.test-helper :refer [strip-classes]]))
 
 (defcard-rg loading-card
   "## Loading
@@ -16,7 +16,7 @@
 
 (deftest test-site-element
   (is (= [:li [:a "A"]]
-         (ui/site-element {:name "A"})))
+         (strip-classes (ui/site-button {:name "A"}))))
 
   (is (= {:key "a"}
          (meta (ui/site-element {:id "a"})))))
@@ -34,9 +34,10 @@
            [:li [:a "A"]]
            [:li [:a "B"]]
            [:li [:a "C"]]]]
-         (ui/site-list [{:name "A" :id "a"}
-                        {:name "B" :id "b"}
-                        {:name "C" :id "c"}]))))
+         (strip-classes
+          (ui/site-list [{:name "A" :id "a"}
+                         {:name "B" :id "b"}
+                         {:name "C" :id "c"}])))))
 
 (deftest test-set-site-list
   (is (= (ui/set-site-list {} [:site-site-list []])
@@ -47,4 +48,4 @@
     (re-frame/dispatch [:set-site-list
                         [{:id :a :name "Comic A"}
                          {:id :b :name "Comic B"}]])
-     (ui/site-list-container)))
+    (ui/site-list-container)))
