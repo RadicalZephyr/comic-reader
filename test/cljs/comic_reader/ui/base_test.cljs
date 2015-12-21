@@ -28,3 +28,10 @@
                                (:content el)])
                             [{:url "a" :content "A"}
                              {:url "b" :content "B"}]))))
+
+(deftest test-with-optional-tail
+  (is (= [:div]
+         (sut/with-optional-tail [:div] nil)))
+
+  (is (= [:div [1 2 3]]
+         (sut/with-optional-tail [:div] [1 2 3]))))
