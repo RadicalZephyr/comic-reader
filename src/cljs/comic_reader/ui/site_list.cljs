@@ -22,13 +22,9 @@
 
 (defcomponent-2 site-list
   [[sites :site-list]]
-  (base/with-optional-tail
-    [:div [:h1 "Comic Sites"]]
-    (cond
-      (= :loading sites) [base/loading]
-      (seq sites)        (base/map-into-list
-                          [:ul.inline-list]
-                          (fn [site]
-                            [base/large-button (:name site)])
-                          sites)
-      :else nil)))
+  (base/list-with-loading
+   {:heading "Comic Sites"
+    :list-element [:ul.inline-list]
+    :item->li (fn [site]
+                [base/large-button (:name site)])}
+   sites))

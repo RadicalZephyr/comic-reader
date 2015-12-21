@@ -15,19 +15,16 @@
    :comic-list
    (fn [app-db v]
      (reaction (get-comic-list @app-db))))
+
   (re-frame/register-handler
    :set-comic-list
    set-comic-list))
 
 (defcomponent-2 comic-list
   [[comics :comic-list]]
-  (base/with-optional-tail
-    [:div [:h1 "Comics"]]
-    (cond
-      (= :loading comics) [base/loading]
-      (seq comics)        (base/map-into-list
-                           [:ul.no-bullet]
-                           (fn [comic]
-                             [base/large-button (:name comic)])
-                           comics)
-      :else nil)))
+  (base/list-with-loading
+   {:heading "Comics"
+    :list-element [:ul.no-bullet]
+    :item->li (fn [comic]
+                [base/large-button (:name comic)])}
+   comics))

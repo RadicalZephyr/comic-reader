@@ -23,3 +23,13 @@
   (if content
     (conj root content)
     root))
+
+(defn list-with-loading [options coll]
+  (let [{:keys [heading list-element item->li]}
+        options]
+    (with-optional-tail
+      [:div [:h1 heading]]
+      (cond
+        (= :loading coll) [loading]
+        (seq coll)        (map-into-list list-element item->li coll)
+        :else nil))))

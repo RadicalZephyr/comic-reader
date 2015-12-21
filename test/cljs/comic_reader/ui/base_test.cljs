@@ -35,3 +35,29 @@
 
   (is (= [:div [1 2 3]]
          (sut/with-optional-tail [:div] [1 2 3]))))
+
+(deftest test-list-with-loading
+  (is (= [:div [:h1 "Empty"]]
+         (sut/list-with-loading {:heading "Empty"} nil)))
+
+  (is (= [:div [:h1 "Loading"]
+          [sut/loading]]
+         (sut/list-with-loading {:heading "Loading"} :loading)))
+
+  (is (= [:div [:h1 "Rendered List"]
+          [:ul
+           [:li "Thing One"]
+           [:li "Thing Two"]]]
+         (sut/list-with-loading {:heading "Rendered List"
+                                 :list-element [:ul]
+                                 :item->li identity}
+                                ["Thing One" "Thing Two"])))
+
+  (is (= [:div [:h1 "Rendered List"]
+          [:ul.stuff
+           [:li [:a.thing "Thing One"]]
+           [:li [:a.thing "Thing Two"]]]]
+         (sut/list-with-loading {:heading "Rendered List"
+                                 :list-element [:ul.stuff]
+                                 :item->li (fn [el] [:a.thing el])}
+                                ["Thing One" "Thing Two"]))))
