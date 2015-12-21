@@ -33,4 +33,4 @@
     (re-frame/dispatch [:set-site-list
                         [{:id :a :name "Comic A"}
                          {:id :b :name "Comic B"}]])
-    (ui/site-list-container)))
+    [ui/site-list-container]))

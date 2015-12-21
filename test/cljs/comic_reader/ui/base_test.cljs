@@ -6,10 +6,10 @@
   "## Loading
    This is the loading svg used everywhere on the site."
   [:div {:style {"width" "4em"}}
-   (ui-base/loading)])
+   [ui-base/loading]])
 
 (defcard-rg four-oh-four
-  (ui-base/four-oh-four))
+  [ui-base/four-oh-four])
 
 (defcard-rg large-button
-  (ui-base/large-button "Button"))
+  [ui-base/large-button "Button"])
