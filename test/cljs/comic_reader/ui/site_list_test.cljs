@@ -6,8 +6,6 @@
             [comic-reader.ui.site-list :as sut]
             [comic-reader.test-helper :refer [strip-classes]]))
 
-(sut/setup-site-list!)
-
 (deftest test-site-list
   (is (= [:div [:h1 "Comic Sites"]]
          (sut/site-list nil)))
@@ -27,8 +25,20 @@
                          {:name "C" :id "c"}])))))
 
 (deftest test-set-site-list
-  (is (= (sut/set-site-list {} [:_ []])
-         {:site-list []})))
+  (is (= {:site-list []}
+         (sut/set-site-list {} [:_ []])))
+
+  (is (= {:site-list [1 2 3]}
+         (sut/set-site-list {} [:_ [1 2 3]]))))
+
+(deftest test-get-site-list
+  (is (= []
+         (sut/get-site-list {:site-list []})))
+
+  (is (= [:a :b :c]
+         (sut/get-site-list {:site-list [:a :b :c]}))))
+
+(sut/setup-site-list!)
 
 (defcard-rg site-list
   (do
