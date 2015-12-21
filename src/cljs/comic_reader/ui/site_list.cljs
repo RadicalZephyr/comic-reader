@@ -4,7 +4,7 @@
             [comic-reader.ui.base :as base])
   (:require-macros [comic-reader.macro-util :refer [defcomponent-2]]))
 
-(defn get-sites-list [db]
+(defn get-site-list [db]
   (get db :site-list))
 
 (defn set-site-list [db [_ sites]]
@@ -14,7 +14,7 @@
  (re-frame/register-sub
   :site-list
   (fn [app-db v]
-    (reaction (get-sites-list @app-db))))
+    (reaction (get-site-list @app-db))))
 
  (re-frame/register-handler
   :set-site-list
