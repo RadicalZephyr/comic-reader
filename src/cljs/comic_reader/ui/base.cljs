@@ -16,3 +16,10 @@
   (into base-el
         (map (fn [data]
                ^{:key (:id data)} [:li (f data)]) coll)))
+
+(defn with-optional-tail
+  "If the `content' is not falsey, append it to the `root'."
+  [root content]
+  (if content
+    (conj root content)
+    root))
