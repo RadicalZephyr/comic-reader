@@ -10,7 +10,7 @@
 
 (defn- edn-response [data & [status]]
   {:status (or status 200)
-   :headers {"Content-Type" "application/edn"}
+   :headers {"Content-Type" "application/edn; charset=utf-8"}
    :body (pr-str data)})
 
 (defn- make-api-routes [site-scraper]
