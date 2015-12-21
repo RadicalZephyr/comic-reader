@@ -42,7 +42,7 @@
           ((app-routes (test-system {})) (mock/request :get "/")))
          200)))
 
-(def edn-content-type {"Content-Type" "application/edn"})
+(def edn-content-type {"Content-Type" "application/edn; charset=utf-8"})
 
 (deftest test-api
   (testing "/api/v1"
