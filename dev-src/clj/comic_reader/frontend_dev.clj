@@ -1,6 +1,7 @@
 (ns comic-reader.frontend-dev
   (:require [clojure.java.browse :refer [browse-url]]
             [clojure.repl :refer :all]
+            [clojure.tools.namespace.repl :refer [refresh]]
             [comic-reader.system :refer [go start stop]]
             [figwheel-sidecar.repl-api :refer :all]))
 
@@ -33,3 +34,7 @@
   (stop-autobuild)
   (stop-figwheel!)
   (stop))
+
+(defn reset []
+  (stop-dev!)
+  (refresh :after 'comic-reader.frontend-dev/start-dev!))
