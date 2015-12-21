@@ -62,7 +62,7 @@
         [:div#cards.small-12.columns]]]
       :css [[:style (garden/css
                      [:.com-rigsomelight-devcards_rendered-card
-                      [:ul [:li [:a.button {:color "#FFF"}]]]])]]
+                      [:a.button {:color "#FFF !important"}]])]]
       :js [(page/include-js "js/compiled/devcards.js")]))
 
    (c/context "/api/v1" []
