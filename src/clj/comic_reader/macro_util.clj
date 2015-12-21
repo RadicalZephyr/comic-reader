@@ -1,15 +1,6 @@
 (ns comic-reader.macro-util
   (:require [schema.core :as s]))
 
-(defmacro with-optional-tail
-  "If the `content' is not falsey, append it to the `root'."
-  [root content]
-  `(let [root# ~root
-         content# ~content]
-     (if content#
-       (conj root# content#)
-       root#)))
-
 (s/defschema SubscriptionVector
   [(s/one s/Keyword :subscription-key) s/Any])
 

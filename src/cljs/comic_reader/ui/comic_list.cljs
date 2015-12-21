@@ -2,8 +2,7 @@
   (:require [re-frame.core :as re-frame]
             [reagent.ratom :refer-macros [reaction]]
             [comic-reader.ui.base :as base])
-  (:require-macros [comic-reader.macro-util :refer [defcomponent-2
-                                                    with-optional-tail]]))
+  (:require-macros [comic-reader.macro-util :refer [defcomponent-2]]))
 
 (defn set-comic-list [db [_ comics]]
   (assoc db :comic-list comics))
@@ -22,7 +21,7 @@
 
 (defcomponent-2 comic-list
   [[comics :comic-list]]
-  (with-optional-tail
+  (base/with-optional-tail
     [:div [:h1 "Comics"]]
     (cond
       (= :loading comics) [base/loading]
