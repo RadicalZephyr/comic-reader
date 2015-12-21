@@ -4,6 +4,7 @@
             [compojure.route :as route]
             [com.stuartsierra.component :as component]
             [hiccup.page :as page]
+            [garden.core :as garden]
             [ring.middleware.edn :refer [wrap-edn-params]]
             [ring.middleware.params :refer [wrap-params]]))
 
@@ -29,37 +30,45 @@
     (c/POST "/:site-name/image" [site-name comic-page]
       (edn-response (scraper/get-page-image site-scraper site-name comic-page)))))
 
-(defn- render-page [& content]
+(defn- render-page [& {:keys [head css js content]}]
   (page/html5
-   [:head
-    (page/include-css "css/normalize.css"
-                      "css/foundation.min.css"
-                      "css/app.css")
-    (page/include-js "js/vendor/modernizr.js")]
-   (conj (into [:body] content)
-         (page/include-js "js/vendor/jquery.js"
-                          "js/vendor/fastclick.js"
-                          "js/foundation.min.js"
-                          "js/compiled/main.js"))))
+   `[:head
+     ~@head
+     ~(page/include-css "css/normalize.css"
+                        "css/foundation.min.css"
+                        "css/app.css")
+     ~@css
+     ~(page/include-js "js/vendor/modernizr.js")]
+   `[:body ~@content
+     ~(page/include-js "js/vendor/jquery.js"
+                       "js/vendor/fastclick.js"
+                       "js/foundation.min.js")
+     ~@js]))
 
 (defn- make-routes [site-scraper]
   (c/routes
    (c/GET "/" []
      (render-page
-      [:div.row
-       [:div#app.small-12.columns]]
-      [:input#history_state {:type "hidden"}]))
+      :content
+      [[:div.row
+        [:div#app.small-12.columns]]
+       [:input#history_state {:type "hidden"}]]
+      :js [(page/include-js "js/compiled/main.js")]))
 
    (c/GET "/devcards" []
      (render-page
-      [:div.row
-       [:div#cards.small-12.columns]]
-      (page/include-js "js/compiled/devcards.js")))
+      :content
+      [[:div.row
+        [:div#cards.small-12.columns]]]
+      :css [[:style (garden/css
+                     [:.com-rigsomelight-devcards_rendered-card
+                      [:ul [:li [:a.button {:color "#FFF"}]]]])]]
+      :js [(page/include-js "js/compiled/devcards.js")]))
 
    (c/context "/api/v1" []
-              (-> (make-api-routes site-scraper)
-                  wrap-params
-                  wrap-edn-params))
+     (-> (make-api-routes site-scraper)
+         wrap-params
+         wrap-edn-params))
 
    (route/resources "/")))
 

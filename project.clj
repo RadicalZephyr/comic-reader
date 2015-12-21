@@ -28,6 +28,7 @@
                  [fogus/ring-edn "0.3.0"]
                  [compojure "1.4.0"]
                  [hiccup "1.0.5"]
+                 [garden "1.3.0"]
 
                  ;; Comic scraping
                  [clj-http "2.0.0"]
