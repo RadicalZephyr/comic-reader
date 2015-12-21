@@ -6,6 +6,8 @@
             [comic-reader.ui.site-list :as ui]
             [comic-reader.test-helper :refer [strip-classes]]))
 
+(ui/setup-site-list!)
+
 (deftest test-site-list
   (is (= [:div [:h1 "Comic Sites"]]
          (ui/site-list nil)))

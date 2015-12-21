@@ -8,17 +8,18 @@
 (defn get-sites-list [db]
   (get db :site-list))
 
-(re-frame/register-sub
- :site-list
- (fn [app-db v]
-   (reaction (get-sites-list @app-db))))
-
 (defn set-site-list [db [_ sites]]
   (assoc db :site-list sites))
 
-(re-frame/register-handler
- :set-site-list
- set-site-list)
+(defn setup-site-list! []
+ (re-frame/register-sub
+  :site-list
+  (fn [app-db v]
+    (reaction (get-sites-list @app-db))))
+
+ (re-frame/register-handler
+  :set-site-list
+  set-site-list))
 
 (defcomponent-2 site-list
   [[sites :site-list]]
