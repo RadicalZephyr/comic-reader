@@ -2,27 +2,7 @@
   (:require [cljs.test :refer-macros [is testing]]
             [devcards.core :refer-macros [deftest defcard-rg]]
             [re-frame.core :as re-frame]
-            [comic-reader.ui.base :as base]
-            [comic-reader.ui.comic-list :as sut]
-            [comic-reader.test-helper :refer [strip-classes]]))
-
-(deftest test-comic-list
-  (is (= [:div [:h1 "Comics"]]
-         (sut/comic-list nil)))
-
-  (is (= [:div [:h1 "Comics"]
-          [base/loading]]
-         (sut/comic-list :loading)))
-
-  (is (= [:div [:h1 "Comics"]
-          [:ul
-           [:li [base/large-button "Comic A"]]
-           [:li [base/large-button "Comic B"]]
-           [:li [base/large-button "Comic C"]]]]
-         (strip-classes
-          (sut/comic-list [{:id :a :name "Comic A"}
-                           {:id :b :name "Comic B"}
-                           {:id :c :name "Comic C"}])))))
+            [comic-reader.ui.comic-list :as sut]))
 
 (deftest test-set-comic-list
   (is (= {:comic-list []}
