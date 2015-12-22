@@ -9,6 +9,9 @@
    "There's nothing to see here. Try checking out the "
    [:a {:href "/#"} "site list."]])
 
+(defn button [content]
+  [:a.button.radius content])
+
 (defn large-button [content]
   [:a.large.button.radius content])
 
