@@ -28,3 +28,8 @@
     :item->li (fn [comic]
                 [base/button (:name comic)])}
    comics))
+
+(defn letter-filter [list-filter letter]
+  [(if (= list-filter letter) :li.active :li)
+   {:role "menuitem"}
+   [:a.button.success.radius {:href ""} letter]])

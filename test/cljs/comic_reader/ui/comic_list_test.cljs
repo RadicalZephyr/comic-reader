@@ -26,3 +26,9 @@
                         [{:id :a :name "Comic A"}
                          {:id :b :name "Comic B"}]])
     [sut/comic-list-container]))
+
+(defcard-rg letter-filter
+  [:ul.sub-nav.no-bullet
+   [sut/letter-filter "B" "A"]
+   [sut/letter-filter "B" "B"]
+   [sut/letter-filter "" "C"]])
