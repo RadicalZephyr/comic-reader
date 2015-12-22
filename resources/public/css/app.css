@@ -17,6 +17,7 @@ img {
 }
 
 .sub-nav dt.active a:hover, .sub-nav dd.active a:hover, .sub-nav li.active a:hover {
+  cursor:pointer;
   background-color: #165e35;
   padding: 0.05rem 0.5rem;
 }
