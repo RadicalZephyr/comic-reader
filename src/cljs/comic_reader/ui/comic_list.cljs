@@ -26,5 +26,5 @@
    {:heading "Comics"
     :list-element [:ul.no-bullet]
     :item->li (fn [comic]
-                [base/large-button (:name comic)])}
+                [base/button (:name comic)])}
    comics))
