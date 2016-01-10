@@ -46,7 +46,7 @@
                  ;; [cljs-ajax "0.5.1"]
                  ]
 
-  :plugins      [[lein-cljsbuild "1.1.0"]]
+  :plugins      [[lein-cljsbuild "1.1.1"]]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled"]
 
@@ -106,7 +106,7 @@
 
                        :cljsbuild
                        {:builds {:client {:compiler
-                                          {:main comic-reader.main
+                                          {:main "comic-reader.main"
                                            :optimizations :advanced
                                            :elide-asserts true
                                            :pretty-print false}}}}}})
