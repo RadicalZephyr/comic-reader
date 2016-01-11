@@ -25,9 +25,7 @@
     (io/delete-file test-file)))
 
 (t/deftest read-site-options-test
-  (t/is (thrown?
-         java.lang.IllegalArgumentException
-         (sut/read-site-options "non-existent")))
+  (t/is (= nil (sut/read-site-options "non-existent")))
 
   (let [test-file (io/as-file "resources/sites/test-site.clj")]
     (spit test-file "{}")
@@ -37,13 +35,11 @@
 
 (t/deftest get-sites-list-test
 
-  (with-redefs [sut/sites-list-resource (constantly nil)
-                sut/find-all-sites (constantly ["a" "b" "c"])]
+  (with-redefs [sut/find-all-sites (constantly ["a" "b" "c"])]
     (t/is (= ["a" "b" "c"] (sut/get-sites-list))))
 
-  (let [test-file (io/as-file "target/test-list.clj")]
-    (with-redefs [sut/sites-list-resource (constantly test-file)]
-      (spit (sut/sites-list-resource) (prn-str ["abc"]))
-      (t/is (= ["abc"]
-               (sut/get-sites-list)))
-      (io/delete-file test-file :silently))))
+  (let [test-file (io/file "resources" sut/sites-list-file-name)]
+    (spit test-file  (prn-str ["abc"]))
+    (t/is (= ["abc"]
+             (sut/get-sites-list)))
+    (io/delete-file test-file :silently)))

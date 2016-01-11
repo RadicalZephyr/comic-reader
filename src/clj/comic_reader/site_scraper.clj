@@ -7,7 +7,8 @@
 
 (defn make-site-entry [site-name]
   (try
-    [site-name (sites/->MangaSite (site-read/read-site-options site-name))]
+    [site-name (when-let [options (site-read/read-site-options site-name)]
+                 (sites/->MangaSite options))]
     (catch IllegalArgumentException e
       [site-name nil])
     (catch RuntimeException e

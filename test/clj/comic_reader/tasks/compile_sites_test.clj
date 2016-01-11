@@ -9,4 +9,4 @@
     (sut/-main)
     (t/is (= sites-list
              (vec (site-read/get-sites-list))))
-    (io/delete-file (site-read/sites-list-resource))))
+    (io/delete-file (io/file "resources" site-read/sites-list-file-name))))
