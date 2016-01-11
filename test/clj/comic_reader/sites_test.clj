@@ -1,13 +1,15 @@
 (ns comic-reader.sites-test
-  (:require [clojure.java.io :as io]
+  (:require [clojure.java.io              :as io]
             [clojure.test                 :refer :all]
+            [clojure.tools.reader         :as r]
             [comic-reader.sites           :refer :all]
             [comic-reader.sites.protocol  :refer :all]
             [comic-reader.sites.read      :refer :all]
             [comic-reader.sites.test-util :as tu]
             [comic-reader.site-scraper    :as scraper]
             [clansi.core                  :refer [style]]
-            [net.cgrand.enlive-html       :as html]))
+            [net.cgrand.enlive-html       :as html])
+  (:import java.io.PushbackReader))
 
 (defn expect-opts-are-map [site]
   (is
@@ -23,10 +25,17 @@
         "cannot be empty. It must contain exactly "
         "one map literal.")))
 
+(defn read-file [resource]
+  (when-let [r1 (some-> resource
+                        io/reader
+                        PushbackReader.)]
+    (with-open [r r1]
+      (r/read r))))
+
 (defn try-read-file [filename error-message]
   (try
     (when filename
-      (read-resource filename))
+      (read-file filename))
     (catch java.lang.RuntimeException re
       (is false
           (str "Contents of `" filename "'"
