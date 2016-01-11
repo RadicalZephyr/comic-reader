@@ -3,7 +3,6 @@
             [clojure.string :as str]
             [comic-reader.scrape :as scrape]
             [comic-reader.sites.protocol :refer :all]
-            [comic-reader.sites.read :as site-read]
             [comic-reader.sites.util :as util]
             [comic-reader.util :refer [safe-read-string]]
             [com.stuartsierra.component :as component]))
