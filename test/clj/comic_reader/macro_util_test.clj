@@ -1,37 +1,37 @@
 (ns comic-reader.macro-util-test
   (:require [comic-reader.macro-util :as sut]
-            [clojure.test :refer [deftest is]]
+            [clojure.test :as t]
             [schema.core :as s]))
 
 (def valid-spec?
   (comp not (s/checker sut/SubscriptionSpec)))
 
-(deftest valid-spec?-test
-  (is (not (valid-spec? nil)))
-  (is (not (valid-spec? 10)))
-  (is (not (valid-spec? [])))
-  (is (not (valid-spec? ['a 'b 'c])))
-  (is (not (valid-spec? [1 2])))
-  (is (not (valid-spec? [[] 2])))
-  (is (not (valid-spec? ['a []])))
-  (is (not (valid-spec? ['a [:key] [:key]])))
+(t/deftest valid-spec?-test
+  (t/is (not (valid-spec? nil)))
+  (t/is (not (valid-spec? 10)))
+  (t/is (not (valid-spec? [])))
+  (t/is (not (valid-spec? ['a 'b 'c])))
+  (t/is (not (valid-spec? [1 2])))
+  (t/is (not (valid-spec? [[] 2])))
+  (t/is (not (valid-spec? ['a []])))
+  (t/is (not (valid-spec? ['a [:key] [:key]])))
 
-  (is (valid-spec? 'abc))
-  (is (valid-spec? 'def))
-  (is (valid-spec? '[ghi :abc]))
-  (is (valid-spec? '[ghi [:abc 1 2 3]])))
+  (t/is (valid-spec? 'abc))
+  (t/is (valid-spec? 'def))
+  (t/is (valid-spec? '[ghi :abc]))
+  (t/is (valid-spec? '[ghi [:abc 1 2 3]])))
 
-(deftest subscription-binding-test
-  (is (thrown? clojure.lang.ExceptionInfo
-               (sut/subscription-binding '(a b))))
+(t/deftest subscription-binding-test
+  (t/is (thrown? clojure.lang.ExceptionInfo
+                 (sut/subscription-binding '(a b))))
 
-  (is (= '[abc (re-frame.core/subscribe [:abc])]
-         (sut/subscription-binding 'abc)))
-  (is (= '[abc (re-frame.core/subscribe [:def])]
-         (sut/subscription-binding '[abc :def]))))
+  (t/is (= '[abc (re-frame.core/subscribe [:abc])]
+           (sut/subscription-binding 'abc)))
+  (t/is (= '[abc (re-frame.core/subscribe [:def])]
+           (sut/subscription-binding '[abc :def]))))
 
-(deftest container-name-test
-  (is (= 'abc-container
-         (sut/container-name 'abc)))
-  (is (= 'abc-container
-         (sut/container-name :abc))))
+(t/deftest container-name-test
+  (t/is (= 'abc-container
+           (sut/container-name 'abc)))
+  (t/is (= 'abc-container
+           (sut/container-name :abc))))
