@@ -36,8 +36,7 @@
                key (process data))))))
 
 (defn symbolize-keys [coll]
-  (into {}
-        (map (fn [[k v]]
-               [(-> k name symbol)
-                v])
-             coll)))
+  (reduce-kv (fn [m k v]
+               (assoc m (-> k name symbol) v))
+             {}
+             coll))
