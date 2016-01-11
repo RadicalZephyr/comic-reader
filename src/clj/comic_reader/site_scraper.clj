@@ -14,7 +14,7 @@
       [site-name nil])))
 
 (defn get-sites []
-  (->> (site-read/get-all-sites)
+  (->> (site-read/get-sites-list)
        (map make-site-entry)
        flatten
        (apply hash-map)))
