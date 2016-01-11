@@ -13,15 +13,15 @@
   (is (= (base-name "dir/two/three/four.clj")
          "four")))
 
-(deftest get-all-sites-test
+(deftest find-all-sites-test
   (let [test-file (io/as-file "resources/sites/test-site.clj")]
     (spit test-file "{}")
-    (is (some #{"test-site"} (get-all-sites)))
+    (is (some #{"test-site"} (find-all-sites)))
     (io/delete-file test-file))
 
   (let [test-file (io/as-file "resources/sites/abc")]
     (spit test-file "nothing important")
-    (is (= (not-any? #{"abc"} (get-all-sites))))
+    (is (= (not-any? #{"abc"} (find-all-sites))))
     (io/delete-file test-file)))
 
 (deftest read-site-options-test
@@ -34,3 +34,15 @@
     (is (= (class (read-site-options "test-site"))
            clojure.lang.PersistentArrayMap))
     (io/delete-file test-file)))
+
+(deftest get-sites-list-test
+
+  (with-redefs [find-all-sites (constantly ["a" "b" "c"])]
+    (is (= ["a" "b" "c"] (get-sites-list))))
+
+  (let [test-file (io/as-file "target/test-list.clj")]
+    (with-redefs [sites-list-resource test-file]
+      (spit sites-list-resource (prn-str ["abc"]))
+      (is (= ["abc"]
+             (get-sites-list)))
+      (io/delete-file test-file :silently))))

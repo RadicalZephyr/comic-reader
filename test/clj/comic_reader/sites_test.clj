@@ -26,7 +26,7 @@
 (defn try-read-file [filename error-message]
   (try
     (when filename
-      (read-file filename))
+      (read-resource filename))
     (catch java.lang.RuntimeException re
       (is false
           (str "Contents of `" filename "'"
