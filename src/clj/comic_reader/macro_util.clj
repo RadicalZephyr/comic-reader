@@ -5,11 +5,11 @@
   [(s/one s/Keyword :subscription-key) s/Any])
 
 (s/defschema SubscriptionCallSpec
-  (s/either s/Keyword SubscriptionVector))
+  (s/cond-pre s/Keyword SubscriptionVector))
 
 (s/defschema SubscriptionSpec
-  (s/either s/Symbol [(s/one s/Symbol :binding-symbol)
-                      (s/one SubscriptionCallSpec :call-spec)]))
+  (s/cond-pre s/Symbol [(s/one s/Symbol :binding-symbol)
+                        (s/one SubscriptionCallSpec :call-spec)]))
 
 (defprotocol PSubscriptionSpec
   (subscription-symbol [spec] "Extract the subscription binding symbol from this spec.")
