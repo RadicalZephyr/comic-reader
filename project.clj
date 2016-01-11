@@ -16,6 +16,10 @@
 
   :main comic-reader.system
 
+  :aliases {"uberjar" ["do" "clean,"
+                       "run" "-m" "comic-reader.tasks.compile-sites,"
+                       "uberjar"]}
+
   :dependencies [[org.clojure/clojure "1.7.0"]
 
                  ;; Core app dependencies
@@ -48,7 +52,9 @@
 
   :plugins      [[lein-cljsbuild "1.1.1"]]
 
-  :clean-targets ^{:protect false} ["resources/public/js/compiled"]
+  :clean-targets ^{:protect false} [:target-path
+                                    "resources/sites-list.clj"
+                                    "resources/public/js/compiled"]
 
   :cljsbuild {:builds
               {:client
