@@ -37,12 +37,13 @@
 
 (t/deftest get-sites-list-test
 
-  (with-redefs [sut/find-all-sites (constantly ["a" "b" "c"])]
+  (with-redefs [sut/sites-list-resource (constantly nil)
+                sut/find-all-sites (constantly ["a" "b" "c"])]
     (t/is (= ["a" "b" "c"] (sut/get-sites-list))))
 
   (let [test-file (io/as-file "target/test-list.clj")]
-    (with-redefs [sut/sites-list-resource test-file]
-      (spit sut/sites-list-resource (prn-str ["abc"]))
+    (with-redefs [sut/sites-list-resource (constantly test-file)]
+      (spit (sut/sites-list-resource) (prn-str ["abc"]))
       (t/is (= ["abc"]
                (sut/get-sites-list)))
       (io/delete-file test-file :silently))))

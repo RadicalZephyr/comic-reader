@@ -4,7 +4,8 @@
             [environ.core :refer [env]]))
 
 (def sites-list-file-name "sites-list.clj")
-(def sites-list-resource
+
+(defn sites-list-resource []
   (io/resource sites-list-file-name))
 
 (defn base-name [file]
@@ -30,8 +31,8 @@
       (r/read r))))
 
 (defn get-sites-list []
-  (if sites-list-resource
-    (read-resource sites-list-resource)
+  (if-let [site-list (sites-list-resource)]
+    (read-resource site-list)
     (find-all-sites)))
 
 (defn read-site-options [site-name]
