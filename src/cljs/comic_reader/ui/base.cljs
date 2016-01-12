@@ -15,10 +15,12 @@
 (defn large-button [content]
   [:a.large.button.radius content])
 
-(defn map-into-list [base-el f coll]
+(defn map-into-list [base-el key-fn data-fn coll]
   (into base-el
         (map (fn [data]
-               ^{:key (:id data)} [:li (f data)]) coll)))
+               ^{:key (key-fn data)}
+               [:li (data-fn data)])
+             coll)))
 
 (defn with-optional-tail
   "If the `content' is not falsey, append it to the `root'."
@@ -34,5 +36,5 @@
       [:div [:h1 heading]]
       (cond
         (= :loading coll) [loading]
-        (seq coll)        (map-into-list list-element item->li coll)
+        (seq coll)        (map-into-list list-element :id item->li coll)
         :else nil))))

@@ -17,12 +17,13 @@
 
 (deftest test-map-into-list
   (is (= [:ul [:li 1] [:li 2]]
-         (sut/map-into-list [:ul] identity [1 2])))
+         (sut/map-into-list [:ul] identity identity [1 2])))
 
   (is (= [:ol.everything
           [:li [:a {:href "a"} "A"]]
           [:li [:a {:href "b"} "B"]]]
          (sut/map-into-list [:ol.everything]
+                            :content
                             (fn [el]
                               [:a {:href (:url el)}
                                (:content el)])
