@@ -53,7 +53,6 @@
   :plugins      [[lein-cljsbuild "1.1.1"]]
 
   :clean-targets ^{:protect false} [:target-path
-                                    "resources/sites-list.clj"
                                     "resources/public/js/compiled"]
 
   :cljsbuild {:builds
