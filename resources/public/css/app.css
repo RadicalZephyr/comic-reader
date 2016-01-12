@@ -6,6 +6,10 @@ img {
   width: 100%;
 }
 
+div.comic-filter a.button.secondary {
+  color: #444 !important;
+}
+
 .sub-nav dt a, .sub-nav dd a, .sub-nav li a {
   padding: 0.05rem 0.5rem;
 }

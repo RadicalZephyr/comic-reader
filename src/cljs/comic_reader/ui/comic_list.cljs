@@ -30,6 +30,16 @@
    comics))
 
 (defn letter-filter [letter search-prefix]
-  [(if (= search-prefix letter) :li.active :li)
+  [(if (= search-prefix letter) :dd.active :dd)
    {:role "menuitem"}
    [:a.button.success.radius {:href ""} letter]])
+
+(defn make-letter-builder [search-prefix]
+  (fn [letter]
+    ^{:key (str "letter-" letter)}
+    [letter-filter letter search-prefix]))
+
+(defn alphabet-letter-filters [search-prefix]
+  [:dl.sub-nav {:role "menu" :title "Comics Filter List"}
+   (->> (seq "#ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        (map (make-letter-builder search-prefix)))])
