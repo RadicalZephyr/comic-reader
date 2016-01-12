@@ -32,3 +32,6 @@
    [sut/letter-filter "A" "B"]
    [sut/letter-filter "B" "B"]
    [sut/letter-filter "C" ""]])
+
+(defcard-rg alphabet-letter-filters
+  [sut/alphabet-letter-filters "F"])
