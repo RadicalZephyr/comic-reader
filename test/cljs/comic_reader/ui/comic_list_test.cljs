@@ -29,6 +29,6 @@
 
 (defcard-rg letter-filter
   [:ul.sub-nav.no-bullet
-   [sut/letter-filter "B" "A"]
+   [sut/letter-filter "A" "B"]
    [sut/letter-filter "B" "B"]
-   [sut/letter-filter "" "C"]])
+   [sut/letter-filter "C" ""]])
