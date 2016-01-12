@@ -28,10 +28,12 @@
     [sut/comic-list-container]))
 
 (defcard-rg letter-filter
+  "Individual letter-filters"
   [:ul.sub-nav.no-bullet
    [sut/letter-filter "A" "B"]
    [sut/letter-filter "B" "B"]
    [sut/letter-filter "C" ""]])
 
 (defcard-rg alphabet-letter-filters
+  "The letter \"F\" should be highlighted below"
   [sut/alphabet-letter-filters "F"])
