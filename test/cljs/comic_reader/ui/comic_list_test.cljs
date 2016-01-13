@@ -51,4 +51,12 @@
    [sut/search-box "Current search"]])
 
 (defcard-rg comic-list-filter
-  [sut/comic-list-filter ""])
+  (fn [data _]
+    (let [update-search-prefix (fn [prefix]
+                                 (swap! data assoc
+                                        :search-prefix prefix))]
+      (reactively
+       [sut/comic-list-filter
+        update-search-prefix (:search-prefix @data)])))
+  (reagent/atom {:search-prefix "Initial search"})
+  {:inspect-data true})

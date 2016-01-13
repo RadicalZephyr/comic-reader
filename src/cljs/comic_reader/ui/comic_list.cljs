@@ -50,10 +50,12 @@
            :placeholder (or search-prefix "")
            :auto-complete "on"}])
 
-(defn comic-list-filter [search-prefix]
+(defn comic-list-filter [update-search-prefix search-prefix]
   [:div.panel.radius
    [:h6 "Filter Comics: " [search-box search-prefix]]
-   [alphabet-letter-filters (fn [] identity) search-prefix]
+   [alphabet-letter-filters
+    (fn [letter] #(update-search-prefix letter))
+    search-prefix]
    [:a.tiny.secondary.button.radius
-    {:href ""}
+    {:on-click #(update-search-prefix "")}
     "clear filters"]])
