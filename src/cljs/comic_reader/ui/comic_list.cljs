@@ -45,14 +45,17 @@
    (->> (seq "#ABCDEFGHIJKLMNOPQRSTUVWXYZ")
         (map (make-letter-builder make-set-prefix search-prefix)))])
 
-(defn search-box [search-prefix]
+(defn search-box [update-search-prefix search-prefix]
   [:input {:type "search"
            :placeholder (or search-prefix "")
-           :auto-complete "on"}])
+           :auto-complete "on"
+           :on-change #(update-search-prefix
+                        (.-value (.-target %)))}])
 
 (defn comic-list-filter [update-search-prefix search-prefix]
   [:div.panel.radius
-   [:h6 "Filter Comics: " [search-box search-prefix]]
+   [:h6 "Filter Comics:"]
+   [search-box update-search-prefix search-prefix]
    [alphabet-letter-filters
     (fn [letter] #(update-search-prefix letter))
     search-prefix]
