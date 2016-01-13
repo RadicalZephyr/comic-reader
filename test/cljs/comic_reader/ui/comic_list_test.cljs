@@ -18,14 +18,9 @@
   (is (= [:a :b :c]
          (sut/get-comic-list {:comic-list [:a :b :c]}))))
 
-(sut/setup-comic-list!)
-
 (defcard-rg comic-list
-  (do
-    (re-frame/dispatch [:set-comic-list
-                        [{:id :a :name "Comic A"}
-                         {:id :b :name "Comic B"}]])
-    [sut/comic-list-container]))
+  [sut/comic-list [{:id :a :name "Comic A"}
+                   {:id :b :name "Comic B"}]])
 
 (defcard-rg letter-filter
   "Individual letter-filters"

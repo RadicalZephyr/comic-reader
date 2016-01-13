@@ -18,11 +18,6 @@
   (is (= [:a :b :c]
          (sut/get-site-list {:site-list [:a :b :c]}))))
 
-(sut/setup-site-list!)
-
 (defcard-rg site-list
-  (do
-    (re-frame/dispatch [:set-site-list
-                        [{:id :a :name "Comic A"}
-                         {:id :b :name "Comic B"}]])
-    [sut/site-list-container]))
+  [sut/site-list [{:id :a :name "Comic A"}
+                  {:id :b :name "Comic B"}]])
