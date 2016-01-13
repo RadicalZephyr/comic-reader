@@ -47,3 +47,7 @@
        (let [~@(mapcat subscription-binding subscriptions)]
          (fn []
            [~name ~@(map (fn [sub] `(deref ~(subscription-symbol sub))) subscriptions)])))))
+
+(defmacro reactively [hiccup]
+  `[(fn []
+      ~hiccup)])
