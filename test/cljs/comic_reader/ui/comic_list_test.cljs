@@ -3,7 +3,8 @@
             [devcards.core :refer-macros [deftest defcard-rg]]
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [comic-reader.ui.comic-list :as sut]))
+            [comic-reader.ui.comic-list :as sut])
+  (:require-macros [comic-reader.macro-util :refer [reactively]]))
 
 (deftest test-set-comic-list
   (is (= {:comic-list []}
@@ -30,19 +31,19 @@
    [sut/letter-filter identity "B" "B"]
    [sut/letter-filter identity "C" ""]])
 
-(defn alphabet-card-container [initial-letter]
-  (let [search-prefix (reagent/atom initial-letter)
-        make-set-prefix (fn [letter]
-                          (fn []
-                            (reset! search-prefix letter)))]
-    (fn [initial-letter]
-      [:div [:h5 (str "Prefix: " @search-prefix)]
-       [sut/alphabet-letter-filters
-        make-set-prefix @search-prefix]])))
-
 (defcard-rg alphabet-letter-filters
   "The letter \"J\" should start highlighted below"
-  [alphabet-card-container "J"])
+  (fn [data _]
+    (let [make-set-prefix (fn [letter]
+                            (fn []
+                              (swap! data assoc
+                                     :search-prefix letter)))]
+      (reactively
+       [:div [:h5 (str "Prefix: " (:search-prefix @data))]
+        [sut/alphabet-letter-filters
+         make-set-prefix (:search-prefix @data)]])))
+  (reagent/atom {:search-prefix "J"})
+  {:inspect-data true})
 
 (defcard-rg search-box
   [:div
