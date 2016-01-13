@@ -37,3 +37,11 @@
 (defcard-rg alphabet-letter-filters
   "The letter \"F\" should be highlighted below"
   [sut/alphabet-letter-filters "F"])
+
+(defcard-rg search-box
+  [:div
+   [sut/search-box ""]
+   [sut/search-box "Current search"]])
+
+(defcard-rg comic-list-filter
+  [sut/comic-list-filter ""])

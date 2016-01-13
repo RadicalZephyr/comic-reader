@@ -43,3 +43,16 @@
   [:dl.sub-nav {:role "menu" :title "Comics Filter List"}
    (->> (seq "#ABCDEFGHIJKLMNOPQRSTUVWXYZ")
         (map (make-letter-builder search-prefix)))])
+
+(defn search-box [search-prefix]
+  [:input {:type "search"
+           :placeholder (or search-prefix "")
+           :auto-complete "on"}])
+
+(defn comic-list-filter [search-prefix]
+  [:div.panel.radius
+   [:h6 "Filter Comics: " [search-box search-prefix]]
+   [alphabet-letter-filters search-prefix]
+   [:a.tiny.secondary.button.radius
+    {:href ""}
+    "clear filters"]])
