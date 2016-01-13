@@ -29,20 +29,21 @@
                 [base/button (:name comic)])}
    comics))
 
-(defn letter-filter [letter search-prefix]
+(defn letter-filter [set-prefix letter search-prefix]
   [(if (= search-prefix letter) :dd.active :dd)
    {:role "menuitem"}
-   [:a.button.success.radius {:href ""} letter]])
+   [:a.button.success.radius {:on-click #(set-prefix)}
+    letter]])
 
-(defn make-letter-builder [search-prefix]
+(defn make-letter-builder [make-set-prefix search-prefix]
   (fn [letter]
     ^{:key (str "letter-" letter)}
-    [letter-filter letter search-prefix]))
+    [letter-filter (make-set-prefix letter) letter search-prefix]))
 
-(defn alphabet-letter-filters [search-prefix]
+(defn alphabet-letter-filters [make-set-prefix search-prefix]
   [:dl.sub-nav {:role "menu" :title "Comics Filter List"}
    (->> (seq "#ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        (map (make-letter-builder search-prefix)))])
+        (map (make-letter-builder make-set-prefix search-prefix)))])
 
 (defn search-box [search-prefix]
   [:input {:type "search"
@@ -52,7 +53,7 @@
 (defn comic-list-filter [search-prefix]
   [:div.panel.radius
    [:h6 "Filter Comics: " [search-box search-prefix]]
-   [alphabet-letter-filters search-prefix]
+   [alphabet-letter-filters (fn [] identity) search-prefix]
    [:a.tiny.secondary.button.radius
     {:href ""}
     "clear filters"]])
