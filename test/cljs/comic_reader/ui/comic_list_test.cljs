@@ -47,8 +47,8 @@
 
 (defcard-rg search-box
   [:div
-   [sut/search-box ""]
-   [sut/search-box "Current search"]])
+   [sut/search-box identity ""]
+   [sut/search-box identity "Current search"]])
 
 (defcard-rg comic-list-filter
   (fn [data _]
