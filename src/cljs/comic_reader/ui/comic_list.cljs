@@ -47,7 +47,7 @@
 
 (defn search-box [update-search-prefix search-prefix]
   [:input {:type "search"
-           :placeholder (or search-prefix "")
+           :value (or search-prefix "")
            :auto-complete "on"
            :on-change #(update-search-prefix
                         (.-value (.-target %)))}])
