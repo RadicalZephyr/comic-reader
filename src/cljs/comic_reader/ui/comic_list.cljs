@@ -46,11 +46,13 @@
         (map (make-letter-builder make-set-prefix search-prefix)))])
 
 (defn search-box [update-search-prefix search-prefix]
-  [:input {:type "search"
-           :value (or search-prefix "")
-           :auto-complete "on"
-           :on-change #(update-search-prefix
-                        (.-value (.-target %)))}])
+  (let [attrs {:type "search"
+               :placeholder (or search-prefix "")
+               :auto-complete "on"
+               :on-change #(update-search-prefix
+                            (.-value (.-target %)))}
+        maybe-value (when-not search-prefix {:value ""})]
+    [:input (merge attrs maybe-value)]))
 
 (defn comic-list-filter [update-search-prefix search-prefix]
   [:div.panel.radius
@@ -60,5 +62,5 @@
     (fn [letter] #(update-search-prefix letter))
     search-prefix]
    [:a.tiny.secondary.button.radius
-    {:on-click #(update-search-prefix "")}
+    {:on-click #(update-search-prefix nil)}
     "clear filters"]])
