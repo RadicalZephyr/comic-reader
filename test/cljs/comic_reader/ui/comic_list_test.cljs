@@ -47,16 +47,18 @@
 
 (defcard-rg search-box
   [:div
-   [sut/search-box identity ""]
-   [sut/search-box identity "Current search"]])
+   [sut/search-box identity "" false]
+   [sut/search-box identity "Current search" false]])
 
 (defcard-rg comic-list-filter
   (fn [data _]
-    (let [update-search-prefix (fn [prefix]
+    (let [update-search-prefix (fn [prefix & {:keys [clear]
+                                              :or {:clear false}}]
                                  (swap! data assoc
-                                        :search-prefix prefix))]
+                                        :search-prefix prefix
+                                        :clear clear))]
       (reactively
-       [sut/comic-list-filter
-        update-search-prefix (:search-prefix @data)])))
+       [sut/comic-list-filter update-search-prefix
+        (:search-prefix @data) (:clear @data)])))
   (reagent/atom {:search-prefix "Initial search"})
   {:inspect-data true})
