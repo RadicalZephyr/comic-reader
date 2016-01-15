@@ -58,7 +58,6 @@
                                         :search-prefix prefix
                                         :clear clear))]
       (reactively
-       [sut/comic-list-filter update-search-prefix
-        (:search-prefix @data) (:clear @data)])))
+       [sut/comic-list-filter update-search-prefix @data])))
   (reagent/atom {:search-prefix "Initial search"})
   {:inspect-data true})
