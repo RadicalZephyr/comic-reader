@@ -56,13 +56,14 @@
                       {:value ""})]
     [:input (merge attrs maybe-value)]))
 
-(defn comic-list-filter [update-search-prefix search-prefix clear]
-  [:div.panel.radius
-   [:h6 "Filter Comics:"]
-   [search-box update-search-prefix search-prefix clear]
-   [alphabet-letter-filters
-    (fn [letter] #(update-search-prefix letter :clear true))
-    search-prefix]
-   [:a.tiny.secondary.button.radius
-    {:on-click #(update-search-prefix nil :clear true)}
-    "clear filters"]])
+(defn comic-list-filter [update-search-prefix search-data]
+  (let [{:keys [search-prefix clear]} search-data]
+    [:div.panel.radius
+     [:h6 "Filter Comics:"]
+     [search-box update-search-prefix search-prefix clear]
+     [alphabet-letter-filters
+      (fn [letter] #(update-search-prefix letter :clear true))
+      search-prefix]
+     [:a.tiny.secondary.button.radius
+      {:on-click #(update-search-prefix "" :clear true)}
+      "clear filters"]]))
