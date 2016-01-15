@@ -45,10 +45,9 @@
   "The letter \"J\" should start highlighted below"
   (fn [data _]
     (let [make-set-prefix (fn [letter]
-                            (fn []
-                              (base/do-later
-                               #(swap! data assoc
-                                       :search-prefix letter))))]
+                            (base/do-later
+                             #(swap! data assoc
+                                     :search-prefix letter)))]
       (reactively
        [:div [:h5 (str "Prefix: " (:search-prefix @data))]
         [sut/alphabet-letter-filters

@@ -40,38 +40,38 @@
 (defn letter-filter [set-prefix letter search-prefix]
   [(if (= search-prefix letter) :dd.active :dd)
    {:role "menuitem"}
-   [:a.button.success.radius {:on-click #(set-prefix)}
+   [:a.button.success.radius {:on-click #(set-prefix letter)}
     letter]])
 
-(defn make-letter-builder [make-set-prefix search-prefix]
+(defn make-letter-builder [set-prefix search-prefix]
   (fn [letter]
     ^{:key (str "letter-" letter)}
-    [letter-filter (make-set-prefix letter) letter search-prefix]))
+    [letter-filter set-prefix letter search-prefix]))
 
-(defn alphabet-letter-filters [make-set-prefix search-prefix]
+(defn alphabet-letter-filters [set-prefix search-prefix]
   [:dl.sub-nav {:role "menu" :title "Comics Filter List"}
    (->> (seq "#ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        (map (make-letter-builder make-set-prefix search-prefix)))])
+        (map (make-letter-builder set-prefix search-prefix)))])
 
-(defn search-box [update-search-prefix search-prefix clear]
+(defn search-box [set-prefix search-prefix clear]
   (let [attrs {:type "search"
                :placeholder (or search-prefix "")
                :auto-complete "on"
-               :on-change #(update-search-prefix
+               :on-change #(set-prefix
                             (.-value (.-target %)))}
         maybe-value (when clear
-                      (update-search-prefix search-prefix)
+                      (set-prefix search-prefix)
                       {:value ""})]
     [:input (merge attrs maybe-value)]))
 
-(defn comic-list-filter [update-search-prefix search-data]
+(defn comic-list-filter [set-prefix search-data]
   (let [{:keys [search-prefix clear]} search-data]
     [:div.panel.radius
      [:h6 "Filter Comics:"]
-     [search-box update-search-prefix search-prefix clear]
+     [search-box set-prefix search-prefix clear]
      [alphabet-letter-filters
-      (fn [letter] #(update-search-prefix letter :clear true))
+      (fn [letter] (set-prefix letter :clear true))
       search-prefix]
      [:a.tiny.secondary.button.radius
-      {:on-click #(update-search-prefix "" :clear true)}
+      {:on-click #(set-prefix "" :clear true)}
       "clear filters"]]))
