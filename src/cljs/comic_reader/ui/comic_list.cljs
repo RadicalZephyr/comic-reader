@@ -1,8 +1,7 @@
 (ns comic-reader.ui.comic-list
   (:require [re-frame.core :as re-frame]
             [reagent.ratom :refer-macros [reaction]]
-            [comic-reader.ui.base :as base])
-  (:require-macros [comic-reader.macro-util :refer [defcomponent-2]]))
+            [comic-reader.ui.base :as base]))
 
 (defn set-comic-list [db [_ comics]]
   (assoc db :comic-list comics))
@@ -20,14 +19,23 @@
    :set-comic-list
    set-comic-list))
 
-(defcomponent-2 comic-list
-  [[comics :comic-list]]
+(defn comic-list [view-comic comics]
   (base/list-with-loading
    {:heading "Comics"
     :list-element [:ul.no-bullet]
     :item->li (fn [comic]
-                [base/button (:name comic)])}
+                [:a.button.radius
+                 {:on-click #(view-comic (:id comic))}
+                 (:name comic)])}
    comics))
+
+(defn comic-list-container []
+  (let [comics (re-frame/subscribe [:comic-list])]
+    (fn []
+      [comic-list
+       (fn [comic-id]
+         (re-frame/dispatch [:view-comic comic-id]))
+       (deref comics)])))
 
 (defn letter-filter [set-prefix letter search-prefix]
   [(if (= search-prefix letter) :dd.active :dd)
