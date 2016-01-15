@@ -12,9 +12,6 @@
 (defcard-rg four-oh-four
   [sut/four-oh-four])
 
-(defcard-rg large-button
-  [sut/large-button "Button"])
-
 (deftest test-map-into-list
   (is (= [:ul [:li 1] [:li 2]]
          (sut/map-into-list [:ul] identity identity [1 2])))
