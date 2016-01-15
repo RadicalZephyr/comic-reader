@@ -22,8 +22,17 @@
          (sut/get-comic-list {:comic-list [:a :b :c]}))))
 
 (defcard-rg comic-list
-  [sut/comic-list [{:id :a :name "Comic A"}
-                   {:id :b :name "Comic B"}]])
+  (fn [data _]
+    (let [view-comic (fn [comic-id]
+                       (base/do-later
+                        #(swap! data assoc
+                                :comic comic-id)))]
+      [sut/comic-list
+       view-comic
+       [{:id :a :name "Comic A"}
+        {:id :b :name "Comic B"}]]))
+  (reagent/atom {:comic nil})
+  {:inspect-data true})
 
 (defcard-rg letter-filter
   "Individual letter-filters"
