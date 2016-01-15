@@ -3,6 +3,7 @@
             [devcards.core :refer-macros [deftest defcard-rg]]
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
+            [comic-reader.ui.base :as base]
             [comic-reader.ui.comic-list :as sut])
   (:require-macros [comic-reader.macro-util :refer [reactively]]))
 
@@ -36,8 +37,9 @@
   (fn [data _]
     (let [make-set-prefix (fn [letter]
                             (fn []
-                              (swap! data assoc
-                                     :search-prefix letter)))]
+                              (base/do-later
+                               #(swap! data assoc
+                                       :search-prefix letter))))]
       (reactively
        [:div [:h5 (str "Prefix: " (:search-prefix @data))]
         [sut/alphabet-letter-filters
@@ -54,9 +56,10 @@
   (fn [data _]
     (let [update-search-prefix (fn [prefix & {:keys [clear]
                                               :or {:clear false}}]
-                                 (swap! data assoc
-                                        :search-prefix prefix
-                                        :clear clear))]
+                                 (base/do-later
+                                  #(swap! data assoc
+                                          :search-prefix prefix
+                                          :clear clear)))]
       (reactively
        [sut/comic-list-filter update-search-prefix @data])))
   (reagent/atom {:search-prefix "Initial search"})

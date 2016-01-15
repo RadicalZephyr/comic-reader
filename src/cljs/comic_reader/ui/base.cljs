@@ -1,5 +1,8 @@
 (ns comic-reader.ui.base)
 
+(defn do-later [fn]
+  (.setTimeout js/window fn 10))
+
 (defn loading []
   [:img.loading {:src "img/loading.svg"}])
 
