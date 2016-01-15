@@ -10,14 +10,14 @@
   (assoc db :site-list sites))
 
 (defn setup-site-list! []
- (re-frame/register-sub
-  :site-list
-  (fn [app-db v]
-    (reaction (get-site-list @app-db))))
+  (re-frame/register-sub
+   :site-list
+   (fn [app-db v]
+     (reaction (get-site-list @app-db))))
 
- (re-frame/register-handler
-  :set-site-list
-  set-site-list))
+  (re-frame/register-handler
+   :set-site-list
+   set-site-list))
 
 (defn site-list [view-site sites]
   (base/list-with-loading
