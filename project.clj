@@ -14,7 +14,7 @@
   :source-paths ["src/clj"]
   :test-paths   ["test/clj"]
 
-  :main comic-reader.system
+  :main ^:skip-aot comic-reader.system
 
   :aliases {"uberjar" ["do" "clean,"
                        "run" "-m" "comic-reader.tasks.compile-sites,"
@@ -64,7 +64,7 @@
                  :asset-path "js/compiled/out"}}}}
 
   :profiles {:dev {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
-                   :source-paths ["dev-src/clj" "src/cljs"]
+                   :source-paths ["dev-src/clj"]
                    :test-paths   ["test/cljs"]
                    :dependencies [[org.clojure/tools.namespace "0.2.11"]
                                   [radicalzephyr/clansi "1.2.0"]
