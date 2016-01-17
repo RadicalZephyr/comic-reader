@@ -3,4 +3,5 @@
             comic-reader.ui.base-test
             comic-reader.ui.site-list-test
             comic-reader.ui.comic-list-test
-            comic-reader.ui.image-test))
+            comic-reader.ui.image-test
+            comic-reader.ui.overlay-test))
