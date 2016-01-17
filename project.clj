@@ -44,9 +44,9 @@
                  [re-frame "0.6.0" :exclusions
                   [[org.clojure/clojurescript
                     :extension "jar"]]]
+                 [cljsjs/waypoints "4.0.0-0"]
 
                  ;; [secretary "1.2.3"]
-                 ;; [cljsjs/waypoints "3.1.1-0"]
                  ;; [cljs-ajax "0.5.1"]
                  ]
 
