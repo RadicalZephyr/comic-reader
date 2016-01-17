@@ -19,10 +19,10 @@
                                             (goto-comic))})]
       (set-waypoints! [wp-up wp-down]))))
 
-(defn img-component [img-data tag]
+(defn comic-image [img-data tag]
   (let [waypoints (atom nil)]
     (reagent/create-class
-     {:display-name "image-component"
+     {:display-name "comic-image"
       :component-did-mount
       (make-img-did-mount
        #(reset! waypoints %)
