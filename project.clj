@@ -20,7 +20,7 @@
                        "run" "-m" "comic-reader.tasks.compile-sites,"
                        "uberjar"]}
 
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
 
                  ;; Core app dependencies
                  [com.stuartsierra/component "0.3.1"]

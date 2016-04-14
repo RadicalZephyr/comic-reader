@@ -35,3 +35,12 @@
         (= :loading coll) [loading]
         (seq coll)        (map-into-list list-element :id item->li coll)
         :else nil))))
+
+(defn unique-class
+  ([class-basename]
+   (unique-class "" class-basename))
+  ([el class-basename]
+   (-> el
+       name
+       (str "." (gensym class-basename))
+       keyword)))

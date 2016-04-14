@@ -1,7 +1,8 @@
 (ns comic-reader.ui.base-test
   (:require [cljs.test :refer-macros [is testing]]
-            [devcards.core :refer-macros [deftest defcard-rg]]
-            [comic-reader.ui.base :as sut]))
+            [clojure.string :as str]
+            [comic-reader.ui.base :as sut]
+            [devcards.core :refer-macros [deftest defcard-rg]]))
 
 (defcard-rg loading
   "## Loading
@@ -59,3 +60,17 @@
                                  :list-element [:ul.stuff]
                                  :item->li (fn [el] [:a.thing el])}
                                 ["Thing One" "Thing Two"]))))
+
+(deftest test-unique-class
+  (is (keyword? (sut/unique-class :div "overlay")))
+
+  (is (str/starts-with?
+       (name (sut/unique-class :div "overlay"))
+       "div.overlay"))
+
+  (is (str/starts-with?
+       (name (sut/unique-class "nothing"))
+       ".nothing"))
+
+  (is (not= (sut/unique-class "nothing")
+            (sut/unique-class "nothing"))))
