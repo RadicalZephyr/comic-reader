@@ -1,8 +1,9 @@
 (ns comic-reader.database.norms
   (:require [clojure.java.io :as io]
-            [io.rkn.conformity :as c]
-            [clojure.string :as str])
-  (:import java.io.File))
+            [clojure.string  :as str]
+            [clojure.edn     :as edn])
+  (:import (java.io File
+                    PushbackReader)))
 
 (def norms-dir "database/norms")
 
@@ -14,3 +15,28 @@
        (remove (memfn ^File isDirectory))
        (filter #(str/ends-with? % ".edn"))
        seq))
+
+(defn- norm-name [file]
+  (->> file
+       .getName
+       (re-find #"(.*)\.edn$")
+       second
+       keyword))
+
+(defn- norm-content [file]
+  (with-open [f (PushbackReader. (io/reader file))]
+    (edn/read f)))
+
+(defn- file->norm-entry [file]
+  [(norm-name file)
+   (norm-content file)])
+
+(defn files->norms-map [norms-files]
+  (->> norms-files
+       (map file->norm-entry)
+       (into {})))
+
+(defn norms-map [norms-dir]
+  (-> norms-dir
+      norms-seq
+      files->norms-map))
