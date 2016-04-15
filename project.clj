@@ -34,13 +34,17 @@
                  [hiccup "1.0.5"]
                  [garden "1.3.2"]
 
+                 ;; Data storage
+                 [com.datomic/datomic-pro "0.9.5350" :exclusions [org.apache.httpcomponents/httpclient]]
+                 [io.rkn/conformity "0.4.0"]
+
                  ;; Comic scraping
                  [clj-http "2.1.0"]
                  [tempfile "0.2.0"]
                  [enlive "1.1.6"]
 
                  ;; Clojurescript frontend
-                 [org.clojure/clojurescript "1.7.170"]
+                 [org.clojure/clojurescript "1.7.228"]
                  [re-frame "0.7.0" :exclusions
                   [[org.clojure/clojurescript
                     :extension "jar"]]]
@@ -50,6 +54,8 @@
                  ;; [cljs-ajax "0.5.1"]
                  ]
 
+  :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
+                                   :creds :gpg}}
   :plugins      [[lein-cljsbuild "1.1.3"]]
 
   :clean-targets ^{:protect false} [:target-path
