@@ -1,9 +1,11 @@
 (ns comic-reader.system
   (:gen-class)
   (:require [clojure.tools.namespace.repl :refer [refresh]]
-            [comic-reader.server :as server]
-            [comic-reader.web-app :as web-app]
-            [comic-reader.site-scraper :as sites]
+            (comic-reader [config :as config]
+                          [database :as database]
+                          [server :as server]
+                          [web-app :as web-app]
+                          [site-scraper :as sites])
             [com.stuartsierra.component :as component]
             [environ.core :refer [env]]))
 
@@ -17,6 +19,9 @@
      :server       (component/using
                     (server/new-server port)
                     [:web-app])
+     :database (component/using
+                (database/new-database)
+                [:config])
      :config (config/new-config))))
 
 (def system nil)

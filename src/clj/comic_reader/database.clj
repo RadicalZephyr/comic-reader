@@ -1,23 +1,28 @@
 (ns comic-reader.database
   (:require [com.stuartsierra.component :as component]
-            [datomic.api :as d]))
+            [comic-reader.database.norms :as norms]
+            [datomic.api :as d]
+            [io.rkn.conformity :as c]))
 
-(def uri "datomic:dev://localhost:4334/comics")
-
-(defrecord Database [uri conn]
+(defrecord Database [config conn]
   component/Lifecycle
 
   (start [component]
-    (println "Comic-Reader: Connecting to database...")
-    (let [uri (:uri component)
-          do-seeds? (d/create-database uri)
-          conn (d/connect uri)]
-      ;; Conform database to schemas here
+    (if-let [{:keys [uri] :as config} (:config component)]
+      (do
+        (println "Comic-Reader: Connecting to database...")
+        (let [do-seeds? (d/create-database uri)
+              conn (d/connect uri)]
+          ;; Conform database to schemas here
+          (when-let [norms-dir (:norms-dir config)]
+            (println "Comic-Reader: Conforming database to norms...")
+            (c/ensure-conforms conn (norms/norms-map norms-dir)))
 
-      ;; Add seeds if database was newly created
-      ;; (when do-seeds?
-      ;;   @(d/transact conn (seed/data)))
-      (assoc component :conn conn)))
+          ;; Add seeds if database was newly created
+          ;; (when do-seeds?
+          ;;   @(d/transact conn (seed/data)))
+          (assoc component :conn conn)))
+      component))
 
   (stop [component]
     (println "Comic-Reader: Disconnecting from database...")
