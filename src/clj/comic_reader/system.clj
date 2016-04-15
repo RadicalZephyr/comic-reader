@@ -16,7 +16,8 @@
                     [:site-scraper])
      :server       (component/using
                     (server/new-server port)
-                    [:web-app]))))
+                    [:web-app])
+     :config (config/new-config))))
 
 (def system nil)
 

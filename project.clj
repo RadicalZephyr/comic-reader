@@ -16,9 +16,14 @@
 
   :main ^:skip-aot comic-reader.system
 
-  :aliases {"uberjar" ["do" "clean,"
+  :aliases {"ci" ["do" "clean,"
+                  "with-profiles" "test" "test"]
+
+            "uberjar" ["do" "clean,"
                        "run" "-m" "comic-reader.tasks.compile-sites,"
                        "uberjar"]}
+
+  :env {:norms-dir "database/norms"}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
 
@@ -56,7 +61,9 @@
 
   :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
                                    :creds :gpg}}
-  :plugins      [[lein-cljsbuild "1.1.3"]]
+
+  :plugins      [[lein-cljsbuild "1.1.3"]
+                 [lein-environ "1.0.2"]]
 
   :clean-targets ^{:protect false} [:target-path
                                     "resources/public/js/compiled"]
@@ -69,7 +76,8 @@
                  :output-dir "resources/public/js/compiled/out"
                  :asset-path "js/compiled/out"}}}}
 
-  :profiles {:dev {:jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
+  :profiles {:dev {:env {:database-uri "datomic:dev://localhost:4334/comics"}
+                   :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
                    :source-paths ["dev-src/clj"]
                    :test-paths   ["test/cljs"]
                    :dependencies [[org.clojure/tools.namespace "0.2.11"]
@@ -110,6 +118,8 @@
                              :output-dir ~(str (.getCanonicalPath (java.io.File. "."))
                                                "/resources/public/js/compiled/out")
                              :asset-path "js/compiled/out"}}}}}
+
+             :test {:env {:database-uri "datomic:mem://comics"}}
 
              :uberjar {:omit-source true
                        :aot :all
