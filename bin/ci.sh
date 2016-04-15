@@ -2,4 +2,4 @@
 
 set -e
 
-lein test
+lein ci
