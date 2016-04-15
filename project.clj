@@ -24,24 +24,24 @@
 
                  ;; Core app dependencies
                  [com.stuartsierra/component "0.3.1"]
-                 [prismatic/schema "1.0.4"]
-                 [environ "1.0.1"]
+                 [prismatic/schema "1.1.0"]
+                 [environ "1.0.2"]
 
                  ;; Web server
                  [ring "1.4.0"]
                  [fogus/ring-edn "0.3.0"]
-                 [compojure "1.4.0"]
+                 [compojure "1.5.0"]
                  [hiccup "1.0.5"]
-                 [garden "1.3.0"]
+                 [garden "1.3.2"]
 
                  ;; Comic scraping
-                 [clj-http "2.0.0"]
+                 [clj-http "2.1.0"]
                  [tempfile "0.2.0"]
                  [enlive "1.1.6"]
 
                  ;; Clojurescript frontend
                  [org.clojure/clojurescript "1.7.170"]
-                 [re-frame "0.6.0" :exclusions
+                 [re-frame "0.7.0" :exclusions
                   [[org.clojure/clojurescript
                     :extension "jar"]]]
                  [cljsjs/waypoints "4.0.0-0"]
@@ -50,7 +50,7 @@
                  ;; [cljs-ajax "0.5.1"]
                  ]
 
-  :plugins      [[lein-cljsbuild "1.1.1"]]
+  :plugins      [[lein-cljsbuild "1.1.3"]]
 
   :clean-targets ^{:protect false} [:target-path
                                     "resources/public/js/compiled"]
@@ -68,11 +68,11 @@
                    :test-paths   ["test/cljs"]
                    :dependencies [[org.clojure/tools.namespace "0.2.11"]
                                   [radicalzephyr/clansi "1.2.0"]
-                                  [aysylu/loom "0.5.4"]
+                                  [aysylu/loom "0.6.0"]
 
                                   [ring/ring-mock "0.3.0"]
-                                  [figwheel-sidecar "0.5.0-2"]
-                                  [devcards "0.2.1-2"]
+                                  [figwheel-sidecar "0.5.2"]
+                                  [devcards "0.2.1-6"]
                                   [com.cemerick/piggieback "0.2.1"]]
 
                    :repl-options {:init-ns comic-reader.dev
