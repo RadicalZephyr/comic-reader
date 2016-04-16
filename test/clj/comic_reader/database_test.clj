@@ -4,7 +4,7 @@
             [comic-reader.database :as sut]
             [datomic.api :as d]))
 
-(deftest test-database-component
+(deftest database-component-test
   (let [db (sut/new-database)]
     (is (sut/database? db))
 

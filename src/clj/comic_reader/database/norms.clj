@@ -1,16 +1,14 @@
 (ns comic-reader.database.norms
   (:require [clojure.java.io :as io]
             [clojure.string  :as str]
-            [clojure.edn     :as edn])
+            [clojure.edn     :as edn]
+            [comic-reader.resources :as resources])
   (:import (java.io File
                     PushbackReader)))
 
 (defn norms-seq [norms-dir]
   (->> norms-dir
-       io/resource
-       io/as-file
-       file-seq
-       (remove (memfn ^File isDirectory))
+       resources/file-seq
        (filter #(str/ends-with? % ".edn"))
        seq))
 
