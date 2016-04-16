@@ -60,7 +60,8 @@
                  ]
 
   :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
-                                   :creds :gpg}}
+                                   :username [:gpg :env/datomic_username]
+                                   :password [:gpg :env/datomic_password]}}
 
   :plugins      [[lein-cljsbuild "1.1.3"]
                  [lein-environ "1.0.2"]]
