@@ -17,7 +17,7 @@
   :main ^:skip-aot comic-reader.system
 
   :aliases {"ci" ["do" "clean,"
-                  "with-profiles" "test" "test"]
+                  "with-profiles" "dev,test" "test"]
 
             "uberjar" ["do" "clean,"
                        "run" "-m" "comic-reader.tasks.compile-sites,"
@@ -121,7 +121,7 @@
                                                "/resources/public/js/compiled/out")
                              :asset-path "js/compiled/out"}}}}}
 
-             :test {:env {:database-uri "datomic:mem://comics"}}
+             :test {:env {:database-uri "datomic:mem://comics-test"}}
 
              :uberjar {:omit-source true
                        :aot :all
