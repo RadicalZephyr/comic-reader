@@ -3,14 +3,16 @@
             [clojure.test :as t]
             [comic-reader.sites.read :as sut]))
 
+(def test-base-name (deref (var sut/base-name)))
+
 (t/deftest base-name-test
-  (t/is (= (sut/base-name "abc.123")
+  (t/is (= (test-base-name "abc.123")
            "abc"))
-  (t/is (= (sut/base-name "thingy.clj")
+  (t/is (= (test-base-name "thingy.clj")
            "thingy"))
-  (t/is (= (sut/base-name "thing.part.two.clj")
+  (t/is (= (test-base-name "thing.part.two.clj")
            "thing.part.two"))
-  (t/is (= (sut/base-name "dir/two/three/four.clj")
+  (t/is (= (test-base-name "dir/two/three/four.clj")
            "four")))
 
 (t/deftest find-all-sites-test

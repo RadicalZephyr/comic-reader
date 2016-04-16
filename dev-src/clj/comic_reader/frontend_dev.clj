@@ -11,8 +11,20 @@
 (def figwheel-config
   {:figwheel-options {:http-server-root "public"
                       :css-dirs ["resources/public/css"]}
-   :build-ids ["dev"]
+   :build-ids ["dev" "devcards"]
    :all-builds [{:id "dev"
+                 :source-paths ["src/cljs"]
+                 :figwheel true
+                 :compiler
+                 {:main "comic-reader.main"
+                  :optimizations :none
+                  :source-map true
+                  :source-map-timestamp true
+                  :output-to "resources/public/js/compiled/main.js"
+                  :output-dir (str (cwd) "/resources/public/js/compiled/out")
+                  :asset-path "js/compiled/out"}}
+
+                {:id "devcards"
                  :source-paths ["src/cljs" "test/cljs"]
                  :figwheel {:devcards true}
                  :compiler
