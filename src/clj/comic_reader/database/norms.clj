@@ -25,11 +25,11 @@
 
 (defn- norm-content [file]
   (with-open [f (PushbackReader. (io/reader file))]
-    (edn/read f)))
+    (edn/read {:readers *data-readers*} f)))
 
 (defn- file->norm-entry [file]
   [(norm-name file)
-   (norm-content file)])
+   {:txes [(norm-content file)]}])
 
 (defn files->norms-map [norms-files]
   (->> norms-files
