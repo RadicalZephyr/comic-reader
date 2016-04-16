@@ -2,6 +2,9 @@
   "name":"comic-reader",
   "scripts":{},
   "env":{
+    "BUILD_CONFIG_WHITELIST":{
+      "required":true
+    },
     "DATOMIC_PASSWORD":{
       "required":true
     },
