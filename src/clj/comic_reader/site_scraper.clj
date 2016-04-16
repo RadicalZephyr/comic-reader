@@ -20,7 +20,7 @@
        flatten
        (apply hash-map)))
 
-(defprotocol ISiteScraper
+(defprotocol PSiteScraper
   (list-sites  [this]
                "Returns the list of sites this scraper supports.")
   (list-comics [this site-name]
@@ -33,7 +33,7 @@
                   "Returns the hiccup image tag for the given site, and page url."))
 
 (defrecord SiteScraper [sites]
-  ISiteScraper
+  PSiteScraper
 
   (list-sites [this]
     (keys sites))

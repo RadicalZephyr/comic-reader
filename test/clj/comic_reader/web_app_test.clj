@@ -13,7 +13,7 @@
              [:site-scraper])))
 
 (extend-type clojure.lang.IPersistentMap
-  site-scraper/ISiteScraper
+  site-scraper/PSiteScraper
 
   (list-sites [this]
     (:sites this))
