@@ -4,10 +4,12 @@
             [clojure.tools.reader :as r])
   (:import java.io.PushbackReader))
 
+(defn resource-file [name]
+  (-> name io/resource io/as-file))
+
 (defn file-seq [resource-prefix]
   (some->> resource-prefix
-           io/resource
-           io/as-file
+           resource-file
            clojure.core/file-seq
            (remove (memfn isDirectory))))
 
