@@ -15,7 +15,8 @@
            :database-uri (env :database-uri)
            :norms-dir    (env :norms-dir)))
 
-  (stop [component])
+  (stop [component]
+    component)
 
   PConfig
   (database-uri [cfg] (:database-uri cfg))
