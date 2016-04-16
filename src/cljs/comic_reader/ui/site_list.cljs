@@ -1,12 +1,11 @@
 (ns comic-reader.ui.site-list
-  (:refer-clojure :exclude [get set]
-                  :rename {get cget})
+  (:refer-clojure :exclude [get set])
   (:require [re-frame.core :as re-frame]
             [reagent.ratom :refer-macros [reaction]]
             [comic-reader.ui.base :as base]))
 
 (defn get [db]
-  (cget db :site-list))
+  (clojure.core/get db :site-list))
 
 (defn set [db [_ sites]]
   (assoc db :site-list sites))
