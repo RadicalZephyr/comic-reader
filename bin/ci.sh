@@ -20,11 +20,21 @@ function wait-for-server-connection() {
     exit 0
 }
 
+echo "Running CI build..."
+echo
 lein ci
+
+echo "Building uberjar..."
+echo
 
 lein uberjar
 
+echo "Starting server..."
+echo
 export PORT=19832
 eval $(cat Procfile | cut -c6-) & # Run the Procfile command
 
-wait-for-server-connection $PORT 15
+timeout_secs=15
+echo "Waiting ${timeout_secs} seconds for server to boot up..."
+echo
+wait-for-server-connection $PORT timeout_secs
