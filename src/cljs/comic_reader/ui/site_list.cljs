@@ -1,23 +1,25 @@
 (ns comic-reader.ui.site-list
+  (:refer-clojure :exclude [get set]
+                  :rename {get cget})
   (:require [re-frame.core :as re-frame]
             [reagent.ratom :refer-macros [reaction]]
             [comic-reader.ui.base :as base]))
 
-(defn get-site-list [db]
-  (get db :site-list))
+(defn get [db]
+  (cget db :site-list))
 
-(defn set-site-list [db [_ sites]]
+(defn set [db [_ sites]]
   (assoc db :site-list sites))
 
-(defn setup-site-list! []
+(defn setup! []
   (re-frame/register-sub
    :site-list
    (fn [app-db v]
-     (reaction (get-site-list @app-db))))
+     (reaction (get @app-db))))
 
   (re-frame/register-handler
    :set-site-list
-   set-site-list))
+   set))
 
 (defn site-list [view-site sites]
   (base/list-with-loading
