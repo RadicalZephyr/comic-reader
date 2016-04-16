@@ -5,8 +5,6 @@
   (:import (java.io File
                     PushbackReader)))
 
-(def norms-dir "database/norms")
-
 (defn norms-seq [norms-dir]
   (->> norms-dir
        io/resource
