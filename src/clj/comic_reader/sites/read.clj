@@ -7,7 +7,7 @@
 
 (def sites-list-file-name "sites-list.clj")
 
-(defn base-name [file]
+(defn- base-name [file]
   (->> file
        io/as-file
        .getName
