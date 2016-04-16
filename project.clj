@@ -40,7 +40,8 @@
                  [garden "1.3.2"]
 
                  ;; Data storage
-                 [com.datomic/datomic-pro "0.9.5350" :exclusions [org.apache.httpcomponents/httpclient]]
+                 [com.datomic/datomic-pro "0.9.5350"
+                  :exclusions [org.apache.httpcomponents/httpclient]]
                  [io.rkn/conformity "0.4.0"]
 
                  ;; Comic scraping
