@@ -47,30 +47,30 @@
 
 (defn- make-routes [site-scraper]
   (c/routes
-   (c/GET "/" []
-     (render-page
-      :content
-      [[:div.row
-        [:div#app.small-12.columns]]
-       [:input#history_state {:type "hidden"}]]
-      :js [(page/include-js "js/compiled/main.js")]))
+    (c/GET "/" []
+      (render-page
+       :content
+       [[:div.row
+         [:div#app.small-12.columns]]
+        [:input#history_state {:type "hidden"}]]
+       :js [(page/include-js "js/compiled/main.js")]))
 
-   (c/GET "/devcards" []
-     (render-page
-      :content
-      [[:div.row
-        [:div#cards.small-12.columns]]]
-      :css [[:style (garden/css
-                     [:.com-rigsomelight-devcards_rendered-card
-                      [:a.button {:color "#FFF !important"}]])]]
-      :js [(page/include-js "js/compiled/devcards.js")]))
+    (c/GET "/devcards" []
+      (render-page
+       :content
+       [[:div.row
+         [:div#cards.small-12.columns]]]
+       :css [[:style (garden/css
+                      [:.com-rigsomelight-devcards_rendered-card
+                       [:a.button {:color "#FFF !important"}]])]]
+       :js [(page/include-js "js/compiled/devcards.js")]))
 
-   (c/context "/api/v1" []
-     (-> (make-api-routes site-scraper)
-         wrap-params
-         wrap-edn-params))
+    (c/context "/api/v1" []
+      (-> (make-api-routes site-scraper)
+          wrap-params
+          wrap-edn-params))
 
-   (route/resources "/")))
+    (route/resources "/")))
 
 (defrecord WebApp [routes site-scraper]
   component/Lifecycle

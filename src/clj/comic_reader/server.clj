@@ -11,7 +11,8 @@
     (if server
       component
       (do
-        (println "Comic-Reader: Starting web server...")
+        (printf "Comic-Reader: Starting web server on port: %d ...\n"
+                port)
         (assoc component
                :server (run-jetty (web-app/get-routes web-app)
                                   {:port port
