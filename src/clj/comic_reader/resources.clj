@@ -5,11 +5,11 @@
   (:import java.io.PushbackReader))
 
 (defn file-seq [resource-prefix]
-  (->> resource-prefix
-       io/resource
-       io/as-file
-       clojure.core/file-seq
-       (remove (memfn isDirectory))))
+  (some->> resource-prefix
+           io/resource
+           io/as-file
+           clojure.core/file-seq
+           (remove (memfn isDirectory))))
 
 (defn- resource->stream [resource]
   (->> (str resource)
