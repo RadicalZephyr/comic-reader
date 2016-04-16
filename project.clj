@@ -82,6 +82,7 @@
                    :jvm-opts ["-XX:-OmitStackTraceInFastThrow"]
                    :source-paths ["dev-src/clj"]
                    :test-paths   ["test/cljs"]
+                   :resource-paths ["dev-resources"]
                    :dependencies [[org.clojure/tools.namespace "0.2.11"]
                                   [radicalzephyr/clansi "1.2.0"]
                                   [aysylu/loom "0.6.0"]
