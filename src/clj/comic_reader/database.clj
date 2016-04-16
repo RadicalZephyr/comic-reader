@@ -4,15 +4,24 @@
             [datomic.api :as d]
             [io.rkn.conformity :as c]))
 
+(defn- database-uri [config]
+  (:database-uri config))
+
+(defn- create-database [config]
+  (d/create-database (database-uri config)))
+
+(defn- connect [config]
+  (d/connect (database-uri config)))
+
 (defrecord Database [config conn]
   component/Lifecycle
 
   (start [component]
-    (if-let [{:keys [uri] :as config} (:config component)]
-      (do
+    (if-let [config (:config component)]
+      (when (database-uri config)
         (println "Comic-Reader: Connecting to database...")
-        (let [do-seeds? (d/create-database uri)
-              conn (d/connect uri)]
+        (let [do-seeds? (create-database config)
+              conn (connect config)]
           ;; Conform database to schemas here
           (when-let [norms-dir (:norms-dir config)]
             (println "Comic-Reader: Conforming database to norms...")
@@ -28,10 +37,12 @@
     (println "Comic-Reader: Disconnecting from database...")
     (dissoc component :conn)))
 
+(defn database? [e]
+  (instance? Database e))
+
 (defn new-database []
   (map->Database {}))
 
 (defn get-conn [database]
   (or (:conn database)
-      (when-let [uri (:uri database)]
-        (d/connect uri))))
+      (connect (:config database))))
