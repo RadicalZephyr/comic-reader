@@ -13,24 +13,28 @@
 (defn- connect [config]
   (d/connect (database-uri config)))
 
+(defn- setup-and-connect-to-database [config]
+  (when (database-uri config)
+    (println "Comic-Reader: Connecting to database...")
+    (let [do-seeds? (create-database config)
+          conn (connect config)]
+      ;; Conform database to schemas here
+      (when-let [norms-dir (:norms-dir config)]
+        (println "Comic-Reader: Conforming database to norms...")
+        (c/ensure-conforms conn (norms/norms-map norms-dir)))
+
+      ;; Add seeds if database was newly created
+      ;; (when do-seeds?
+      ;;   @(d/transact conn (seed/data)))
+      conn)))
+
 (defrecord Database [config conn]
   component/Lifecycle
 
   (start [component]
     (if-let [config (:config component)]
-      (when (database-uri config)
-        (println "Comic-Reader: Connecting to database...")
-        (let [do-seeds? (create-database config)
-              conn (connect config)]
-          ;; Conform database to schemas here
-          (when-let [norms-dir (:norms-dir config)]
-            (println "Comic-Reader: Conforming database to norms...")
-            (c/ensure-conforms conn (norms/norms-map norms-dir)))
-
-          ;; Add seeds if database was newly created
-          ;; (when do-seeds?
-          ;;   @(d/transact conn (seed/data)))
-          (assoc component :conn conn)))
+      (assoc component :conn
+             (setup-and-connect-to-database config))
       component))
 
   (stop [component]
@@ -45,4 +49,5 @@
 
 (defn get-conn [database]
   (or (:conn database)
-      (connect (:config database))))
+      (when-let [config (:config database)]
+        (setup-and-connect-to-database config))))
