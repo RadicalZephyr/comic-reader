@@ -6,19 +6,19 @@
             [comic-reader.ui.base :as base]
             [comic-reader.ui.site-list :as sut]))
 
-(deftest test-set-site-list
+(deftest test-set
   (is (= {:site-list []}
-         (sut/set-site-list {} [:_ []])))
+         (sut/set {} [:_ []])))
 
   (is (= {:site-list [1 2 3]}
-         (sut/set-site-list {} [:_ [1 2 3]]))))
+         (sut/set {} [:_ [1 2 3]]))))
 
-(deftest test-get-site-list
+(deftest test-get
   (is (= []
-         (sut/get-site-list {:site-list []})))
+         (sut/get {:site-list []})))
 
   (is (= [:a :b :c]
-         (sut/get-site-list {:site-list [:a :b :c]}))))
+         (sut/get {:site-list [:a :b :c]}))))
 
 (defcard-rg site-list
   (fn [data _]
