@@ -55,8 +55,8 @@
                   [[org.clojure/clojurescript
                     :extension "jar"]]]
                  [cljsjs/waypoints "4.0.0-0"]
+                 [secretary "1.2.3"]
 
-                 ;; [secretary "1.2.3"]
                  ;; [cljs-ajax "0.5.1"]
                  ]
 
