@@ -8,17 +8,24 @@
 
 (deftest test-set
   (is (= {:site-list []}
-         (sut/set {} [:_ []])))
+         (sut/set* {} [])))
 
   (is (= {:site-list [1 2 3]}
-         (sut/set {} [:_ [1 2 3]]))))
+         (sut/set* {} [1 2 3]))))
 
 (deftest test-get
   (is (= []
-         (sut/get {:site-list []})))
+         (sut/get* {:site-list []})))
 
   (is (= [:a :b :c]
-         (sut/get {:site-list [:a :b :c]}))))
+         (sut/get* {:site-list [:a :b :c]}))))
+
+(deftest test-get-set-wiring
+  (sut/setup!)
+  (let [sites-list [:a :b :c]]
+    (sut/set sites-list)
+    (is (= sites-list
+           @(sut/get)))))
 
 (defcard-rg site-list
   (fn [data _]
