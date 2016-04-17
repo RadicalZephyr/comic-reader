@@ -7,19 +7,26 @@
             [comic-reader.ui.comic-list :as sut])
   (:require-macros [comic-reader.macro-util :refer [reactively]]))
 
-(deftest test-set-comic-list
-  (is (= {:comic-list []}
-         (sut/set-comic-list {} [:_ []])))
-
-  (is (= {:comic-list [:a :b :c]}
-         (sut/set-comic-list {} [:_ [:a :b :c]]))))
-
-(deftest test-get-comic-list
+(deftest test-get
   (is (= []
-         (sut/get-comic-list {:comic-list []})))
+         (sut/get* {:comic-list []})))
 
   (is (= [:a :b :c]
-         (sut/get-comic-list {:comic-list [:a :b :c]}))))
+         (sut/get* {:comic-list [:a :b :c]}))))
+
+(deftest test-set
+  (is (= {:comic-list []}
+         (sut/set* {} [])))
+
+  (is (= {:comic-list [:a :b :c]}
+         (sut/set* {} [:a :b :c]))))
+
+(deftest test-get-set-wiring
+  (sut/setup!)
+  (let [comics-list [:a :b :c :d]]
+    (sut/set comics-list)
+    (is (= comics-list
+           @(sut/get)))))
 
 (defcard-rg comic-list
   (fn [data _]

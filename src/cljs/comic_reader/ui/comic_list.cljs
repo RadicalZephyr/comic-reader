@@ -1,23 +1,31 @@
 (ns comic-reader.ui.comic-list
+  (:refer-clojure :exclude [get set])
   (:require [re-frame.core :as re-frame]
             [reagent.ratom :refer-macros [reaction]]
             [comic-reader.ui.base :as base]))
 
-(defn set-comic-list [db [_ comics]]
+(defn get* [db]
+  (clojure.core/get db :comic-list))
+
+(defn set* [db comics]
   (assoc db :comic-list comics))
 
-(defn get-comic-list [db]
-  (get db :comic-list))
-
-(defn setup-comic-list! []
+(defn setup! []
   (re-frame/register-sub
    :comic-list
-   (fn [app-db v]
-     (reaction (get-comic-list @app-db))))
+   (fn [app-db _]
+     (reaction (get* @app-db))))
 
   (re-frame/register-handler
    :set-comic-list
-   set-comic-list))
+   (fn [db [_ comics]]
+     (set* db comics))))
+
+(defn get []
+  (re-frame/subscribe [:comic-list]))
+
+(defn set [comics]
+  (re-frame/dispatch [:set-comic-list comics]))
 
 (defn comic-list [view-comic comics]
   (base/list-with-loading
