@@ -50,7 +50,7 @@
                  [enlive "1.1.6"]
 
                  ;; Clojurescript frontend
-                 [org.clojure/clojurescript "1.7.228"]
+                 [org.clojure/clojurescript "1.8.40"]
                  [re-frame "0.7.0" :exclusions
                   [[org.clojure/clojurescript
                     :extension "jar"]]]
