@@ -11,7 +11,7 @@
 (defn GET [route opts])
 (defn POST [route opts])
 
-(def add-error
+(def ^:private add-error
   (fnil conj []))
 
 (defn setup! []
@@ -31,9 +31,9 @@
 (defn report-error [error-response]
   (rf/dispatch [error-handler-key error-response]))
 
-
 (def *last-error*
   (reaction (peek @(api-errors))))
+
 
 (defn get-sites []
   (GET "/api/v1/sites"
