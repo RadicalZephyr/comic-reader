@@ -16,18 +16,18 @@
          (sut/get* {:component-css [:a :b :c]}))))
 
 (deftest test-set
-  (is (= {:component-css [{:a 1}]}
-         (sut/merge* {} {:a 1})))
+  (is (= {:component-css {:id1 {:a 1}}}
+         (sut/merge* {} :id1 {:a 1})))
 
   (is (= {:component-css {:a 1 :b 2}}
-         (sut/merge* {:component-css {:b 2}} {:a 1}))))
+         (sut/merge* {:component-css {:b 2}} :a 1))))
 
 (defcard-rg display-css
   (let [pre-attrs {:style {:border "1px solid #aaa" :padding "10px"}}]
     (sut/setup!)
     (reactively
      [:div
-      [:button {:on-click #(sut/merge [:a {:color "blue"}])} "Add a blue style"]
+      [:button {:on-click #(sut/merge (gensym) [:a {:color "blue"}])} "Add a blue style"]
       [:p "Raw data structure: "]
       [:pre pre-attrs (prn-str @(sut/component-garden-css))]
 

@@ -7,8 +7,8 @@
 (defn get* [db]
   (:component-css db))
 
-(defn merge* [db garden-css]
-  (update db :component-css conj garden-css))
+(defn merge* [db id garden-css]
+  (assoc-in db [:component-css id] garden-css))
 
 (defn setup! []
   (re-frame/register-sub
@@ -18,14 +18,14 @@
 
   (re-frame/register-handler
    :add-to-component-css
-   (fn [db [_ garden-css]]
-     (merge* db garden-css))))
+   (fn [db [_ id garden-css]]
+     (merge* db id garden-css))))
 
-(defn merge [garden-css]
-  (re-frame/dispatch [:add-to-component-css garden-css]))
+(defn merge [id garden-css]
+  (re-frame/dispatch [:add-to-component-css id garden-css]))
 
 (defn component-garden-css []
-  (re-frame/subscribe [:component-css]))
+  (reaction (vals @(re-frame/subscribe [:component-css]))))
 
 (defn component-css []
   (reaction [:style (g/css @(component-garden-css))]))
