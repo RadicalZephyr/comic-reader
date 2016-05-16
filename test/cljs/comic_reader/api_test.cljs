@@ -21,11 +21,7 @@
       (sut/setup!)
       (reactively
        [:div
-        [:input {:type "button"
-                 :value "Error"
-                 :on-click #(sut/report-error error)}]
-        [:input {:type "button"
-                 :value "Warning"
-                 :on-click #(sut/report-error warning)}]
+        [:button {:on-click #(sut/report-error error)} "Error"]
+        [:button {:on-click #(sut/report-error warning) :style {:margin-left "10px"}} "Warning"]
         [:p (str "Error count " (count @(sut/api-errors)))]
-        [:pre (prn-str (peek @(sut/api-errors)))]]))))
+        [:pre (prn-str @sut/*last-error*)]]))))
