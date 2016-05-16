@@ -4,7 +4,8 @@
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [comic-reader.ui.base :as base]
-            [comic-reader.ui.site-list :as sut]))
+            [comic-reader.ui.site-list :as sut]
+            [comic-reader.macro-util :refer-macros [reactively]]))
 
 (deftest test-set
   (is (= {:site-list []}
@@ -20,12 +21,16 @@
   (is (= [:a :b :c]
          (sut/get* {:site-list [:a :b :c]}))))
 
-(deftest test-get-set-wiring
-  (sut/setup!)
-  (let [sites-list [:a :b :c]]
-    (sut/set sites-list)
-    (is (= sites-list
-           @(sut/get)))))
+(defcard-rg test-get-set-wiring
+  (fn [_ _]
+    (let [sites-list [:a :b :c]]
+      (sut/setup!)
+      (sut/set sites-list)
+      (reactively
+       [:div
+        [:p (prn-str @(sut/get))
+         "should be equal to "
+         (prn-str sites-list)]]))))
 
 (defcard-rg site-list
   (fn [data _]
