@@ -56,9 +56,7 @@
                     :extension "jar"]]]
                  [cljsjs/waypoints "4.0.0-0"]
                  [secretary "1.2.3"]
-
-                 ;; [cljs-ajax "0.5.1"]
-                 ]
+                 [cljs-ajax "0.5.4"]]
 
   :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
                                    :username [:gpg :env/datomic_username]

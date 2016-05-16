@@ -1,15 +1,11 @@
 (ns comic-reader.api
   (:require [re-frame.core :as rf]
             [reagent.ratom :refer-macros [reaction]]
-            ;[ajax.core :refer [GET POST]]
-            ))
+            [ajax.core :refer [GET POST]]))
 
 (def ^:private errors-db-key :api-errors)
 (def ^:private errors-subscription-key :api-errors)
 (def ^:private error-handler-key :api-error)
-
-(defn GET [route opts])
-(defn POST [route opts])
 
 (def ^:private add-error
   (fnil conj []))
