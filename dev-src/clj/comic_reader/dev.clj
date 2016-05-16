@@ -38,3 +38,5 @@
   (require 'comic-reader.system)
   (if-let [stop-fn (find-var 'comic-reader.system/stop)]
     (stop-fn)))
+
+(welcome)
