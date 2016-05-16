@@ -1,10 +1,10 @@
 (ns comic-reader.api-test
   (:require [comic-reader.api :as sut]
+            [comic-reader.macro-util :refer-macros [reactively]]
             [cljs.test :refer-macros [is testing]]
             [devcards.core :refer-macros [deftest defcard-rg]]
             [reagent.core :as reagent]
-            [reagent.ratom :refer-macros [reaction]])
-  (:require-macros [comic-reader.macro-util :refer [reactively]]))
+            [reagent.ratom :refer-macros [reaction]]))
 
 
 (deftest test-add-error

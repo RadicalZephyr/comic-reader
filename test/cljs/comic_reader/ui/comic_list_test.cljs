@@ -4,8 +4,8 @@
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [comic-reader.ui.base :as base]
-            [comic-reader.ui.comic-list :as sut])
-  (:require-macros [comic-reader.macro-util :refer [reactively]]))
+            [comic-reader.ui.comic-list :as sut]
+            [comic-reader.macro-util :refer-macros [reactively]]))
 
 (deftest test-get
   (is (= []
