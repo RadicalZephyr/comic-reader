@@ -21,12 +21,16 @@
   (is (= {:comic-list [:a :b :c]}
          (sut/set* {} [:a :b :c]))))
 
-(deftest test-get-set-wiring
-  (sut/setup!)
-  (let [comics-list [:a :b :c :d]]
-    (sut/set comics-list)
-    (is (= comics-list
-           @(sut/get)))))
+(defcard-rg test-get-set-wiring
+  (fn [_ _]
+    (let [comics-list [:a :b :c :d]]
+      (sut/setup!)
+      (sut/set comics-list)
+      (reactively
+       [:div
+        [:p (prn-str @(sut/get))
+         "should be equal to "
+         (prn-str comics-list)]]))))
 
 (defcard-rg comic-list
   (fn [data _]
