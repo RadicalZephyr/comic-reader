@@ -1,7 +1,8 @@
 (ns comic-reader.api
   (:require [re-frame.core :as rf]
             [reagent.ratom :refer-macros [reaction]]
-            [ajax.core :refer [GET POST]]))
+            [ajax.core :refer [GET POST]]
+            [ajax.edn]))
 
 (def ^:private errors-db-key :api-errors)
 (def ^:private errors-subscription-key :api-errors)
@@ -31,14 +32,14 @@
   (reaction (peek @(api-errors))))
 
 
-(defn get-sites []
+(defn get-sites [opts]
   (GET "/api/v1/sites"
-    {:handler #(rf/dispatch [:site-list %])
-     :error-handler report-error
-     :response-format :edn}))
+    {:handler (:on-success opts)
+     :error-handler (or (:on-error opts) report-error)
+     :response-format (ajax.edn/edn-response-format)}))
 
-(defn get-comics [site]
+(defn get-comics [site opts]
   (GET (str "/api/v1/" site "/comics")
-    {:handler #(rf/dispatch [:comic-list %])
-     :error-handler report-error
-     :response-format :edn}))
+    {:handler (:on-success opts)
+     :error-handler (or (:on-error opts) report-error)
+     :response-format (ajax.edn/edn-response-format)}))
