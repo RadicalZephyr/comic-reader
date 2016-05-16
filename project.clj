@@ -29,8 +29,8 @@
 
                  ;; Core app dependencies
                  [com.stuartsierra/component "0.3.1"]
-                 [prismatic/schema "1.1.0"]
-                 [environ "1.0.2"]
+                 [prismatic/schema "1.1.1"]
+                 [environ "1.0.3"]
 
                  ;; Web server
                  [ring "1.4.0"]
@@ -88,8 +88,8 @@
                                   [aysylu/loom "0.6.0"]
 
                                   [ring/ring-mock "0.3.0"]
-                                  [figwheel-sidecar "0.5.2"]
-                                  [devcards "0.2.1-6"]
+                                  [figwheel-sidecar "0.5.3-1"]
+                                  [devcards "0.2.1-7"]
                                   [com.cemerick/piggieback "0.2.1"]]
 
                    :repl-options {:init-ns comic-reader.dev
