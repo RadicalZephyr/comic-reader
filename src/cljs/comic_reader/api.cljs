@@ -4,6 +4,10 @@
             ;[ajax.core :refer [GET POST]]
             ))
 
+(def ^:private errors-db-key :api-errors)
+(def ^:private errors-subscription-key :api-errors)
+(def ^:private error-handler-key :api-error)
+
 (defn GET [route opts])
 (defn POST [route opts])
 
@@ -12,20 +16,21 @@
 
 (defn setup! []
   (rf/register-sub
-   :api-errors
+   errors-subscription-key
    (fn [app-db _]
-     (reaction (:api-errors @app-db))))
+     (reaction (errors-db-key @app-db))))
 
   (rf/register-handler
-   :api-error
+   error-handler-key
    (fn [db [_ error]]
-     (update db :api-errors add-error error))))
+     (update db errors-db-key add-error error))))
 
 (defn api-errors []
-  (rf/subscribe [:api-errors]))
+  (rf/subscribe [errors-subscription-key]))
 
 (defn report-error [error-response]
-  (rf/dispatch [:api-error error-response]))
+  (rf/dispatch [error-handler-key error-response]))
+
 
 (def *last-error*
   (reaction (peek @(api-errors))))
