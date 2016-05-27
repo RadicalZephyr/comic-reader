@@ -19,9 +19,9 @@
      :server       (component/using
                     (server/new-server port)
                     [:web-app])
-     :database (component/using
-                (database/new-database)
-                [:config])
+     #_:database #_(component/using
+                    (database/new-database)
+                    [:config])
      :config (config/new-config))))
 
 (def system nil)
