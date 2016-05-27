@@ -1,7 +1,9 @@
 (ns comic-reader.main
   (:require
+    [comic-reader.api :as api]
     [comic-reader.ui.base :as base]
     [comic-reader.ui.site-list :as site-list]
+    [comic-reader.ui.comic-list :as comic-list]
     [reagent.core :as reagent]
     [reagent.ratom :refer-macros [reaction]]
     [re-frame.core :as re-frame]))
@@ -26,12 +28,19 @@
   (re-frame/register-handler
    :initialize-app-state
    (fn [db [_ state]]
-     state)))
+     state))
+
+  (re-frame/register-handler
+   :view-site
+   (fn [db [_ site-id]]
+     (-> db
+         (assoc :page-key :comic-list)))))
 
 (defn main-panel
   [page-key]
   (case page-key
-    :site [site-list/site-list-container]
+    :site-list [site-list/site-list-container]
+    :comic-list [comic-list/comic-list-container]
     [base/four-oh-four]))
 
 (defn main-panel-container []
@@ -44,8 +53,9 @@
   (enable-console-print!)
   (setup!)
   (site-list/setup!)
-  (re-frame/dispatch [:initialize-app-state {:page-key :site}])
-  (re-frame/dispatch [:set-site-list [{:id :a :name "Comic A"}]])
+  (comic-list/setup!)
+  (re-frame/dispatch [:initialize-app-state {:page-key :site-list}])
+  (api/get-sites {:on-success #(re-frame/dispatch [:set-site-list %])})
   (reagent/render-component [main-panel-container]
                             (.getElementById js/document "app")))
 
