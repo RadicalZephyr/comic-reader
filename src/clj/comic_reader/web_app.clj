@@ -6,17 +6,34 @@
             [hiccup.page :as page]
             [garden.core :as garden]
             [ring.middleware.edn :refer [wrap-edn-params]]
-            [ring.middleware.params :refer [wrap-params]]))
+            [ring.middleware.params :refer [wrap-params]]
+            [clojure.string :as str]))
 
 (defn- edn-response [data & [status]]
   {:status (or status 200)
    :headers {"Content-Type" "application/edn; charset=utf-8"}
    :body (pr-str data)})
 
+(defn- capitalize-all [words]
+  (map str/capitalize words))
+
+(defn- spacify [words]
+  (str/join " " words))
+
+(defn- titleize [id]
+  (-> id
+      (str/split #"-")
+      capitalize-all
+      spacify))
+
+(defn- format-site [site-id]
+  {:id site-id
+   :name (titleize site-id)})
+
 (defn- make-api-routes [site-scraper]
   (c/routes
     (c/GET "/sites" []
-      (edn-response (scraper/list-sites site-scraper)))
+      (edn-response (map format-site (scraper/list-sites site-scraper))))
 
     (c/GET "/:site-name/comics" [site-name]
       (edn-response (scraper/list-comics site-scraper site-name)))
