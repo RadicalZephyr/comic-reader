@@ -56,7 +56,10 @@
         (t/is (= (handle (mock/request :get "/api/v1/sites"))
                  {:status 200
                   :headers edn-content-type
-                  :body "(\"site-one\" \"site-two\" \"site-three\")"}))))
+                  :body (str
+                         "({:id \"site-one\", :name \"Site One\"}"
+                         " {:id \"site-two\", :name \"Site Two\"}"
+                         " {:id \"site-three\", :name \"Site Three\"})")}))))
 
     (t/testing "/:site-name/comics"
       (let [handle (app-routes
