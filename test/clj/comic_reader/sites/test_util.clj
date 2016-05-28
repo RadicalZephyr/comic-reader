@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.test :refer :all]
             [clojure.template :as template]
-            [comic-reader.sites :as sites]
+            [comic-reader.sites]
             [clojure.template :refer [do-template]]
             [clj-http.client :as client]
             [loom.graph :as graph]
@@ -102,9 +102,9 @@
   (are [url-fn] (is (= (:status (client/head (url-fn)))
                        200)
                     (str (url-fn) "does not appear to exist."))
-    sites/root-url
-    sites/manga-url
-    sites/manga-list-url))
+    comic-reader.sites/root-url
+    comic-reader.sites/manga-url
+    comic-reader.sites/manga-list-url))
 
 (defmacro and-template [argv expr & values]
   (let [c (count argv)]
