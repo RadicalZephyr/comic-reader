@@ -49,17 +49,17 @@
                 :comic-list :loading))))
 
   (re-frame/register-handler
-   :view-comic
+   :read-comic
    (fn [db [_ comic-id]]
      (-> db
-         (set-page-key :comic-viewer)))))
+         (set-page-key :reader)))))
 
 (defn main-panel
   [page-key]
   (case page-key
     :site-list [site-list/site-list-container]
     :comic-list [comic-list/comic-page-container]
-    :comic-viewer [:div [:h1 "Read a Comic!"]]
+    :reader [:div [:h1 "Read a Comic!"]]
     nil [:span ""]
     [base/four-oh-four]))
 
