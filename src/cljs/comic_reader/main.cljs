@@ -33,6 +33,7 @@
   (re-frame/register-handler
    :view-site
    (fn [db [_ site-id]]
+     (api/get-comics site-id {:on-success comic-list/set})
      (-> db
          (assoc :page-key :comic-list
                 :site-id site-id
@@ -56,7 +57,7 @@
   (setup!)
   (site-list/setup!)
   (comic-list/setup!)
-  (api/get-sites {:on-success #(re-frame/dispatch [:set-site-list %])})
+  (api/get-sites {:on-success site-list/set})
   (re-frame/dispatch [:initialize-app-state {:page-key :site-list
                                              :site-list :loading}])
   (reagent/render-component [main-panel-container]
