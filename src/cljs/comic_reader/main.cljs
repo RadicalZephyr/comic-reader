@@ -40,7 +40,7 @@
   [page-key]
   (case page-key
     :site-list [site-list/site-list-container]
-    :comic-list [comic-list/comic-list-container]
+    :comic-list [comic-list/comic-page-container]
     [base/four-oh-four]))
 
 (defn main-panel-container []

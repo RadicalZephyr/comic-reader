@@ -83,3 +83,23 @@
        [sut/comic-list-filter update-search-prefix @data])))
   (reagent/atom {:search-prefix "Initial search"})
   {:inspect-data true})
+
+(defcard-rg comic-page
+  (fn [data _]
+    (let [comics [{:id :a :name "A"}
+                  {:id :b :name "B"}
+                  {:id :c :name "C"}]
+          view-comic (fn [comic-id]
+                       (base/do-later
+                        #(swap! data assoc
+                                :comic-to-view comic-id)))
+          update-search-prefix (fn [prefix & {:keys [clear]
+                                              :or {:clear false}}]
+                                 (base/do-later
+                                  #(swap! data assoc
+                                          :search-data {:search-prefix prefix
+                                                        :clear clear})))]
+      (reactively
+       [sut/comic-page view-comic comics update-search-prefix (:search-data @data)])))
+  (reagent/atom {:search-data {:search-prefix "Initial search"}})
+  {:inspect-data true})
