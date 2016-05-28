@@ -14,6 +14,13 @@
 (defn set-page-key [db page-key]
   (assoc db :page-key page-key))
 
+(defn maybe-load-sites [db]
+  (if (:site-list db)
+    db
+    (do
+      (api/get-sites {:on-success site-list/set})
+      (assoc db :site-list :loading))))
+
 (defn setup! []
   (re-frame/register-sub
    :page-key
@@ -26,24 +33,33 @@
      (set-page-key db page-key)))
 
   (re-frame/register-handler
-   :initialize-app-state
-   (fn [db [_ state]]
-     state))
+   :view-sites
+   (fn [db _]
+     (-> db
+         (set-page-key :site-list)
+         (maybe-load-sites))))
 
   (re-frame/register-handler
-   :view-site
+   :view-comics
    (fn [db [_ site-id]]
      (api/get-comics site-id {:on-success comic-list/set})
      (-> db
-         (assoc :page-key :comic-list
-                :site-id site-id
-                :comic-list :loading)))))
+         (set-page-key :comic-list)
+         (assoc :site-id site-id
+                :comic-list :loading))))
+
+  (re-frame/register-handler
+   :view-comic
+   (fn [db [_ comic-id]]
+     (-> db
+         (set-page-key :comic-viewer)))))
 
 (defn main-panel
   [page-key]
   (case page-key
     :site-list [site-list/site-list-container]
     :comic-list [comic-list/comic-page-container]
+    :comic-viewer [:div [:h1 "Read a Comic!"]]
     [base/four-oh-four]))
 
 (defn main-panel-container []
@@ -57,9 +73,7 @@
   (setup!)
   (site-list/setup!)
   (comic-list/setup!)
-  (api/get-sites {:on-success site-list/set})
-  (re-frame/dispatch [:initialize-app-state {:page-key :site-list
-                                             :site-list :loading}])
+  (re-frame/dispatch [:view-sites])
   (reagent/render-component [main-panel-container]
                             (.getElementById js/document "app")))
 
