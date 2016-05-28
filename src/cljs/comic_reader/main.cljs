@@ -34,7 +34,9 @@
    :view-site
    (fn [db [_ site-id]]
      (-> db
-         (assoc :page-key :comic-list)))))
+         (assoc :page-key :comic-list
+                :site-id site-id
+                :comic-list :loading)))))
 
 (defn main-panel
   [page-key]
@@ -54,8 +56,9 @@
   (setup!)
   (site-list/setup!)
   (comic-list/setup!)
-  (re-frame/dispatch [:initialize-app-state {:page-key :site-list}])
   (api/get-sites {:on-success #(re-frame/dispatch [:set-site-list %])})
+  (re-frame/dispatch [:initialize-app-state {:page-key :site-list
+                                             :site-list :loading}])
   (reagent/render-component [main-panel-container]
                             (.getElementById js/document "app")))
 
