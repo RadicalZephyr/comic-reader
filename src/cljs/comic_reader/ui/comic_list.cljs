@@ -1,6 +1,7 @@
 (ns comic-reader.ui.comic-list
   (:refer-clojure :exclude [get set])
-  (:require [re-frame.core :as re-frame]
+  (:require [clojure.string :as str]
+            [re-frame.core :as re-frame]
             [reagent.ratom :refer-macros [reaction]]
             [comic-reader.ui.base :as base]))
 
@@ -19,13 +20,31 @@
   (re-frame/register-handler
    :set-comic-list
    (fn [db [_ comics]]
-     (set* db comics))))
+     (set* db comics)))
+
+  (re-frame/register-sub
+   :search-data
+   (fn [app-db _]
+     (reaction (:search-data @app-db))))
+
+  (re-frame/register-handler
+   :set-search-data
+   (fn [db [_ search-data]]
+     (assoc db :search-data search-data))))
 
 (defn get []
   (re-frame/subscribe [:comic-list]))
 
 (defn set [comics]
   (re-frame/dispatch [:set-comic-list comics]))
+
+(defn get-search-data []
+  (re-frame/subscribe [:search-data]))
+
+(defn set-search-data [prefix & {:keys [clear]
+                                 :or {:clear false}}]
+  (re-frame/dispatch [:set-search-data {:search-prefix prefix
+                                        :clear clear}]))
 
 (defn comic-list [view-comic comics]
   (base/list-with-loading
@@ -36,14 +55,6 @@
                  {:on-click #(view-comic (:id comic))}
                  (:name comic)])}
    comics))
-
-(defn comic-list-container []
-  (let [comics (re-frame/subscribe [:comic-list])]
-    (fn []
-      [comic-list
-       (fn [comic-id]
-         (re-frame/dispatch [:view-comic comic-id]))
-       (deref comics)])))
 
 (defn letter-filter [set-prefix letter search-prefix]
   [(if (= search-prefix letter) :dd.active :dd)
@@ -83,3 +94,22 @@
      [:a.tiny.secondary.button.radius
       {:on-click #(set-prefix "" :clear true)}
       "clear filters"]]))
+
+(defn comic-page [view-comic comics set-prefix search-data]
+  (let [prefix (:search-prefix search-data)]
+   [:div
+    [comic-list-filter set-prefix search-data]
+    [comic-list view-comic (if (str/blank? prefix)
+                             comics
+                             (filter #(str/starts-with? (:search-prefix search-data) (:name %))
+                                     comics))]]))
+
+(defn comic-page-container []
+  (let [view-comic (fn [comic-id]
+                     (re-frame/dispatch [:view-comic comic-id]))
+        comics      (get)
+        search-data (get-search-data)]
+    (fn []
+      [comic-page
+       view-comic (deref comics)
+       set-search-data (deref search-data)])))
