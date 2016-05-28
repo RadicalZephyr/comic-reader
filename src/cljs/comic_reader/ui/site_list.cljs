@@ -42,5 +42,5 @@
   (let [sites (re-frame/subscribe [:site-list])]
     (fn [] [site-list
             (fn [site-id]
-              (re-frame/dispatch [:view-site site-id]))
+              (re-frame/dispatch [:view-comics site-id]))
             (deref sites)])))
