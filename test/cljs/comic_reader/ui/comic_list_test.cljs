@@ -21,6 +21,17 @@
   (is (= {:comic-list [:a :b :c]}
          (sut/set* {} [:a :b :c]))))
 
+(deftest test-prefix-filter-comics
+  (is (= [{:name "A"}]
+         (sut/prefix-filter-comics "A" [{:name "A"}
+                                        {:name "B"}
+                                        {:name "C"}])))
+  (is (= [{:name "1"} {:name "\""}]
+         (sut/prefix-filter-comics "#" [{:name "1"}
+                                        {:name "B"}
+                                        {:name "\""}
+                                        {:name "C"}]))))
+
 (defcard-rg test-get-set-wiring
   (fn [_ _]
     (let [comics-list [:a :b :c :d]]

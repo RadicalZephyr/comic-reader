@@ -95,14 +95,25 @@
       {:on-click #(set-prefix "" :clear true)}
       "clear filters"]]))
 
+(defn- re-string [letter]
+  (if (= letter "#")
+    "^[^a-z]"
+    (str "^" letter)))
+
+(defn prefix-filter-comics [prefix comics]
+  (if-not (str/blank? prefix)
+    (let [filter-re (re-pattern (str "(?i)^"
+                                     (re-string prefix)))]
+      (filter (fn [{:keys [name]}]
+                (re-find filter-re name))
+              comics))
+    comics))
+
 (defn comic-page [view-comic comics set-prefix search-data]
   (let [prefix (:search-prefix search-data)]
    [:div
     [comic-list-filter set-prefix search-data]
-    [comic-list view-comic (if (str/blank? prefix)
-                             comics
-                             (filter #(str/starts-with? (:search-prefix search-data) (:name %))
-                                     comics))]]))
+    [comic-list view-comic (prefix-filter-comics prefix comics)]]))
 
 (defn comic-page-container []
   (let [view-comic (fn [comic-id]
