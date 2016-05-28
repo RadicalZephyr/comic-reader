@@ -5,34 +5,33 @@
 (defn make-waypoint [options]
   (js/Waypoint. (clj->js options)))
 
-(defn make-img-did-mount [set-waypoints! goto-comic]
+(defn make-img-did-mount [set-waypoints! set-current-comic]
   (fn [this]
     (let [node (reagent/dom-node this)
           wp-down (make-waypoint {:element node
                                   :handler #(when (= %
                                                      "down")
-                                              (goto-comic))})
+                                              (set-current-comic))})
           wp-up (make-waypoint {:element node
                                 :offset "bottom-in-view"
                                 :handler #(when (= %
                                                    "up")
-                                            (goto-comic))})]
+                                            (set-current-comic))})]
       (set-waypoints! [wp-up wp-down]))))
 
-(defn comic-image [img-data tag]
+(defn comic-image [set-current-comic tag]
   (let [waypoints (atom nil)]
     (reagent/create-class
      {:display-name "comic-image"
       :component-did-mount
       (make-img-did-mount
        #(reset! waypoints %)
-       identity ;; FIXME: where does goto-comic come from?
-       )
+       set-current-comic)
       :component-will-unmount
       (fn []
         (map #(.destroy %) @waypoints)
         (reset! waypoints nil))
       :reagent-render
-      (fn [_img-data tag]
+      (fn [_ tag]
         [:div.row
          [:div.medium-12.columns tag]])})))
