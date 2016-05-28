@@ -60,6 +60,7 @@
     :site-list [site-list/site-list-container]
     :comic-list [comic-list/comic-page-container]
     :comic-viewer [:div [:h1 "Read a Comic!"]]
+    nil [:span ""]
     [base/four-oh-four]))
 
 (defn main-panel-container []
