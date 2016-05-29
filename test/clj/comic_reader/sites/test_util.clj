@@ -2,7 +2,6 @@
   (:require [clojure.string :as str]
             [clojure.test :refer :all]
             [clojure.template :as template]
-            [comic-reader.sites]
             [clojure.template :refer [do-template]]
             [clj-http.client :as client]
             [loom.graph :as graph]
@@ -113,14 +112,6 @@
             (zero? (mod (count args) (count argv)))))
     `(and-template ~argv ~expr ~@args)
     (throw (IllegalArgumentException. "The number of args doesn't match are's argv."))))
-
-(defn test-url-format-strings []
-  (are-with-msg [url-fn] (is (= (:status (client/head (url-fn)))
-                                200)
-                             (str (url-fn) "does not appear to exist."))
-                comic-reader.sites/root-url
-                comic-reader.sites/manga-url
-                comic-reader.sites/manga-list-url))
 
 (defn get-doc-string [sym]
   (let [sites-ns (find-ns 'comic-reader.sites)
