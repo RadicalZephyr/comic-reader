@@ -2,11 +2,11 @@
   (:require [com.stuartsierra.component :as component]
             [environ.core :refer [env]]))
 
-(defprotocol PConfig
+(defprotocol Config
   (database-uri [cfg])
   (norms-dir [cfg]))
 
-(defrecord Config [database-uri norms-dir]
+(defrecord EnvConfig [database-uri norms-dir]
   component/Lifecycle
 
   (start [component]
@@ -18,16 +18,16 @@
   (stop [component]
     component)
 
-  PConfig
+  Config
   (database-uri [cfg] (:database-uri cfg))
 
   (norms-dir [cfg] (:norms-dir cfg)))
 
 (extend-type clojure.lang.APersistentMap
-  PConfig
+  Config
   (database-uri [cfg] (:database-uri cfg))
 
   (norms-dir [cfg] (:norms-dir cfg)))
 
 (defn new-config []
-  (map->Config {}))
+  (map->EnvConfig {}))
