@@ -38,14 +38,7 @@
     (c/GET "/:site-name/comics" [site-name]
       (edn-response (scraper/list-comics site-scraper site-name)))
 
-    (c/GET "/:site-name/:comic-id/chapters" [site-name comic-id]
-      (edn-response (scraper/list-chapters site-scraper site-name comic-id)))
-
-    (c/POST "/:site-name/pages" [site-name comic-chapter]
-      (edn-response (scraper/list-pages site-scraper site-name comic-chapter)))
-
-    (c/POST "/:site-name/image" [site-name comic-page]
-      (edn-response (scraper/get-page-image site-scraper site-name comic-page)))))
+    ))
 
 (defn- render-page [& {:keys [head css js content]}]
   (page/html5
