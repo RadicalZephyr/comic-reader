@@ -2,6 +2,7 @@
   (:require [clojure.test :as t]
             [comic-reader.site-scraper :as site-scraper]
             [comic-reader.web-app :refer :all]
+            [comic-reader.mock-site-scraper :refer [mock-scraper]]
             [com.stuartsierra.component :as component]
             [ring.mock.request :as mock]))
 
@@ -11,24 +12,6 @@
    :web-app (component/using
              (new-web-app)
              [:site-scraper])))
-
-(extend-type clojure.lang.IPersistentMap
-  site-scraper/PSiteScraper
-
-  (list-sites [this]
-    (:sites this))
-
-  (list-comics [this site-name]
-    (get-in this [:comics site-name]))
-
-  (list-chapters [this site-name comic-id]
-    (get-in this [:chapters site-name comic-id]))
-
-  (list-pages [this site-name comic-chapter]
-    (get-in this [:pages site-name comic-chapter]))
-
-  (get-page-image [this site-name comic-page]
-    (get-in this [:images site-name comic-page])))
 
 (defn test-system [scraper]
   (-> (server-test-system scraper)
@@ -49,9 +32,10 @@
 
     (t/testing "/sites"
       (let [handle (app-routes
-                    (test-system {:sites '("site-one"
+                    (test-system (mock-scraper
+                                  :sites '("site-one"
                                            "site-two"
-                                           "site-three")}))]
+                                           "site-three"))))]
 
         (t/is (= (handle (mock/request :get "/api/v1/sites"))
                  {:status 200
@@ -63,13 +47,14 @@
 
     (t/testing "/:site-name/comics"
       (let [handle (app-routes
-                    (test-system {:comics {"manga-here"
+                    (test-system (mock-scraper
+                                  :comics {"manga-here"
                                            [{:id "the_gamer"
                                              :name "The Gamer"
                                              :url "real_url"}
                                             {:id "other_comic"
                                              :name "Other Comic"
-                                             :url "another_url"}]}}))]
+                                             :url "another_url"}]})))]
 
         (t/is (= (handle (mock/request :get "/api/v1/manga-here/comics"))
                  {:status 200
