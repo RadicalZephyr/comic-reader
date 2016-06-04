@@ -3,9 +3,8 @@
 
 (defrecord DatomicRepository [config conn site comic]
   protocol/ComicRepository
-  (get-first-location [this])
-  (previous-pages [this location n])
-  (next-pages [this location n]))
+  (previous-pages [this site comic-id location n])
+  (next-pages [this site comic-id location n]))
 
 (defn new-repository []
   (map->DatomicRepository {}))
