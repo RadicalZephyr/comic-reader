@@ -7,16 +7,14 @@
 (deftest database-component-test
   (let [db (sut/new-database)]
     (is (sut/database? db))
+    (is (sut/database? (component/start db)))
 
-    (let [not-started-db (component/start db)]
-     (is (sut/database? not-started-db))
-
-     (is (nil? (:conn not-started-db))))
+    (is (nil? (:conn (component/start db))))
 
     (let [config {:database-uri "datomic:mem://comics-test"
                   :norms-dir nil}
           db (assoc db :config config)]
-      (is (not (nil? (sut/get-conn db))))
+      (is (nil? (sut/get-conn db)))
 
       (let [started-db (component/start db)]
         (is (not (nil? (:conn started-db))))))
