@@ -26,7 +26,11 @@
       ;;   @(d/transact conn (seed/data)))
       conn)))
 
-(defrecord Database [config conn]
+(defprotocol Database
+  (get-conn [database] "Return the connection to the database."))
+
+(defrecord DatomicDatabase [config conn]
+
   component/Lifecycle
 
   (start [component]
@@ -37,15 +41,13 @@
 
   (stop [component]
     (println "Comic-Reader: Disconnecting from database...")
-    (dissoc component :conn)))
+    (dissoc component :conn))
+
+  Database
+  (get-conn [database] (:conn database)))
 
 (defn database? [e]
   (instance? Database e))
 
 (defn new-database []
-  (map->Database {}))
-
-(defn get-conn [database]
-  (or (:conn database)
-      (when-let [config (:config database)]
-        (setup-and-connect-to-database config))))
+  (map->DatomicDatabase {}))
