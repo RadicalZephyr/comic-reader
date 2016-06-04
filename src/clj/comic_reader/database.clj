@@ -47,7 +47,7 @@
   (get-conn [database] (:conn database)))
 
 (defn database? [e]
-  (instance? Database e))
+  (instance? DatomicDatabase e))
 
 (defn new-database []
   (map->DatomicDatabase {}))
