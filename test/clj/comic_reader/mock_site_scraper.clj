@@ -19,5 +19,6 @@
   (get-page-image [this site-name comic-page]
     (get-in this [:images site-name comic-page])))
 
-(defn mock-scraper [& {:as mock-data}]
-  mock-data)
+(defn mock-scraper
+  ([] {})
+  ([& {:as mock-data}] mock-data))
