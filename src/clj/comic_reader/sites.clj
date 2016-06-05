@@ -262,16 +262,15 @@
             (extract-chapters-list comic-url)
             doall))))
 
-  (get-page-list [this comic-chapter]
+  (get-page-list [this {chapter-url :url}]
     (binding [options opt-map]
-      (if-let [chapter-url (:url comic-chapter)]
-        (-> chapter-url
-            scrape/fetch-url
-            (extract-pages-list chapter-url)
-            doall))))
+      (some-> chapter-url
+              scrape/fetch-url
+              (extract-pages-list chapter-url)
+              doall)))
 
   (get-image-data [this {page-url :url}]
     (binding [options opt-map]
-      (-> page-url
-          scrape/fetch-url
-          extract-image-tag))))
+      (some-> page-url
+              scrape/fetch-url
+              extract-image-tag))))
