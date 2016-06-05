@@ -70,7 +70,7 @@
                   {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "5", :url  "url5"}}]
                  (repo-protocol/next-locations repo "manga-fox" "the-gamer" location 10)))))
 
-    (t/testing "it can start at an arbitrary chapter"
+    (t/testing "it can start at an arbitrary chapter (with no page)"
       (let [location {:chapter {:name "The Gamer 2" :ch-num 2}}]
         (t/is (= [{:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "4", :url  "url4"}}
                   {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "5", :url  "url5"}}]
@@ -100,7 +100,28 @@
                                                 {:name "5", :url  "url5"}]}}))]
 
     (t/testing "it returns n locations that precede the given location"
-      (let [location {:chapter {:name "The Gamer 1" :ch-num 1} :page{:name "3", :url  "url3"}}]
-        (t/is (= [{:name "2", :url  "url2"}
-                  {:name "1", :url  "url1"}]
-                 (repo-protocol/previous-locations repo "manga-fox" "the-gamer" location 2)))))))
+      (let [location {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "3" :url  "url3"}}]
+        (t/is (= [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "2" :url  "url2"}}
+                  {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "1" :url  "url1"}}]
+                 (repo-protocol/previous-locations repo "manga-fox" "the-gamer" location 2)))))
+
+    (t/testing "it returns locations across chapter boundaries"
+      (let [location {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "5" :url  "url5"}}]
+        (t/is (= [{:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "4" :url  "url4"}}
+                  {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "3" :url  "url3"}}]
+                 (repo-protocol/previous-locations repo "manga-fox" "the-gamer" location 2)))))
+
+    (t/testing "only fetches as many pages as there are"
+      (let [location {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "5" :url  "url5"}}]
+        (t/is (= [{:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "4" :url  "url4"}}
+                  {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "3" :url  "url3"}}
+                  {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "2" :url  "url2"}}
+                  {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "1" :url  "url1"}}]
+                 (repo-protocol/previous-locations repo "manga-fox" "the-gamer" location 10)))))
+
+    (t/testing "it can start at an arbitrary chapter (with no page)"
+      (let [location {:chapter {:name "The Gamer 2" :ch-num 2}}]
+        (t/is (= [{:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "5" :url  "url5"}}
+                  {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "4" :url  "url4"}}
+                  {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "3" :url  "url3"}}]
+                 (repo-protocol/previous-locations repo "manga-fox" "the-gamer" location 3)))))))
