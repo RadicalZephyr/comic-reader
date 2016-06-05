@@ -9,12 +9,12 @@
 
 (defrecord ScraperRepository [scraper]
   protocol/ComicRepository
-  (previous-pages [this site comic-id location n])
+  (previous-pages [this site comic-id page n])
 
-  (next-pages [this site comic-id location n]
+  (next-pages [this site comic-id page n]
     (let [chapters (site-scraper/list-chapters scraper site comic-id)]
       (cond->> (page-seq scraper site chapters)
-        location (drop-while #(not= % location))
+        page (drop-while #(not= % page))
         :always (take n)))))
 
 (defn new-scraper-repo []
