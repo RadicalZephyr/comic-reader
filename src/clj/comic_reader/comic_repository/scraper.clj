@@ -4,8 +4,10 @@
 
 (defn page-seq [scraper site chapters]
   (lazy-seq
-   (concat (site-scraper/list-pages scraper site (first chapters))
-           (page-seq scraper site (rest chapters)))))
+   (if (seq chapters)
+     (concat (site-scraper/list-pages scraper site (first chapters))
+             (page-seq scraper site (rest chapters)))
+     nil)))
 
 (defrecord ScraperRepository [scraper]
   protocol/ComicRepository

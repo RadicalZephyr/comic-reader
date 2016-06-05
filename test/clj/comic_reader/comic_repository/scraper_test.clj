@@ -23,48 +23,49 @@
     (t/is (not (nil? (:scraper repo))))))
 
 (t/deftest test-next-pages
-  (t/testing "starts at the beginning when location is nil"
-    (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
-                                                   {"the-gamer" [{:name "The Gamer 1",
-                                                                  :ch-num 1}]}}
-                                        :pages {"manga-fox"
-                                                {{:name "The Gamer 1" :ch-num 1}
-                                                 [{:name "1", :url  "url1"}
-                                                  {:name "2", :url  "url2"}]}}))]
+  (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
+                                                 {"the-gamer" [{:name "The Gamer 1" :ch-num 1}]}}
+                                      :pages {"manga-fox"
+                                              {{:name "The Gamer 1" :ch-num 1}
+                                               [{:name "1", :url  "url1"}
+                                                {:name "2", :url  "url2"}
+                                                {:name "3", :url  "url3"}
+                                                {:name "4", :url  "url4"}]}}))]
 
+    (t/testing "starts at the beginning when location is nil"
       (t/is (= [{:name "1", :url  "url1"}]
-               (repo-protocol/next-pages repo "manga-fox" "the-gamer" nil 1)))))
+               (repo-protocol/next-pages repo "manga-fox" "the-gamer" nil 1))))
 
-  (t/testing "doesn't include the passed page when starting at a page"
-    (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
-                                                   {"the-gamer" [{:name "The Gamer 1",
-                                                                  :ch-num 1}]}}
-                                        :pages {"manga-fox"
-                                                {{:name "The Gamer 1" :ch-num 1}
-                                                 [{:name "1", :url  "url1"}
-                                                  {:name "2", :url  "url2"}
-                                                  {:name "3", :url  "url3"}
-                                                  {:name "4", :url  "url4"}]}}))
-          location {:name "2", :url  "url2"}]
-      (t/is (= [{:name "3", :url  "url3"}
-                {:name "4", :url  "url4"}]
-               (repo-protocol/next-pages repo "manga-fox" "the-gamer" location 2)))))
+    (t/testing "doesn't include the passed page when starting at a page"
+      (let [location {:name "2", :url  "url2"}]
+        (t/is (= [{:name "3", :url  "url3"}
+                  {:name "4", :url  "url4"}]
+                 (repo-protocol/next-pages repo "manga-fox" "the-gamer" location 2))))))
 
-  (t/testing "it crosses chapter boundaries to fetch n pages"
-    (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
-                                                   {"the-gamer" [{:name "The Gamer 1" :ch-num 1}
-                                                                 {:name "The Gamer 2" :ch-num 2}]}}
-                                        :pages {"manga-fox"
-                                                {{:name "The Gamer 1" :ch-num 1}
-                                                 [{:name "1", :url  "url1"}
-                                                  {:name "2", :url  "url2"}
-                                                  {:name "3", :url  "url3"}]
+  (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
+                                                 {"the-gamer" [{:name "The Gamer 1" :ch-num 1}
+                                                               {:name "The Gamer 2" :ch-num 2}]}}
+                                      :pages {"manga-fox"
+                                              {{:name "The Gamer 1" :ch-num 1}
+                                               [{:name "1", :url  "url1"}
+                                                {:name "2", :url  "url2"}
+                                                {:name "3", :url  "url3"}]
 
-                                                 {:name "The Gamer 2" :ch-num 2}
-                                                 [{:name "4", :url  "url4"}
-                                                  {:name "5", :url  "url5"}]}}))
-          location {:name "2", :url  "url2"}]
-      (t/is (= [{:name "3", :url  "url3"}
-                {:name "4", :url  "url4"}
-                {:name "5", :url  "url5"}]
-               (repo-protocol/next-pages repo "manga-fox" "the-gamer" location 3))))))
+                                               {:name "The Gamer 2" :ch-num 2}
+                                               [{:name "4", :url  "url4"}
+                                                {:name "5", :url  "url5"}]}}))]
+
+    (t/testing "it crosses chapter boundaries to fetch n pages"
+      (let [location {:name "2", :url  "url2"}]
+        (t/is (= [{:name "3", :url  "url3"}
+                  {:name "4", :url  "url4"}
+                  {:name "5", :url  "url5"}]
+                 (repo-protocol/next-pages repo "manga-fox" "the-gamer" location 3)))))
+
+    (t/testing "it only fetches as many pages as there are up-to the requested n"
+      (let [location {:name "1", :url  "url1"}]
+        (t/is (= [{:name "2", :url  "url2"}
+                  {:name "3", :url  "url3"}
+                  {:name "4", :url  "url4"}
+                  {:name "5", :url  "url5"}]
+                 (repo-protocol/next-pages repo "manga-fox" "the-gamer" location 10)))))))
