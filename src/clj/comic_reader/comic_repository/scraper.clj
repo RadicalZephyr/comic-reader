@@ -14,7 +14,16 @@
 
 (defrecord ScraperRepository [scraper]
   protocol/ComicRepository
-  (previous-locations [this site comic-id {:keys [chapter page]} n])
+  (previous-locations [this site comic-id {:keys [chapter page]} n]
+    (when (and chapter page)
+      (let [chapters (site-scraper/list-chapters scraper site comic-id)
+            chapter (some #(when (= % chapter) %) (reverse chapters))
+            pages (site-scraper/list-pages scraper site chapter)]
+        (->> pages
+             reverse
+             (drop-while #(not= % page))
+             (drop 1)
+             (take n)))))
 
   (next-locations     [this site comic-id {:keys [chapter page]} n]
     (cond->> (site-scraper/list-chapters scraper site comic-id)
