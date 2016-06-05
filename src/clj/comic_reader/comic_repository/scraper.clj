@@ -9,7 +9,9 @@
     (let [chapters (site-scraper/list-chapters scraper site comic-id)
           chapter (first chapters)
           pages (site-scraper/list-pages scraper site chapter)]
-      (take n pages))))
+      (cond->> pages
+        location (drop-while #(not= % location))
+        :always (take n)))))
 
 (defn new-scraper-repo []
   (map->ScraperRepository {}))
