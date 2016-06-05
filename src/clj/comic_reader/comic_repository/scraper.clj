@@ -14,9 +14,9 @@
 
 (defrecord ScraperRepository [scraper]
   protocol/ComicRepository
-  (previous-pages [this site comic-id {:keys [chapter page]} n])
+  (previous-locations [this site comic-id {:keys [chapter page]} n])
 
-  (next-pages [this site comic-id {:keys [chapter page]} n]
+  (next-locations     [this site comic-id {:keys [chapter page]} n]
     (let [chapters (site-scraper/list-chapters scraper site comic-id)]
       (cond->> (page-seq scraper site chapters)
         page (drop-while #(not= (:page %) page))
