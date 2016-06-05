@@ -4,8 +4,12 @@
 
 (defrecord ScraperRepository [scraper]
   protocol/ComicRepository
-  (previous-pages [this comic location n])
-  (next-pages [this comic location n]))
+  (previous-pages [this site comic-id location n])
+  (next-pages [this site comic-id location n]
+    (let [chapters (site-scraper/list-chapters scraper site comic-id)
+          chapter (first chapters)
+          pages (site-scraper/list-pages scraper site chapter)]
+      (take n pages))))
 
 (defn new-scraper-repo []
   (map->ScraperRepository {}))
