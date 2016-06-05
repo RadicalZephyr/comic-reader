@@ -75,3 +75,32 @@
         (t/is (= [{:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "4", :url  "url4"}}
                   {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "5", :url  "url5"}}]
                  (repo-protocol/next-locations repo "manga-fox" "the-gamer" location 10)))))))
+
+(t/deftest test-previous-locations
+  (let [repo (test-repo (mock-scraper))]
+    (t/testing "it does nothing if given a nil location"
+      (t/is (= nil
+               (repo-protocol/previous-locations repo "manga-fox" "the-gamer" nil 1))))
+
+    (t/testing "it does nothing if given an empty map as location"
+      (t/is (= nil
+               (repo-protocol/previous-locations repo "manga-fox" "the-gamer" {} 1)))))
+
+  (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
+                                                 {"the-gamer" [{:name "The Gamer 1" :ch-num 1}
+                                                               {:name "The Gamer 2" :ch-num 2}]}}
+                                      :pages {"manga-fox"
+                                              {{:name "The Gamer 1" :ch-num 1}
+                                               [{:name "1", :url  "url1"}
+                                                {:name "2", :url  "url2"}
+                                                {:name "3", :url  "url3"}]
+
+                                               {:name "The Gamer 2" :ch-num 2}
+                                               [{:name "4", :url  "url4"}
+                                                {:name "5", :url  "url5"}]}}))]
+
+    (t/testing "it returns n locations that precede the given location"
+      (let [location {:chapter {:name "The Gamer 1" :ch-num 1} :page{:name "3", :url  "url3"}}]
+        (t/is (= [{:name "2", :url  "url2"}
+                  {:name "1", :url  "url1"}]
+                 (repo-protocol/previous-locations repo "manga-fox" "the-gamer" location 2)))))))
