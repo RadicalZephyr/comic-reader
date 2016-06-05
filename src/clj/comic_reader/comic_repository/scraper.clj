@@ -5,18 +5,21 @@
 (defn page-seq [scraper site chapters]
   (lazy-seq
    (if (seq chapters)
-     (concat (site-scraper/list-pages scraper site (first chapters))
-             (page-seq scraper site (rest chapters)))
+     (let [chapter (first chapters)
+           location-base {:chapter chapter}]
+       (concat (map #(assoc location-base :page %)
+                    (site-scraper/list-pages scraper site (first chapters)))
+               (page-seq scraper site (rest chapters))))
      nil)))
 
 (defrecord ScraperRepository [scraper]
   protocol/ComicRepository
-  (previous-pages [this site comic-id page n])
+  (previous-pages [this site comic-id {:keys [chapter page]} n])
 
-  (next-pages [this site comic-id page n]
+  (next-pages [this site comic-id {:keys [chapter page]} n]
     (let [chapters (site-scraper/list-chapters scraper site comic-id)]
       (cond->> (page-seq scraper site chapters)
-        page (drop-while #(not= % page))
+        page (drop-while #(not= (:page %) page))
         page (drop 1)
         :always (take n)))))
 

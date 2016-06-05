@@ -1,5 +1,5 @@
 (ns comic-reader.comic-repository.protocol)
 
 (defprotocol ComicRepository
-  (previous-pages [this site comic-id page n] "Get up-to n pages that precede `page' in a comic.")
-  (next-pages [this site comic-id page n] "Get up-to n pages that follow `page' in a comic"))
+  (previous-pages [this site comic-id location n] "Get up-to n pages that precede `location' in a comic.")
+  (next-pages [this site comic-id location n] "Get up-to n pages that follow `location' in a comic"))
