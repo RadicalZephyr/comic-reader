@@ -15,6 +15,7 @@
     (let [chapters (site-scraper/list-chapters scraper site comic-id)]
       (cond->> (page-seq scraper site chapters)
         page (drop-while #(not= % page))
+        page (drop 1)
         :always (take n)))))
 
 (defn new-scraper-repo []
