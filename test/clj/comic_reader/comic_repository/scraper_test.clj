@@ -17,4 +17,4 @@
       :scraper-repo))
 
 (t/deftest test-creation
-  (t/is (not (nil? (test-repo (mock-scraper :sites []))))))
+  (t/is (not (nil? (test-repo (mock-scraper))))))
