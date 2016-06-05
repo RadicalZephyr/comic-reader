@@ -17,11 +17,12 @@
   (previous-locations [this site comic-id {:keys [chapter page]} n])
 
   (next-locations     [this site comic-id {:keys [chapter page]} n]
-    (let [chapters (site-scraper/list-chapters scraper site comic-id)]
-      (cond->> (page-seq scraper site chapters)
-        page (drop-while #(not= (:page %) page))
-        page (drop 1)
-        :always (take n)))))
+    (cond->> (site-scraper/list-chapters scraper site comic-id)
+      chapter (drop-while #(not= % chapter))
+      :always (page-seq scraper site)
+      page (drop-while #(not= (:page %) page))
+      page (drop 1)
+      :always (take n))))
 
 (defn new-scraper-repo []
   (map->ScraperRepository {}))
