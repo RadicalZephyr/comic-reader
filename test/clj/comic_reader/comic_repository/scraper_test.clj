@@ -33,13 +33,13 @@
                                                 {:name "4", :url  "url4"}]}}))]
 
     (t/testing "starts at the beginning when location is nil"
-      (t/is (= [{:name "1", :url  "url1"}]
+      (t/is (= [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "1", :url  "url1"}}]
                (repo-protocol/next-pages repo "manga-fox" "the-gamer" nil 1))))
 
     (t/testing "doesn't include the passed page when starting at a page"
-      (let [location {:name "2", :url  "url2"}]
-        (t/is (= [{:name "3", :url  "url3"}
-                  {:name "4", :url  "url4"}]
+      (let [location {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "2", :url  "url2"}}]
+        (t/is (= [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "3", :url  "url3"}}
+                  {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "4", :url  "url4"}}]
                  (repo-protocol/next-pages repo "manga-fox" "the-gamer" location 2))))))
 
   (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
@@ -56,16 +56,16 @@
                                                 {:name "5", :url  "url5"}]}}))]
 
     (t/testing "it crosses chapter boundaries to fetch n pages"
-      (let [location {:name "2", :url  "url2"}]
-        (t/is (= [{:name "3", :url  "url3"}
-                  {:name "4", :url  "url4"}
-                  {:name "5", :url  "url5"}]
+      (let [location {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "2", :url  "url2"}}]
+        (t/is (= [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "3", :url  "url3"}}
+                  {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "4", :url  "url4"}}
+                  {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "5", :url  "url5"}}]
                  (repo-protocol/next-pages repo "manga-fox" "the-gamer" location 3)))))
 
     (t/testing "it only fetches as many pages as there are up-to the requested n"
-      (let [location {:name "1", :url  "url1"}]
-        (t/is (= [{:name "2", :url  "url2"}
-                  {:name "3", :url  "url3"}
-                  {:name "4", :url  "url4"}
-                  {:name "5", :url  "url5"}]
+      (let [location {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "1", :url  "url1"}}]
+        (t/is (= [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "2", :url  "url2"}}
+                  {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "3", :url  "url3"}}
+                  {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "4", :url  "url4"}}
+                  {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "5", :url  "url5"}}]
                  (repo-protocol/next-pages repo "manga-fox" "the-gamer" location 10)))))))
