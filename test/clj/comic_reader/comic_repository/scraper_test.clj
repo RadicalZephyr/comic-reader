@@ -29,8 +29,22 @@
                                                                   :ch-num 1}]}}
                                         :pages {"manga-fox"
                                                 {{:name "The Gamer 1" :ch-num 1}
-                                                 [{:name "1", :url  "http://www.mangahere.co/manga/the_gamer/c002/"}
-                                                  {:name "2", :url  "http://www.mangahere.co/manga/the_gamer/c002/2.html"}]}}))]
+                                                 [{:name "1", :url  "url1"}
+                                                  {:name "2", :url  "url2"}]}}))]
 
-      (t/is (= [{:name "1", :url  "http://www.mangahere.co/manga/the_gamer/c002/"}]
-               (repo-protocol/next-pages repo "manga-fox" "the-gamer" {} 1))))))
+      (t/is (= [{:name "1", :url  "url1"}]
+               (repo-protocol/next-pages repo "manga-fox" "the-gamer" nil 1)))))
+
+  (t/testing "includes the page at location when starting at a location"
+    (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
+                                                   {"the-gamer" [{:name "The Gamer 1",
+                                                                  :ch-num 1}]}}
+                                        :pages {"manga-fox"
+                                                {{:name "The Gamer 1" :ch-num 1}
+                                                 [{:name "1", :url  "url1"}
+                                                  {:name "2", :url  "url2"}
+                                                  {:name "3", :url  "url3"}]}}))
+          location {:name "2", :url  "url2"}]
+      (t/is (= [{:name "2", :url  "url2"}
+                {:name "3", :url  "url3"}]
+               (repo-protocol/next-pages repo "manga-fox" "the-gamer" location 2))))))
