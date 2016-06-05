@@ -14,25 +14,24 @@
                (page-seq process scraper site (rest chapters))))
      nil)))
 
+(defn- locations-for [scraper site direction chapters chapter page n]
+  (let [processing-fn {:forward identity
+                       :backward reverse}]
+    (cond->> chapters
+      chapter (drop-while #(not= % chapter))
+      :always (page-seq (processing-fn direction) scraper site)
+      page (drop-while #(not= (:page %) page))
+      page (drop 1)
+      :always (take n))))
+
 (defrecord ScraperRepository [scraper]
   protocol/ComicRepository
   (previous-locations [this site comic-id {:keys [chapter page]} n]
     (when chapter
-      (cond->> (site-scraper/list-chapters scraper site comic-id)
-        :always reverse
-        :always (drop-while #(not= % chapter))
-        :always (page-seq reverse scraper site)
-        page (drop-while #(not= (:page %) page))
-        page (drop 1)
-        :always (take n))))
+      (locations-for scraper site :backward (reverse (site-scraper/list-chapters scraper site comic-id)) chapter page n)))
 
   (next-locations     [this site comic-id {:keys [chapter page]} n]
-    (cond->> (site-scraper/list-chapters scraper site comic-id)
-      chapter (drop-while #(not= % chapter))
-      :always (page-seq identity scraper site)
-      page (drop-while #(not= (:page %) page))
-      page (drop 1)
-      :always (take n))))
+    (locations-for scraper site :forward (site-scraper/list-chapters scraper site comic-id) chapter page n)))
 
 (defn new-scraper-repo []
   (map->ScraperRepository {}))
