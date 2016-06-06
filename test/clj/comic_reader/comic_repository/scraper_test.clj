@@ -36,6 +36,10 @@
       (t/is (= [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "1", :url  "url1"}}]
                (repo-protocol/next-locations repo "manga-fox" "the-gamer" nil 1))))
 
+    (t/testing "starts at the beginning when location is an empty map"
+      (t/is (= [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "1", :url  "url1"}}]
+               (repo-protocol/next-locations repo "manga-fox" "the-gamer" {} 1))))
+
     (t/testing "doesn't include the passed page when starting at a page"
       (let [location {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "2", :url  "url2"}}]
         (t/is (= [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "3", :url  "url3"}}
