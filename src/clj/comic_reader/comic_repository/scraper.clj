@@ -1,6 +1,6 @@
 (ns comic-reader.comic-repository.scraper
   (:require [clojure.string :as str]
-            [comic-reader.comic-repository.protocol :as protocol]
+            [comic-reader.comic-repository :as repo]
             [comic-reader.site-scraper :as site-scraper]))
 
 (defn- page-seq [process scraper site chapters]
@@ -42,7 +42,7 @@
    :name (titleize site-id)})
 
 (defrecord ScraperRepository [scraper]
-  protocol/ComicRepository
+  repo/ComicRepository
   (list-sites [this]
     (map format-site (site-scraper/list-sites scraper)))
 

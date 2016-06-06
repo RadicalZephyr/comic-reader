@@ -1,8 +1,8 @@
 (ns comic-reader.comic-repository.datomic
-  (:require [comic-reader.comic-repository.protocol :as protocol]))
+  (:require [comic-reader.comic-repository :as repo]))
 
 (defrecord DatomicRepository [database source-repo]
-  protocol/ComicRepository
+  repo/ComicRepository
   (list-sites         [this])
   (list-comics        [this site])
   (previous-locations [this site comic-id location n])
