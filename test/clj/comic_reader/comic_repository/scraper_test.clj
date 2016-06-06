@@ -22,6 +22,34 @@
     (t/is (not (nil? repo)))
     (t/is (not (nil? (:scraper repo))))))
 
+(t/deftest test-list-sites
+  (let [repo (test-repo (mock-scraper
+                         :sites ["site-one"
+                                 "site-two"
+                                 "site-three"]))]
+    (t/testing "returns site data with names formatted for display"
+      (t/is (= [{:id "site-one", :name "Site One"}
+                {:id "site-two", :name "Site Two"}
+                {:id "site-three", :name "Site Three"}]
+               (repo-protocol/list-sites repo))))))
+
+(t/deftest test-list-comics
+  (let [repo (test-repo (mock-scraper
+                         :comics {"manga-fox"
+                                  [{:id "the_gamer"
+                                    :name "The Gamer"
+                                    :url "real_url"}
+                                   {:id "other_comic"
+                                    :name "Other Comic"
+                                    :url "another_url"}]}))]
+    (t/testing "returns nil for an unknown site-id"
+      (t/is (= nil (repo-protocol/list-comics repo "pants"))))
+
+    (t/testing "returns comic data for a site"
+      (t/is (= [{:id "the_gamer", :name "The Gamer", :url "real_url"}
+                {:id "other_comic", :name "Other Comic", :url "another_url"}]
+               (repo-protocol/list-comics repo "manga-fox"))))))
+
 (t/deftest test-next-locations
   (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
                                                  {"the-gamer" [{:name "The Gamer 1" :ch-num 1}]}}

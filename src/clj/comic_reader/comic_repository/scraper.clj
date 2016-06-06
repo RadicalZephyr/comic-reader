@@ -1,5 +1,6 @@
 (ns comic-reader.comic-repository.scraper
-  (:require [comic-reader.comic-repository.protocol :as protocol]
+  (:require [clojure.string :as str]
+            [comic-reader.comic-repository.protocol :as protocol]
             [comic-reader.site-scraper :as site-scraper]))
 
 (defn- page-seq [process scraper site chapters]
@@ -24,8 +25,30 @@
       page (drop 1)
       :always (take n))))
 
+(defn- capitalize-all [words]
+  (map str/capitalize words))
+
+(defn- spacify [words]
+  (str/join " " words))
+
+(defn- titleize [id]
+  (-> id
+      (str/split #"-")
+      capitalize-all
+      spacify))
+
+(defn- format-site [site-id]
+  {:id site-id
+   :name (titleize site-id)})
+
 (defrecord ScraperRepository [scraper]
   protocol/ComicRepository
+  (list-sites [this]
+    (map format-site (site-scraper/list-sites scraper)))
+
+  (list-comics [this site]
+    (site-scraper/list-comics scraper site))
+
   (previous-locations [this site comic-id {:keys [chapter page]} n]
     (when chapter
       (locations-for scraper site :backward (reverse (site-scraper/list-chapters scraper site comic-id)) chapter page n)))
