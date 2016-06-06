@@ -129,3 +129,15 @@
                   {:chapter {:name "The Gamer 2" :ch-num 2} :page {:name "4" :url  "url4"}}
                   {:chapter {:name "The Gamer 1" :ch-num 1} :page {:name "3" :url  "url3"}}]
                  (repo-protocol/previous-locations repo "manga-fox" "the-gamer" location 3)))))))
+
+(t/deftest test-image-tag
+  (t/testing "returns nil when"
+    (let [repo (test-repo (mock-scraper))]
+      (t/testing "given a nil location"
+        (t/is (= nil (repo-protocol/image-tag repo "manga-fox" nil))))
+
+      (t/testing "given an empty location"
+        (t/is (= nil (repo-protocol/image-tag repo "manga-fox" {}))))
+
+      (t/testing "given a location without a page component"
+        (t/is (= nil (repo-protocol/image-tag repo "manga-fox" {:chapter {:name "The Gamer 1" :ch-num 1}})))))))

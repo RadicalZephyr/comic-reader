@@ -5,7 +5,7 @@
   protocol/ComicRepository
   (previous-locations [this site comic-id location n])
   (next-locations     [this site comic-id location n])
-  (image-tag          [this site comic-id location]))
+  (image-tag          [this site location]))
 
 (defn new-repository []
   (map->DatomicRepository {}))
