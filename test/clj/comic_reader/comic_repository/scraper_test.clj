@@ -140,4 +140,12 @@
         (t/is (= nil (repo-protocol/image-tag repo "manga-fox" {}))))
 
       (t/testing "given a location without a page component"
-        (t/is (= nil (repo-protocol/image-tag repo "manga-fox" {:chapter {:name "The Gamer 1" :ch-num 1}})))))))
+        (t/is (= nil (repo-protocol/image-tag repo "manga-fox" {:chapter {:name "The Gamer 1" :ch-num 1}}))))))
+
+  (t/testing "returns a valid image tag"
+    (let [repo (test-repo (mock-scraper
+                           :images {"manga-fox"
+                                    {{:name "3" :url  "url3"} [:img {:src "an-img-url"}]}}))]
+
+      (t/is (= [:img {:src "an-img-url"}]
+               (repo-protocol/image-tag repo "manga-fox" {:page {:name "3" :url  "url3"}}))))))
