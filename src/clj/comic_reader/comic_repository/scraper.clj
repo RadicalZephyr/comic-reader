@@ -33,7 +33,9 @@
   (next-locations [this site comic-id {:keys [chapter page]} n]
     (locations-for scraper site :forward (site-scraper/list-chapters scraper site comic-id) chapter page n))
 
-  (image-tag [this site location]))
+  (image-tag [this site {:keys [page]}]
+    (when page
+      (site-scraper/get-page-image scraper site page))))
 
 (defn new-scraper-repo []
   (map->ScraperRepository {}))
