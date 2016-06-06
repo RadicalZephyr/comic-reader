@@ -2,6 +2,7 @@
   (:require [clojure.test :as t]
             [comic-reader.site-scraper :as site-scraper]
             [comic-reader.web-app :refer :all]
+            [comic-reader.comic-repository.scraper :refer [new-scraper-repo]]
             [comic-reader.mock-site-scraper :refer [mock-scraper]]
             [com.stuartsierra.component :as component]
             [ring.mock.request :as mock]))
@@ -9,9 +10,12 @@
 (defn server-test-system [scraper]
   (component/system-map
    :site-scraper scraper
+   :comic-repository (component/using
+                      (new-scraper-repo)
+                      {:scraper :site-scraper})
    :web-app (component/using
              (new-web-app)
-             [:site-scraper])))
+             {:repository :comic-repository})))
 
 (defn test-system [scraper]
   (-> (server-test-system scraper)

@@ -1,5 +1,5 @@
 (ns comic-reader.web-app
-  (:require [comic-reader.site-scraper :as scraper]
+  (:require [comic-reader.comic-repository :as repo]
             [compojure.core :as c]
             [compojure.route :as route]
             [com.stuartsierra.component :as component]
@@ -14,29 +14,13 @@
    :headers {"Content-Type" "application/edn; charset=utf-8"}
    :body (pr-str data)})
 
-(defn- capitalize-all [words]
-  (map str/capitalize words))
-
-(defn- spacify [words]
-  (str/join " " words))
-
-(defn- titleize [id]
-  (-> id
-      (str/split #"-")
-      capitalize-all
-      spacify))
-
-(defn- format-site [site-id]
-  {:id site-id
-   :name (titleize site-id)})
-
-(defn- make-api-routes [site-scraper]
+(defn- make-api-routes [repository]
   (c/routes
     (c/GET "/sites" []
-      (edn-response (map format-site (scraper/list-sites site-scraper))))
+      (edn-response (repo/list-sites repository)))
 
-    (c/GET "/:site-name/comics" [site-name]
-      (edn-response (scraper/list-comics site-scraper site-name)))
+    (c/GET "/:site-id/comics" [site-id]
+      (edn-response (repo/list-comics repository site-id)))
 
     ))
 
@@ -82,12 +66,12 @@
 
     (route/resources "/")))
 
-(defrecord WebApp [routes site-scraper]
+(defrecord WebApp [routes repository]
   component/Lifecycle
 
   (start [component]
     (println "Comic-Reader: Generating web app...")
-    (assoc component :routes (make-routes site-scraper)))
+    (assoc component :routes (make-routes repository)))
 
   (stop [component]
     (println "Comic-Reader: Tearing down web app...")
