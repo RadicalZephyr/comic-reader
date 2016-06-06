@@ -4,22 +4,44 @@
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [comic-reader.ui.base :as base]
-            [comic-reader.ui.comic-list :as sut])
-  (:require-macros [comic-reader.macro-util :refer [reactively]]))
+            [comic-reader.ui.comic-list :as sut]
+            [comic-reader.macro-util :refer-macros [reactively]]))
 
-(deftest test-set-comic-list
-  (is (= {:comic-list []}
-         (sut/set-comic-list {} [:_ []])))
-
-  (is (= {:comic-list [:a :b :c]}
-         (sut/set-comic-list {} [:_ [:a :b :c]]))))
-
-(deftest test-get-comic-list
+(deftest test-get
   (is (= []
-         (sut/get-comic-list {:comic-list []})))
+         (sut/get* {:comic-list []})))
 
   (is (= [:a :b :c]
-         (sut/get-comic-list {:comic-list [:a :b :c]}))))
+         (sut/get* {:comic-list [:a :b :c]}))))
+
+(deftest test-set
+  (is (= {:comic-list []}
+         (sut/set* {} [])))
+
+  (is (= {:comic-list [:a :b :c]}
+         (sut/set* {} [:a :b :c]))))
+
+(deftest test-prefix-filter-comics
+  (is (= [{:name "A"}]
+         (sut/prefix-filter-comics "A" [{:name "A"}
+                                        {:name "B"}
+                                        {:name "C"}])))
+  (is (= [{:name "1"} {:name "\""}]
+         (sut/prefix-filter-comics "#" [{:name "1"}
+                                        {:name "B"}
+                                        {:name "\""}
+                                        {:name "C"}]))))
+
+(defcard-rg test-get-set-wiring
+  (fn [_ _]
+    (let [comics-list [:a :b :c :d]]
+      (sut/setup!)
+      (sut/set comics-list)
+      (reactively
+       [:div
+        [:p (prn-str @(sut/get))
+         "should be equal to "
+         (prn-str comics-list)]]))))
 
 (defcard-rg comic-list
   (fn [data _]
@@ -71,4 +93,24 @@
       (reactively
        [sut/comic-list-filter update-search-prefix @data])))
   (reagent/atom {:search-prefix "Initial search"})
+  {:inspect-data true})
+
+(defcard-rg comic-page
+  (fn [data _]
+    (let [comics [{:id :a :name "A"}
+                  {:id :b :name "B"}
+                  {:id :c :name "C"}]
+          view-comic (fn [comic-id]
+                       (base/do-later
+                        #(swap! data assoc
+                                :comic-to-view comic-id)))
+          update-search-prefix (fn [prefix & {:keys [clear]
+                                              :or {:clear false}}]
+                                 (base/do-later
+                                  #(swap! data assoc
+                                          :search-data {:search-prefix prefix
+                                                        :clear clear})))]
+      (reactively
+       [sut/comic-page view-comic comics update-search-prefix (:search-data @data)])))
+  (reagent/atom {:search-data {:search-prefix "Initial search"}})
   {:inspect-data true})

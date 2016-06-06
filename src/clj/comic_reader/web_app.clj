@@ -1,34 +1,28 @@
 (ns comic-reader.web-app
-  (:require [comic-reader.site-scraper :as scraper]
+  (:require [comic-reader.comic-repository :as repo]
             [compojure.core :as c]
             [compojure.route :as route]
             [com.stuartsierra.component :as component]
             [hiccup.page :as page]
             [garden.core :as garden]
             [ring.middleware.edn :refer [wrap-edn-params]]
-            [ring.middleware.params :refer [wrap-params]]))
+            [ring.middleware.params :refer [wrap-params]]
+            [clojure.string :as str]))
 
 (defn- edn-response [data & [status]]
   {:status (or status 200)
    :headers {"Content-Type" "application/edn; charset=utf-8"}
    :body (pr-str data)})
 
-(defn- make-api-routes [site-scraper]
+(defn- make-api-routes [repository]
   (c/routes
     (c/GET "/sites" []
-      (edn-response (scraper/list-sites site-scraper)))
+      (edn-response (repo/list-sites repository)))
 
-    (c/GET "/:site-name/comics" [site-name]
-      (edn-response (scraper/list-comics site-scraper site-name)))
+    (c/GET "/:site-id/comics" [site-id]
+      (edn-response (repo/list-comics repository site-id)))
 
-    (c/GET "/:site-name/:comic-id/chapters" [site-name comic-id]
-      (edn-response (scraper/list-chapters site-scraper site-name comic-id)))
-
-    (c/POST "/:site-name/pages" [site-name comic-chapter]
-      (edn-response (scraper/list-pages site-scraper site-name comic-chapter)))
-
-    (c/POST "/:site-name/image" [site-name comic-page]
-      (edn-response (scraper/get-page-image site-scraper site-name comic-page)))))
+    ))
 
 (defn- render-page [& {:keys [head css js content]}]
   (page/html5
@@ -72,12 +66,12 @@
 
     (route/resources "/")))
 
-(defrecord WebApp [routes site-scraper]
+(defrecord WebApp [routes repository]
   component/Lifecycle
 
   (start [component]
     (println "Comic-Reader: Generating web app...")
-    (assoc component :routes (make-routes site-scraper)))
+    (assoc component :routes (make-routes repository)))
 
   (stop [component]
     (println "Comic-Reader: Tearing down web app...")

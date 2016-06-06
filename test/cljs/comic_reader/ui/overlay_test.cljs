@@ -2,8 +2,8 @@
   (:require [devcards.core :refer-macros [defcard-rg]]
             [reagent.core :as reagent]
             [comic-reader.ui.overlay :as sut]
-            [comic-reader.ui.base :as base])
-  (:require-macros [comic-reader.macro-util :refer [reactively]]))
+            [comic-reader.ui.base :as base]
+            [comic-reader.macro-util :refer-macros [reactively]]))
 
 (def dummy-content
   [:div

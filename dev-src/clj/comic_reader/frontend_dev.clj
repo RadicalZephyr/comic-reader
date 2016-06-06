@@ -2,7 +2,7 @@
   (:require [clojure.java.browse :refer [browse-url]]
             [clojure.repl :refer :all]
             [clojure.tools.namespace.repl :refer [refresh]]
-            [comic-reader.system :refer [go start stop]]
+            [comic-reader.system :as system]
             [figwheel-sidecar.repl-api :refer :all]))
 
 (defn- cwd []
@@ -37,7 +37,7 @@
                   :asset-path "js/compiled/devcards_out"}}]})
 
 (defn start-dev! [& args]
-  (apply go args)
+  (apply system/go args)
   (start-figwheel! figwheel-config)
   (start-autobuild)
   (browse-url "http://localhost:10555/devcards"))
@@ -45,7 +45,7 @@
 (defn stop-dev! []
   (stop-autobuild)
   (stop-figwheel!)
-  (stop))
+  (system/stop))
 
 (defn reset []
   (stop-dev!)
