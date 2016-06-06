@@ -1,28 +1,8 @@
-(ns comic-reader.comic-repository
-  (:require [com.stuartsierra.component :as component]
-;;            [datomic.api :as d]
-            ))
+(ns comic-reader.comic-repository)
 
-(def db-uri "datomic:mem://comic-reader")
-
-;; (defrecord ComicRepository [db-uri connection comic-scraper]
-;;   component/Lifecycle
-
-;;   (start [component]
-;;     (if connection
-;;       component
-;;       (do (d/create-database db-uri)
-
-;;           (println "Connecting to database...")
-;;           (let [conn (d/connect db-uri)]
-;;             (assoc component :connection conn)))))
-
-;;   (stop [component]
-;;     (if (not connection)
-;;       component
-;;       (do (println "Releasing database connection...")
-;;           (d/release connection)
-;;           (assoc component :connection nil)))))
-
-;; (defn new-repository [db-uri]
-;;   (map->ComicRepository {:db-uri db-uri}))
+(defprotocol ComicRepository
+  (list-sites         [this] "List all the comic sites available from this repository.")
+  (list-comics        [this site] "List all the comics available on this site.")
+  (previous-locations [this site comic-id location n] "Get up-to n locations that precede `location' in a comic.")
+  (next-locations     [this site comic-id location n] "Get up-to n locations that follow `location' in a comic.")
+  (image-tag          [this site location] "Get the hiccup image tag for this comic location."))

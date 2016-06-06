@@ -6,23 +6,27 @@
                           [server :as server]
                           [web-app :as web-app]
                           [site-scraper :as sites])
+            [comic-reader.comic-repository.scraper :as scraper-repo]
             [com.stuartsierra.component :as component]
             [environ.core :refer [env]]))
 
 (defn comic-reader-system [config-options]
   (let [{:keys [port]} config-options]
     (component/system-map
+     :config (config/new-config)
      :site-scraper (sites/new-site-scraper)
+     :comic-repository (component/using
+                        (scraper-repo/new-scraper-repo)
+                        {:scraper :site-scraper})
      :web-app      (component/using
                     (web-app/new-web-app)
-                    [:site-scraper])
+                    {:repository :comic-repository})
      :server       (component/using
                     (server/new-server port)
                     [:web-app])
-     :database (component/using
-                (database/new-database)
-                [:config])
-     :config (config/new-config))))
+     #_:database #_(component/using
+                    (database/new-database)
+                    [:config]))))
 
 (def system nil)
 

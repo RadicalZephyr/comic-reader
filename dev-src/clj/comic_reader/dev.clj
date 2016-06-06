@@ -1,15 +1,16 @@
 (ns comic-reader.dev
   (:require [clojure.repl :refer :all]
             [clojure.tools.namespace.repl :refer [clear refresh]]
-            [clansi.core :refer [style]]))
+            [clansi.core :refer [style]]
+            [clojure.string :as str]))
 
 (declare doc-print goto-ns)
 
 (defn welcome []
   (doc-print
-   "Welcome to the comic reader. If you want to add a new site,
-  run `(add-site)'.  If you want to work on the frontend,
-  run `(develop-frontend)'."))
+   "Welcome to the Comic Reader!
+    - If you want to add a new site, run `(add-site)'.
+    - If you want to work on the frontend, run `(develop-frontend)'."))
 
 (defn add-site []
   (doc-print
@@ -28,7 +29,7 @@
   (goto-ns 'comic-reader.frontend-dev))
 
 (defn- doc-print [msg]
-  (println " " msg))
+  (printf "\n%s\n\n" (str/replace msg  #"\n +" "\n")))
 
 (defn- goto-ns [ns]
   (require ns)
@@ -38,3 +39,5 @@
   (require 'comic-reader.system)
   (if-let [stop-fn (find-var 'comic-reader.system/stop)]
     (stop-fn)))
+
+(welcome)

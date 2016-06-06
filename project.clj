@@ -29,8 +29,8 @@
 
                  ;; Core app dependencies
                  [com.stuartsierra/component "0.3.1"]
-                 [prismatic/schema "1.1.0"]
-                 [environ "1.0.2"]
+                 [prismatic/schema "1.1.1"]
+                 [environ "1.0.3"]
 
                  ;; Web server
                  [ring "1.4.0"]
@@ -50,15 +50,13 @@
                  [enlive "1.1.6"]
 
                  ;; Clojurescript frontend
-                 [org.clojure/clojurescript "1.7.228"]
+                 [org.clojure/clojurescript "1.8.40"]
                  [re-frame "0.7.0" :exclusions
                   [[org.clojure/clojurescript
                     :extension "jar"]]]
                  [cljsjs/waypoints "4.0.0-0"]
-
-                 ;; [secretary "1.2.3"]
-                 ;; [cljs-ajax "0.5.1"]
-                 ]
+                 [secretary "1.2.3"]
+                 [cljs-ajax "0.5.4"]]
 
   :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
                                    :username [:gpg :env/datomic_username]
@@ -83,13 +81,13 @@
                    :source-paths ["dev-src/clj"]
                    :test-paths   ["test/cljs"]
                    :resource-paths ["dev-resources"]
-                   :dependencies [[org.clojure/tools.namespace "0.2.11"]
+                   :dependencies [[org.clojure/tools.namespace "0.3.0-alpha3"]
                                   [radicalzephyr/clansi "1.2.0"]
                                   [aysylu/loom "0.6.0"]
 
                                   [ring/ring-mock "0.3.0"]
-                                  [figwheel-sidecar "0.5.2"]
-                                  [devcards "0.2.1-6"]
+                                  [figwheel-sidecar "0.5.3-1"]
+                                  [devcards "0.2.1-7"]
                                   [com.cemerick/piggieback "0.2.1"]]
 
                    :repl-options {:init-ns comic-reader.dev

@@ -4,21 +4,29 @@
             [reagent.ratom :refer-macros [reaction]]
             [comic-reader.ui.base :as base]))
 
-(defn get [db]
+(defn get* [db]
   (clojure.core/get db :site-list))
 
-(defn set [db [_ sites]]
+(defn set* [db sites]
   (assoc db :site-list sites))
 
 (defn setup! []
   (re-frame/register-sub
    :site-list
-   (fn [app-db v]
-     (reaction (get @app-db))))
+   (fn [app-db _]
+     (reaction (get* @app-db))))
 
   (re-frame/register-handler
    :set-site-list
-   set))
+   (fn [db [_ sites]]
+     (set* db sites))))
+
+(defn get []
+  (re-frame/subscribe [:site-list]))
+
+(defn set [sites]
+  (re-frame/dispatch [:set-site-list sites]))
+
 
 (defn site-list [view-site sites]
   (base/list-with-loading
@@ -34,5 +42,5 @@
   (let [sites (re-frame/subscribe [:site-list])]
     (fn [] [site-list
             (fn [site-id]
-              (re-frame/dispatch [:view-site site-id]))
+              (re-frame/dispatch [:view-comics site-id]))
             (deref sites)])))
