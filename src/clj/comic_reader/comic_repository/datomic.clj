@@ -3,6 +3,8 @@
 
 (defrecord DatomicRepository [database source-repo]
   protocol/ComicRepository
+  (list-sites         [this])
+  (list-comics        [this site])
   (previous-locations [this site comic-id location n])
   (next-locations     [this site comic-id location n])
   (image-tag          [this site location]))
