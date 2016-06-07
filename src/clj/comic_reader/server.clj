@@ -1,15 +1,16 @@
 (ns comic-reader.server
-  (:require [comic-reader.web-app :as web-app]
+  (:require [comic-reader.config :as config]
+            [comic-reader.web-app :as web-app]
             [com.stuartsierra.component :as component]
             [org.httpkit.server :as server]))
 
-(defrecord WebServer [port stop-server web-app]
+(defrecord WebServer [config web-app stop-server]
   component/Lifecycle
 
   (start [component]
     (if stop-server
       component
-      (do
+      (let [port (Integer. (config/server-port config))]
         (printf "Comic-Reader: Starting web server on port: %d ...\n" port)
         (assoc component
                :stop-server (server/run-server (web-app/get-routes web-app)
@@ -24,5 +25,5 @@
         (assoc component
                :stop-server nil)))))
 
-(defn new-server [port]
-  (map->WebServer {:port port}))
+(defn new-server []
+  (map->WebServer {}))
