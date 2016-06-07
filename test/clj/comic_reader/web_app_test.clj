@@ -1,7 +1,7 @@
 (ns comic-reader.web-app-test
   (:require [clojure.test :as t]
             [comic-reader.site-scraper :as site-scraper]
-            [comic-reader.web-app :refer :all]
+            [comic-reader.web-app :as sut]
             [comic-reader.comic-repository.scraper :refer [new-scraper-repo]]
             [comic-reader.mock-site-scraper :refer [mock-scraper]]
             [com.stuartsierra.component :as component]
@@ -14,7 +14,7 @@
                       (new-scraper-repo)
                       {:scraper :site-scraper})
    :web-app (component/using
-             (new-web-app)
+             (sut/new-web-app)
              {:repository :comic-repository})))
 
 (defn test-system [scraper]
@@ -22,7 +22,7 @@
       (component/start)))
 
 (defn app-routes [system]
-  (get-routes (:web-app system)))
+  (sut/get-routes (:web-app system)))
 
 (t/deftest test-home-page
   (t/is (= (:status
