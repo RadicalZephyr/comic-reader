@@ -1,13 +1,14 @@
 (ns comic-reader.web-app
-  (:require [comic-reader.comic-repository :as repo]
+  (:require [clojure.string :as str]
+            [clojure.tools.logging :as log]
+            [comic-reader.comic-repository :as repo]
             [compojure.core :as c]
             [compojure.route :as route]
             [com.stuartsierra.component :as component]
             [hiccup.page :as page]
             [garden.core :as garden]
             [ring.middleware.edn :refer [wrap-edn-params]]
-            [ring.middleware.params :refer [wrap-params]]
-            [clojure.string :as str]))
+            [ring.middleware.params :refer [wrap-params]]))
 
 (defn- edn-response [data & [status]]
   {:status (or status 200)
@@ -70,11 +71,11 @@
   component/Lifecycle
 
   (start [component]
-    (println "Comic-Reader: Generating web app...")
+    (log/info "Generating web app...")
     (assoc component :routes (make-routes repository)))
 
   (stop [component]
-    (println "Comic-Reader: Tearing down web app...")
+    (log/info "Tearing down web app...")
     (assoc component :routes nil)))
 
 (defn new-web-app []
