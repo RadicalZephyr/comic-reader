@@ -14,10 +14,10 @@ function wait-for-server-connection() {
         if [ $i -gt $max_seconds_to_wait ]; then
             echo
             echo "Server connection timed out"
-            exit 1
+            return 1
         fi
     done
-    exit 0
+    return 0
 }
 
 echo "Running CI build..."
@@ -39,6 +39,14 @@ server_pid=%1
 timeout_secs=15
 echo "Waiting ${timeout_secs} seconds for server to boot up..."
 echo
-wait-for-server-connection $PORT $timeout_secs
+
+if wait-for-server-connection $PORT $timeout_secs
+then
+    RET=$?
+else
+    RET=$?
+fi
 
 kill $server_pid
+
+exit $RET
