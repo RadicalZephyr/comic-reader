@@ -31,6 +31,9 @@
                  [com.stuartsierra/component "0.3.1"]
                  [prismatic/schema "1.1.1"]
                  [environ "1.0.3"]
+                 [org.clojure/tools.logging "0.3.1" :exclusions
+                  [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
+                 [ch.qos.logback/logback-classic "1.1.3"]
 
                  ;; Web server
                  [ring "1.4.0"]
@@ -42,7 +45,8 @@
 
                  ;; Data storage
                  [com.datomic/datomic-pro "0.9.5350"
-                  :exclusions [org.apache.httpcomponents/httpclient]]
+                  :exclusions [org.apache.httpcomponents/httpclient
+                               org.slf4j/slf4j-nop]]
                  [io.rkn/conformity "0.4.0"]
 
                  ;; Comic scraping

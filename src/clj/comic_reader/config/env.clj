@@ -1,5 +1,6 @@
 (ns comic-reader.config.env
-  (:require [com.stuartsierra.component :as component]
+  (:require [clojure.tools.logging :as log]
+            [com.stuartsierra.component :as component]
             [comic-reader.config :as config]
             [environ.core :refer [env]]))
 
@@ -18,7 +19,7 @@
   component/Lifecycle
 
   (start [component]
-    (println "Comic-Reader: Loading configuration...")
+    (log/info "Loading configuration...")
     (reduce assoc-env component [:database-uri
                                  :norms-dir
                                  [:port :server-port]]))
