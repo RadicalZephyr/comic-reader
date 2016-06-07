@@ -3,10 +3,16 @@
             [comic-reader.config :as config]
             [environ.core :refer [env]]))
 
+(defn- env-key-and-key [key-or-vec]
+  (if (vector? key-or-vec)
+    key-or-vec
+    [key-or-vec key-or-vec]))
+
 (defn- assoc-env [cfg key]
-  (if-let [val (env key)]
-    (assoc cfg key val)
-    cfg))
+  (let [[env-key key] (env-key-and-key key)]
+   (if-let [val (env env-key)]
+     (assoc cfg key val)
+     cfg)))
 
 (defrecord EnvConfig [database-uri norms-dir server-port]
   component/Lifecycle
@@ -15,7 +21,7 @@
     (println "Comic-Reader: Loading configuration...")
     (reduce assoc-env component [:database-uri
                                  :norms-dir
-                                 :server-port]))
+                                 [:port :server-port]]))
 
   (stop [component]
     component)
