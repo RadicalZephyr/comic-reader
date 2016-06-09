@@ -5,12 +5,11 @@
 (defrecord DatomicRepository [database source-repo]
   repo/ComicRepository
   (list-sites [this]
-    (let [c (async/promise-chan)]
-      (async/go
-        (>! c (repo/list-sites source-repo)))
-      c))
+    (repo/list-sites source-repo))
 
-  (list-comics        [this site])
+  (list-comics [this site]
+    (repo/list-comics source-repo site))
+
   (previous-locations [this site comic-id location n])
   (next-locations     [this site comic-id location n])
   (image-tag          [this site location]))
