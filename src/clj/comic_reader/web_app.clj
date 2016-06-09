@@ -40,7 +40,7 @@
                        "js/foundation.min.js")
      ~@js]))
 
-(defn- make-routes [site-scraper]
+(defn- make-routes [repository]
   (c/routes
     (c/GET "/" []
       (render-page
@@ -61,7 +61,7 @@
        :js [(page/include-js "js/compiled/devcards.js")]))
 
     (c/context "/api/v1" []
-      (-> (make-api-routes site-scraper)
+      (-> (make-api-routes repository)
           wrap-params
           wrap-edn-params))
 
