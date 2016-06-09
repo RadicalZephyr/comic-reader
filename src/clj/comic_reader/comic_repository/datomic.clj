@@ -3,7 +3,9 @@
 
 (defrecord DatomicRepository [database source-repo]
   repo/ComicRepository
-  (list-sites         [this])
+  (list-sites [this]
+    (repo/list-sites source-repo))
+
   (list-comics        [this site])
   (previous-locations [this site comic-id location n])
   (next-locations     [this site comic-id location n])
