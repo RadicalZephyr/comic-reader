@@ -34,6 +34,7 @@
                  [org.clojure/tools.logging "0.3.1" :exclusions
                   [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
                  [ch.qos.logback/logback-classic "1.1.3"]
+                 [org.clojure/core.async "0.2.374"]
 
                  ;; Web server
                  [ring "1.4.0"]

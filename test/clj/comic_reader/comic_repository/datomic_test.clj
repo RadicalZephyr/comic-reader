@@ -1,5 +1,6 @@
 (ns comic-reader.comic-repository.datomic-test
-  (:require [clojure.test :as t]
+  (:require [clojure.core.async :refer [<!!]]
+            [clojure.test :as t]
             [comic-reader.comic-repository :as repo]
             [comic-reader.comic-repository.datomic :as sut]
             [comic-reader.comic-repository.mock :refer [mock-repo]]
@@ -24,9 +25,9 @@
 
 (t/deftest test-list-sites
   (t/testing "passes directly through to source-repo"
-    (t/is (= [] (repo/list-sites (test-repo (mock-repo :sites [])))))
+    (t/is (= [] (<!! (repo/list-sites (test-repo (mock-repo :sites []))))))
 
     (let [sites [{:id "site-one", :name "Site One"}
                  {:id "site-two", :name "Site Two"}
                  {:id "site-three", :name "Site Three"}]]
-      (t/is (= sites (repo/list-sites (test-repo (mock-repo :sites sites))))))))
+      (t/is (= sites (<!! (repo/list-sites (test-repo (mock-repo :sites sites)))))))))
