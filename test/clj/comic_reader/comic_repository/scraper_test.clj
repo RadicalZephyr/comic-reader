@@ -2,7 +2,7 @@
   (:require [clojure.test :as t]
             [comic-reader.comic-repository :as repo]
             [comic-reader.comic-repository.scraper :as sut]
-            [comic-reader.mock-site-scraper :refer [mock-scraper]]
+            [comic-reader.site-scraper.mock :refer [mock-scraper]]
             [com.stuartsierra.component :as component]))
 
 (defn scraper-test-system [scraper]

@@ -3,7 +3,7 @@
             [comic-reader.site-scraper :as site-scraper]
             [comic-reader.web-app :as sut]
             [comic-reader.comic-repository.scraper :refer [new-scraper-repo]]
-            [comic-reader.mock-site-scraper :refer [mock-scraper]]
+            [comic-reader.site-scraper.mock :refer [mock-scraper]]
             [com.stuartsierra.component :as component]
             [ring.mock.request :as mock]))
 

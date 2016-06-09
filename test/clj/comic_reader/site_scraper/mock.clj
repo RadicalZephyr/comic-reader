@@ -1,4 +1,4 @@
-(ns comic-reader.mock-site-scraper
+(ns comic-reader.site-scraper.mock
   (:require [comic-reader.site-scraper :as site-scraper]))
 
 (extend-type clojure.lang.IPersistentMap
