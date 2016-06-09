@@ -1,10 +1,14 @@
 (ns comic-reader.comic-repository.datomic
-  (:require [comic-reader.comic-repository :as repo]))
+  (:require [clojure.core.async :as async :refer [>!]]
+            [comic-reader.comic-repository :as repo]))
 
 (defrecord DatomicRepository [database source-repo]
   repo/ComicRepository
   (list-sites [this]
-    (repo/list-sites source-repo))
+    (let [c (async/promise-chan)]
+      (async/go
+        (>! c (repo/list-sites source-repo)))
+      c))
 
   (list-comics        [this site])
   (previous-locations [this site comic-id location n])
