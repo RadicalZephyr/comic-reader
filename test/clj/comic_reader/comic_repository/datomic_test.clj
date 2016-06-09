@@ -22,5 +22,11 @@
       (component/start)
       :datomic-repo))
 
-(t/deftest creates-new-repository
-  (t/is (not (nil? (test-repo (mock-repo))))))
+(t/deftest test-list-sites
+  (t/testing "passes directly through to source-repo"
+    (t/is (= [] (repo/list-sites (test-repo (mock-repo :sites [])))))
+
+    (let [sites [{:id "site-one", :name "Site One"}
+                 {:id "site-two", :name "Site Two"}
+                 {:id "site-three", :name "Site Three"}]]
+      (t/is (= sites (repo/list-sites (test-repo (mock-repo :sites sites))))))))
