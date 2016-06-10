@@ -4,29 +4,34 @@
             [comic-reader.database :as sut]
             [datomic.api :as d]))
 
-(deftest database-component-test
+(deftest test-database-component
   (let [db (sut/new-database)]
-    (is (sut/database? db))
-    (is (sut/database? (component/start db)))
+    (testing "constructor and start always returns a database"
+      (is (sut/database? db))
+      (is (sut/database? (component/start db))))
 
-    (is (nil? (:conn (component/start db))))
+    (testing "with no config, no connection is started"
+      (is (nil? (:conn (component/start db)))))
 
     (let [config {:database-uri "datomic:mem://comics-test"
                   :norms-dir nil}
           db (assoc db :config config)]
-      (is (nil? (sut/get-conn db)))
+      (testing "connection is nil before start"
+        (is (nil? (:conn db))))
 
-      (let [started-db (component/start db)]
-        (is (not (nil? (:conn started-db))))))
+      (testing "connection is non-nil after successful start"
+        (let [started-db (component/start db)]
+          (is (not (nil? (:conn started-db)))))))
 
-    (let [config {:database-uri "datomic:mem://comics-test"
-                  :norms-dir "database/test-norms"}
-          db (-> db
-                 (assoc :config config)
-                 component/start)]
-      (is (= 1
-             (count
-              (d/q '[:find ?e
-                     :in $
-                     :where [?e :db/ident :test.enum/one]]
-                   (d/db (:conn db)))))))))
+    (testing "norms conformation happens on startup"
+      (let [config {:database-uri "datomic:mem://comics-test"
+                    :norms-dir "database/test-norms"}
+            db (-> db
+                   (assoc :config config)
+                   component/start)]
+        (is (= 1
+               (count
+                (d/q '[:find ?e
+                       :in $
+                       :where [?e :db/ident :test.enum/one]]
+                     (d/db (:conn db))))))))))
