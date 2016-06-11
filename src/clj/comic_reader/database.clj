@@ -6,13 +6,20 @@
             [datomic.api :as d]
             [io.rkn.conformity :as conformity]))
 
-(defn- site-record [site-name & {:keys [temp-id]}]
+(defn- site-record [site-data & {:keys [temp-id]}]
   (let [temp-id (if temp-id
                   (d/tempid :db.part/user temp-id)
-                  (d/tempid :db.part/user))]
+                  (d/tempid :db.part/user))
+        {:keys [id name]} site-data]
     {:db/id temp-id
-     :site/id (d/squuid)
-     :site/name site-name}))
+     :site/id id
+     :site/name name}))
+
+(defn- comic-record [site-id comic]
+  {:db/id (d/tempid :db.part/user)
+   :comic/id (:id comic)
+   :comic/site site-id
+   :comic/name (:name comic)})
 
 (defn- create-database [config]
   (d/create-database (config/database-uri config)))
@@ -37,7 +44,11 @@
 
 (defprotocol Database
   (get-sites [database] "Returns a seq of the stored site records.")
-  (store-sites [database sites] "Store a seq of site records."))
+  (get-site-id [database site-id] "Get the db/id for the given site-id.")
+  (store-sites [database sites] "Store a seq of site records.")
+  (get-comics [database site-id] "Returns a seq of the stored comic records.")
+  (get-comic-id [database site-id comic-id] "Get the db/id for the given comic-id at site-id.")
+  (store-comics [database site-id comics] "Store a seq of comic records."))
 
 (defrecord DatomicDatabase [config conn]
 
@@ -55,12 +66,32 @@
   Database
   (get-sites [database]
     (let [db (d/db conn)]
-      (d/q '[:find [(pull ?e [:site/name]) ...]
+      (d/q '[:find [(pull ?e [:site/id :site/name]) ...]
              :where [?e :site/name]]
            db)))
 
+  (get-site-id [database site-id]
+    (let [db (d/db conn)]
+      (d/q '[:find ?e .
+             :in $ ?site-id
+             :where [?e :site/id ?site-id]]
+           db site-id)))
+
   (store-sites [database sites]
-    (d/transact conn (mapv site-record sites))))
+    (d/transact conn (mapv site-record sites)))
+
+  (get-comics [database site-id]
+    (let [db (d/db conn)]
+      (d/q '[:find [(pull ?e [:comic/id :comic/name]) ...]
+             :in $ ?site-id
+             :where [?seid :site/id ?site-id]
+                    [?e :comic/site ?seid]]
+           db site-id)))
+
+  (get-comic-id [database site-id comic-id])
+
+  (store-comics [database site-id comics]
+    (d/transact conn (mapv (partial comic-record site-id) comics))))
 
 (defn database? [e]
   (instance? DatomicDatabase e))
