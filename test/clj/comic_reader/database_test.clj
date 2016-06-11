@@ -53,7 +53,7 @@
 (deftest test-get-and-store-sites
   (testing "returns no results for empty database"
     (with-test-db test-database
-      (is (= nil (sut/get-sites test-database)))))
+      (is (= [] (sut/get-sites test-database)))))
 
   (testing "returns all stored site-names"
     (with-test-db test-database
