@@ -53,12 +53,50 @@
          (d/delete-database (get-in test-system# [:config :database-uri]))))))
 
 (deftest test-get-and-store-sites
-  (testing "returns no results for empty database"
+  (testing "returns no results for an empty database"
     (with-test-db test-database
       (is (= [] (sut/get-sites test-database)))))
 
-  (testing "returns all stored site-names"
+  (testing "returns one stored site record"
     (with-test-db test-database
-      (sut/store-sites test-database ["manga-fox"])
-      (is (= [{:site/name "manga-fox"}]
+      (sut/store-sites test-database [{:id "site-one", :name "Site One"}])
+      (is (= [{:site/id "site-one"
+               :site/name "Site One"}]
+             (sut/get-sites test-database)))))
+
+  (testing "returns many stored site records"
+    (with-test-db test-database
+      (sut/store-sites test-database [{:id "site-one", :name "Site One"}
+                                      {:id "site-two", :name "Site Two"}])
+      (is (= [{:site/id "site-one"
+               :site/name "Site One"}
+              {:site/id "site-two"
+               :site/name "Site Two"}]
              (sut/get-sites test-database))))))
+
+(deftest test-get-and-store-comics
+  (testing "returns no results for an empty database"
+    (with-test-db test-database
+      (is (= [] (sut/get-comics test-database "site-one")))))
+
+  (testing "returns one stored comic record"
+    (with-test-db test-database
+      (sut/store-sites test-database [{:id "site-one", :name "Site One"}])
+      (let [site-id (sut/get-site-id test-database "site-one")]
+
+        (sut/store-comics test-database site-id [{:id "comic-one" :name "Comic One"}])
+
+        (is (= [{:comic/id "comic-one" :comic/name "Comic One"}]
+               (sut/get-comics test-database "site-one"))))))
+
+  (testing "returns many stored comic records"
+    (with-test-db test-database
+      (sut/store-sites test-database [{:id "site-one", :name "Site One"}])
+      (let [site-id (sut/get-site-id test-database "site-one")]
+
+        (sut/store-comics test-database site-id [{:id "comic-one" :name "Comic One"}
+                                                 {:id "comic-two" :name "Comic Two"}])
+
+        (is (= #{{:comic/id "comic-one" :comic/name "Comic One"}
+                 {:comic/id "comic-two" :comic/name "Comic Two"}}
+               (set (sut/get-comics test-database "site-one"))))))))
