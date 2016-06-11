@@ -47,8 +47,10 @@
 (defmacro with-test-db [db-binding & body]
   `(let [test-system# (component/start (database-test-system))
          ~db-binding (:database test-system#)]
-     ~@body
-     (d/delete-database (get-in test-system# [:config :database-uri]))))
+     (try
+       ~@body
+       (finally
+         (d/delete-database (get-in test-system# [:config :database-uri]))))))
 
 (deftest test-get-and-store-sites
   (testing "returns no results for empty database"
