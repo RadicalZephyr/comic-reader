@@ -6,6 +6,14 @@
             [datomic.api :as d]
             [io.rkn.conformity :as conformity]))
 
+(defn- site-record
+  ([site-name]
+   (site-record (d/tempid :db.part/user) site-name))
+  ([id site-name]
+   {:db/id id
+    :site/id (d/squuid)
+    :site/name site-name}))
+
 (defn- create-database [config]
   (d/create-database (config/database-uri config)))
 
@@ -28,12 +36,12 @@
       conn)))
 
 (defprotocol Database
-  (get-conn [database] "Return the connection to the database."))
+  (store-sites [database sites] "Store a seq of site records.")
+  (get-sites [database] "Returns a seq of the stored sites records."))
 
 (defrecord DatomicDatabase [config conn]
 
   component/Lifecycle
-
   (start [component]
     (if-let [config (:config component)]
       (assoc component :conn
@@ -45,7 +53,14 @@
     (dissoc component :conn))
 
   Database
-  (get-conn [database] (:conn database)))
+  (store-sites [database sites]
+    (d/transact conn (mapv site-record sites)))
+
+  (get-sites [database]
+    (let [db (d/db conn)]
+      (d/q '[:find [(pull ?e [:site/name])]
+             :where [?e :site/name]]
+           db))))
 
 (defn database? [e]
   (instance? DatomicDatabase e))

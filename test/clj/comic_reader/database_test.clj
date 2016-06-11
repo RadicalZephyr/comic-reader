@@ -35,3 +35,28 @@
                        :in $
                        :where [?e :db/ident :test.enum/one]]
                      (d/db (:conn db))))))))))
+
+(defn database-test-system []
+  (component/system-map
+   :config {:database-uri "datomic:mem://comics-test"
+            :norms-dir "database/norms"}
+   :database (component/using
+              (sut/new-database)
+              [:config])))
+
+(defmacro with-test-db [db-binding & body]
+  `(let [test-system# (component/start (database-test-system))
+         ~db-binding (:database test-system#)]
+     ~@body
+     (d/delete-database (get-in test-system# [:config :database-uri]))))
+
+(deftest test-get-and-store-sites
+  (testing "returns no results for empty database"
+    (with-test-db test-database
+      (is (= nil (sut/get-sites test-database)))))
+
+  (testing "returns all stored site-names"
+    (with-test-db test-database
+      (sut/store-sites test-database ["manga-fox"])
+      (is (= [{:site/name "manga-fox"}]
+             (sut/get-sites test-database))))))
