@@ -88,6 +88,17 @@
         (is (= [{:comic/id "comic-one" :comic/name "Comic One"}]
                (sut/get-comics test-database "site-one"))))))
 
+  (testing "returns one stored comic record"
+    (with-test-db test-database
+      (let [site {:id "site-one", :name "Site One"}
+            other-site {:id "site-two", :name "Site Two"}]
+        @(sut/store-sites test-database [site other-site])
+        @(sut/store-comics test-database (:id site) [{:id "comic-one" :name "Comic One"}])
+        @(sut/store-comics test-database (:id other-site) [{:id "not-good-comic" :name "Not Good Comic"}])
+
+        (is (= [{:comic/id "comic-one" :comic/name "Comic One"}]
+               (sut/get-comics test-database "site-one"))))))
+
   (testing "returns many stored comic records"
     (with-test-db test-database
       (let [site {:id "site-one", :name "Site One"}]
