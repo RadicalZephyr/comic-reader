@@ -46,6 +46,7 @@
   (get-sites [database] "Returns a seq of the stored site records.")
   (get-site-id [database site-id] "Get the db/id for the given site-id.")
   (store-sites [database sites] "Store a seq of site records.")
+
   (get-comics [database site-id] "Returns a seq of the stored comic records.")
   (get-comic-id [database site-id comic-id] "Get the db/id for the given comic-id at site-id.")
   (store-comics [database site-id comics] "Store a seq of comic records."))
@@ -91,7 +92,8 @@
   (get-comic-id [database site-id comic-id])
 
   (store-comics [database site-id comics]
-    (d/transact conn (mapv (partial comic-record site-id) comics))))
+    (let [site-db-id (get-site-id database site-id)]
+      (d/transact conn (mapv (partial comic-record site-db-id) comics)))))
 
 (defn database? [e]
   (instance? DatomicDatabase e))
