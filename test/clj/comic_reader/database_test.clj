@@ -133,6 +133,35 @@
                  :location/page {:page/number 2 :page/url  "url2"}}]
                (sut/get-locations test-database "site-one" "comic-one"))))))
 
+  (testing "only returns location for the desired site and comic"
+    (with-test-db test-database
+      (let [site {:id "site-one", :name "Site One"}
+            other-site {:id "site-two" :name "Site Two"}
+            comic {:id "comic-one" :name "Comic One"}
+            other-comic {:id "comic-other" :name "Comic One"}
+            third-comic {:id "comic-third" :name "Comic Third"}]
+
+        @(sut/store-sites test-database [site other-site])
+        @(sut/store-comics test-database (:id site) [comic third-comic])
+        @(sut/store-locations test-database (:id site) (:id comic)
+                              [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
+                               {:chapter {:name "The Gamer 2" :ch-num 2} :page {:number 2 :url  "url2"}}])
+        @(sut/store-locations test-database (:id site) (:id third-comic)
+                              [{:chapter {:name "The Third 1" :ch-num 1} :page {:number 1 :url  "third-url1"}}
+                               {:chapter {:name "The Third 2" :ch-num 2} :page {:number 2 :url  "third-url2"}}])
+
+
+        @(sut/store-comics test-database (:id other-site) [other-comic])
+        @(sut/store-locations test-database (:id other-site) (:id other-comic)
+                              [{:chapter {:name "The Other 1" :ch-num 1} :page {:number 1 :url  "other-url1"}}
+                               {:chapter {:name "The Other 2" :ch-num 2} :page {:number 2 :url  "other-url2"}}])
+
+        (is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 1 :page/url  "url1"}}
+                {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
+                 :location/page {:page/number 2 :page/url  "url2"}}]
+               (sut/get-locations test-database "site-one" "comic-one"))))))
+
   (testing "Sorts all locations by chapter and page number"
     (with-test-db test-database
       (let [site {:id "site-one", :name "Site One"}

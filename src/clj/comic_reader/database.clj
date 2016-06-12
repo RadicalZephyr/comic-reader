@@ -132,8 +132,7 @@
                   :where [?site-ent :site/id ?site-id]
                   [?comic-ent :comic/id ?comic-id]
                   [?comic-ent :comic/site ?site-ent]
-                  [?chapter-ent :chapter/id]
-                  [?loc-ent :location/chapter ?chapter-ent]]
+                  [?loc-ent :location/comic ?comic-ent]]
                 db site-id comic-id)
            (sort-by #(get-in % [:location/page :page/number]))
            (sort-by #(get-in % [:location/chapter :chapter/number])))))
