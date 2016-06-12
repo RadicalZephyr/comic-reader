@@ -99,3 +99,63 @@
                {:comic/id "comic-two" :comic/name "Comic Two"}}
              (set (sut/get-comics test-database "site-one")))))))
 
+(deftest test-get-and-store-locations
+  (testing "returns no results for an empty database"
+    (with-test-db test-database
+      (is (= [] (sut/get-locations test-database "site-one" "comic-one")))))
+
+  (testing "returns one location"
+    (with-test-db test-database
+      (let [site {:id "site-one", :name "Site One"}
+            comic {:id "comic-one" :name "Comic One"}]
+        @(sut/store-sites test-database [site])
+        @(sut/store-comics test-database (:id site) [comic])
+        @(sut/store-locations test-database (:id site) (:id comic)
+                              [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}])
+
+        (is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 1 :page/url  "url1"}}]
+               (sut/get-locations test-database "site-one" "comic-one"))))))
+
+  (testing "returns multiple locations"
+    (with-test-db test-database
+      (let [site {:id "site-one", :name "Site One"}
+            comic {:id "comic-one" :name "Comic One"}]
+        @(sut/store-sites test-database [site])
+        @(sut/store-comics test-database (:id site) [comic])
+        @(sut/store-locations test-database (:id site) (:id comic)
+                              [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
+                               {:chapter {:name "The Gamer 2" :ch-num 2} :page {:number 2 :url  "url2"}}])
+
+        (is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 1 :page/url  "url1"}}
+                {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
+                 :location/page {:page/number 2 :page/url  "url2"}}]
+               (sut/get-locations test-database "site-one" "comic-one"))))))
+
+  (testing "Sorts all locations by chapter and page number"
+    (with-test-db test-database
+      (let [site {:id "site-one", :name "Site One"}
+            comic {:id "comic-one" :name "Comic One"}]
+        @(sut/store-sites test-database [site])
+        @(sut/store-comics test-database (:id site) [comic])
+        @(sut/store-locations test-database (:id site) (:id comic)
+                              [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
+                               {:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 2 :url  "url2"}}
+                               {:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 3 :url  "url3"}}
+
+                               {:chapter {:name "The Gamer 2" :ch-num 2} :page {:number 1 :url  "url1"}}
+                               {:chapter {:name "The Gamer 2" :ch-num 2} :page {:number 2 :url  "url2"}}])
+
+        (is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 1 :page/url  "url1"}}
+                {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 2 :page/url  "url2"}}
+                {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 3 :page/url  "url3"}}
+
+                {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
+                 :location/page {:page/number 1 :page/url  "url1"}}
+                {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
+                 :location/page {:page/number 2 :page/url  "url2"}}]
+               (sut/get-locations test-database "site-one" "comic-one")))))))

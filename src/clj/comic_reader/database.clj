@@ -21,6 +21,25 @@
    :comic/site site-id
    :comic/name (:name comic)})
 
+(defn- location-record [comic-id location]
+  (let [chapter-temp-id (d/tempid :db.part/user)
+        page-temp-id (d/tempid :db.part/user)]
+    [{:db/id chapter-temp-id
+      :chapter/id (d/squuid)
+      :chapter/number (get-in location [:chapter :ch-num])
+      :chapter/title (get-in location [:chapter :name])
+      :chapter/comic comic-id}
+
+     {:db/id page-temp-id
+      :page/id (d/squuid)
+      :page/number (get-in location [:page :number])
+      :page/url (get-in location [:page :url])}
+
+     {:db/id (d/tempid :db.part/user)
+      :location/id (d/squuid)
+      :location/chapter chapter-temp-id
+      :location/page page-temp-id}]))
+
 (defn- create-database [config]
   (d/create-database (config/database-uri config)))
 
@@ -49,7 +68,10 @@
 
   (get-comics [database site-id] "Returns a seq of the stored comic records.")
   (get-comic-id [database site-id comic-id] "Get the db/id for the given comic-id at site-id.")
-  (store-comics [database site-id comics] "Store a seq of comic records."))
+  (store-comics [database site-id comics] "Store a seq of comic records.")
+
+  (get-locations [database site-id comic-id] "Returns a seq of the stored locations for the given comic and site.")
+  (store-locations [database site-id comic-id locations] "Store a seq of location records."))
 
 (defrecord DatomicDatabase [config conn]
 
@@ -89,11 +111,36 @@
                     [?e :comic/site ?seid]]
            db site-id)))
 
-  (get-comic-id [database site-id comic-id])
+  (get-comic-id [database site-id comic-id]
+    (let [db (d/db conn)]
+      (d/q '[:find ?e .
+             :in $ ?site-id ?comic-id
+             :where [?site-ent :site/id ?site-id]
+                    [?e :comic/id ?comic-id]
+                    [?e :comic/site ?site-ent]]
+           db site-id comic-id)))
 
   (store-comics [database site-id comics]
     (let [site-db-id (get-site-id database site-id)]
-      (d/transact conn (mapv (partial comic-record site-db-id) comics)))))
+      (d/transact conn (mapv (partial comic-record site-db-id) comics))))
+
+  (get-locations [database site-id comic-id]
+    (let [db (d/db conn)]
+      (->> (d/q '[:find [(pull ?loc-ent [{:location/chapter [:chapter/title :chapter/number]}
+                                         {:location/page [:page/number :page/url]}]) ...]
+                  :in $ ?site-id ?comic-id
+                  :where [?site-ent :site/id ?site-id]
+                  [?comic-ent :comic/id ?comic-id]
+                  [?comic-ent :comic/site ?site-ent]
+                  [?chapter-ent :chapter/id]
+                  [?loc-ent :location/chapter ?chapter-ent]]
+                db site-id comic-id)
+           (sort-by #(get-in % [:location/page :page/number]))
+           (sort-by #(get-in % [:location/chapter :chapter/number])))))
+
+  (store-locations [database site-id comic-id locations]
+    (let [comic-db-id (get-comic-id database site-id comic-id)]
+      (d/transact conn (mapcat (partial location-record comic-db-id) locations)))))
 
 (defn database? [e]
   (instance? DatomicDatabase e))
