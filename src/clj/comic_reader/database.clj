@@ -27,8 +27,7 @@
     [{:db/id chapter-temp-id
       :chapter/id (d/squuid)
       :chapter/number (get-in location [:chapter :ch-num])
-      :chapter/title (get-in location [:chapter :name])
-      :chapter/comic comic-id}
+      :chapter/title (get-in location [:chapter :name])}
 
      {:db/id page-temp-id
       :page/id (d/squuid)
@@ -37,6 +36,7 @@
 
      {:db/id (d/tempid :db.part/user)
       :location/id (d/squuid)
+      :location/comic comic-id
       :location/chapter chapter-temp-id
       :location/page page-temp-id}]))
 
