@@ -2,6 +2,7 @@
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Site attributes
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
  {:db/id #db/id[:db.part/db]
   :db/ident :site/id
   :db/valueType :db.type/string
@@ -15,118 +16,11 @@
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/url
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
-{:db/id #db/id[:db.part/db]
- :db/ident :site/image-selector
- :db/valueType :db.type/string
- :db/cardinality :db.cardinality/one
- :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/manga-list-format
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/comic-list-selector
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/page-normalize-pattern
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/page-normalize-format
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/chapter-number-pattern
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/page-list-selector
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/root-url
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/manga-url-format
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/manga-url-suffix-pattern
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/comic-link-name-normalize-fn
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/comic-link-url-normalize
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/chapter-link-name-normalize
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/chapter-link-url-normalize
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/chapter-list-selector
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/chapter-number-match-pattern
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
- {:db/id #db/id[:db.part/db]
-  :db/ident :site/comic->url-format
-  :db/valueType :db.type/string
-  :db/cardinality :db.cardinality/one
-  :db.install/_attribute :db.part/db}
-
 
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Comic attributes
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
  {:db/id #db/id[:db.part/db]
   :db/ident :comic/id
   :db/valueType :db.type/string
@@ -150,6 +44,7 @@
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  ;; Chapter attributes
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
  {:db/id #db/id[:db.part/db]
   :db/ident :chapter/id
   :db/valueType :db.type/uuid
@@ -164,6 +59,18 @@
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
+  :db/ident :chapter/title
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :chapter/url
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
   :db/ident :chapter/comic
   :db/valueType :db.type/ref
   :db/cardinality :db.cardinality/one
@@ -171,23 +78,56 @@
 
 
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
- ;; Image attributes
+ ;; Page attributes
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
  {:db/id #db/id[:db.part/db]
-  :db/ident :image/id
+  :db/ident :page/id
   :db/valueType :db.type/uuid
   :db/cardinality :db.cardinality/one
   :db/unique :db.unique/identity
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :image/number
+  :db/ident :page/number
   :db/valueType :db.type/long
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}
 
  {:db/id #db/id[:db.part/db]
-  :db/ident :image/chapter
+  :db/ident :page/url
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;; Location attributes
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :location/id
+  :db/valueType :db.type/uuid
+  :db/cardinality :db.cardinality/one
+  :db/unique :db.unique/identity
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :location/image-url
+  :db/valueType :db.type/string
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :location/chapter
   :db/valueType :db.type/ref
+  :db/isComponent true
+  :db/cardinality :db.cardinality/one
+  :db.install/_attribute :db.part/db}
+
+ {:db/id #db/id[:db.part/db]
+  :db/ident :location/page
+  :db/valueType :db.type/ref
+  :db/isComponent true
   :db/cardinality :db.cardinality/one
   :db.install/_attribute :db.part/db}]
