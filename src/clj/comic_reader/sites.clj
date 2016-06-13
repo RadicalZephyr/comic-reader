@@ -22,103 +22,103 @@
 (defn root-url
   "The root URL of the manga site without a trailing slash."
   [options]
-  (:root-url options))
+  (:site/root-url options))
 
 (defn manga-list-format
   "A format string that when used to format the root URL will produce
   the URL of the list of all manga."
   [options]
-  (:manga-list-format options))
+  (:site/manga-list-format options))
 
 (defn manga-url-format
   "A format string that when used to format the root URL will produce
   the prefix of all comic urls."
   [options]
-  (:manga-url-format options))
+  (:site/manga-url-format options))
 
 (defn manga-url-suffix-pattern
   "A regular expression to match the comic-id portion of a comics
   chapter list URL."
   [options]
-  (when-let [suffix-pattern (:manga-url-suffix-pattern options)]
+  (when-let [suffix-pattern (:site/manga-url-suffix-pattern options)]
     (str suffix-pattern)))
 
 (defn comic->url-format
   "A format string that when used to format the manga URL and a comic
   id will produce the URL of a comics chapter page."
   [options]
-  (:comic->url-format options))
+  (:site/comic->url-format options))
 
 (defn comic-list-selector
   "An enlive selector for selecting all of the links to comics on the
   comic list page."
   [options]
-  (:comic-list-selector options))
+  (:site/comic-list-selector options))
 
 (defn chapter-number-match-pattern
   "A regular expression that can extract the number from a chapter
   url."
   [options]
-  (:chapter-number-match-pattern options))
+  (:site/chapter-number-match-pattern options))
 
 (defn chapter-list-selector
   "An enlive selector that extracts all the chapter links from the
   comics chapter page."
   [options]
-  (:chapter-list-selector options))
+  (:site/chapter-list-selector options))
 
 (defn page-normalize-pattern
   "A regular expression to extract the page number from the page
   select option value."
   [options]
-  (:page-normalize-pattern options))
+  (:site/page-normalize-pattern options))
 
 (defn page-normalize-format
   "A format string that when used to format the base-url of a comic
   and the page number will make the url for that specific page."
   [options]
-  (:page-normalize-format options))
+  (:site/page-normalize-format options))
 
 (defn chapter-number-pattern
   "A regular expression that will match the chapter specific portion
   of a url for creating a base url."
   [options]
-  (:chapter-number-pattern options))
+  (:site/chapter-number-pattern options))
 
 (defn page-list-selector
   "An enlive selector that extracts the list of pages from a manga
   chapter page."
   [options]
-  (:page-list-selector options))
+  (:site/page-list-selector options))
 
 (defn image-selector
   "An enlive selector that extracts the image tag from a manga page."
   [options]
-  (:image-selector options))
+  (:site/image-selector options))
 
 (defn comic-link-url-normalize
   "An expression that evals to a function that will normalize the link
   url."
   [options]
-  (get-normalize-fn options (:comic-link-url-normalize options)))
+  (get-normalize-fn options (:site/comic-link-url-normalize options)))
 
 (defn comic-link-name-normalize
   "An expression that evals to a function that will normalize the link
   name."
   [options]
-  (get-normalize-fn options (:comic-link-name-normalize options)))
+  (get-normalize-fn options (:site/comic-link-name-normalize options)))
 
 (defn chapter-link-url-normalize
   "An expression that evals to a function that will normalize the
   chapter link url."
   [options]
-  (get-normalize-fn options (:chapter-link-url-normalize options)))
+  (get-normalize-fn options (:site/chapter-link-url-normalize options)))
 
 (defn chapter-link-name-normalize
   "An expression that evals to a function that will normalize the link
   name."
   [options]
-  (get-normalize-fn options (:chapter-link-name-normalize options)))
+  (get-normalize-fn options (:site/chapter-link-name-normalize options)))
 
 
 ;; ############################################################

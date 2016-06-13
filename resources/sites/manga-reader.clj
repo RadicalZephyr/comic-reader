@@ -1,27 +1,27 @@
 {
- :image-selector [:div#imgholder :a :img#img]
- :page-normalize-pattern #"(?<=/\d{1,5})/\d+$"
- :page-normalize-format "%s%s"
+ :site/image-selector [:div#imgholder :a :img#img]
+ :site/page-normalize-pattern #"(?<=/\d{1,5})/\d+$"
+ :site/page-normalize-format "%s%s"
 
- :chapter-number-pattern #"(?<=/\d{1,5})/\d+$"
+ :site/chapter-number-pattern #"(?<=/\d{1,5})/\d+$"
 
- :page-list-selector [:div#selectpage :select#pageMenu :option]
+ :site/page-list-selector [:div#selectpage :select#pageMenu :option]
 
- :chapter-list-selector [:table#listing :tr :td :a]
+ :site/chapter-list-selector [:table#listing :tr :td :a]
 
- :chapter-number-match-pattern #"/(\d+)$"
+ :site/chapter-number-match-pattern #"/(\d+)$"
 
- :chapter-link-name-normalize :trim-first
- :chapter-link-url-normalize :concat-with-root-url
+ :site/chapter-link-name-normalize :trim-first
+ :site/chapter-link-url-normalize :concat-with-root-url
 
- :comic-list-selector [:div#container :div#wrapper_body :ul.series_alpha :li :a]
- :root-url "http://www.mangareader.net"
- :manga-url-format "%s"
- :manga-url-suffix-pattern #"/(.+?)$"
+ :site/comic-list-selector [:div#container :div#wrapper_body :ul.series_alpha :li :a]
+ :site/root-url "http://www.mangareader.net"
+ :site/manga-url-format "%s"
+ :site/manga-url-suffix-pattern #"/(.+?)$"
 
- :comic-link-name-normalize :trim-first
- :comic-link-url-normalize :concat-with-root-url
+ :site/comic-link-name-normalize :trim-first
+ :site/comic-link-url-normalize :concat-with-root-url
 
- :manga-list-format "%s/alphabetical"
- :comic->url-format "%s/%s"
+ :site/manga-list-format "%s/alphabetical"
+ :site/comic->url-format "%s/%s"
  }
