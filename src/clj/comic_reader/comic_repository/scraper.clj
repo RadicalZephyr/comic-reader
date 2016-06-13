@@ -8,11 +8,17 @@
   (set/rename-keys chapter {:name :chapter/title
                             :ch-num :chapter/number}))
 
+(defn- parse-number [page-number]
+  (if (string? page-number)
+    (Integer/parseInt page-number)
+    page-number))
+
 (defn- format-page [page]
   (-> page
-      (set/rename-keys {:url :page/url})
+      (set/rename-keys {:url :page/url
+                        :name :page/number})
       (dissoc :name)
-      (assoc :page/number (and (:name page) (Integer/parseInt (:name page))))))
+      (update :page/number parse-number)))
 
 (defn- unformat-page [page]
   (-> page
@@ -37,6 +43,7 @@
   (let [processing-fn {:forward identity
                        :backward reverse}]
     (cond->> chapters
+      (= direction :backward) (reverse)
       chapter (drop-while #(not= (format-chapter %) chapter))
       :always (page-seq (processing-fn direction) scraper site)
       page (drop-while #(not= (:location/page %) page))
@@ -75,7 +82,7 @@
   (previous-locations [this site comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]
       (when chapter
-        (locations-for scraper site :backward (reverse (site-scraper/list-chapters scraper site comic-id)) chapter page n))))
+        (locations-for scraper site :backward (site-scraper/list-chapters scraper site comic-id) chapter page n))))
 
   (next-locations [this site comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]
