@@ -236,8 +236,8 @@
        (is-defined-in-file chapter-list chapter-test-resource)
        (binding [comic-reader.scrape/raise-null-selection-error
                  (make-retry-selector-fn chapter-list-html-path)]
-         (is (= (sort-by :ch-num chapter-list)
-                (sort-by :ch-num (extract-chapters-list html "")))
+         (is (= (sort-by :chapter/number chapter-list)
+                (sort-by :chapter/number (extract-chapters-list html "")))
              (tu/display-dependent-data-values extract-chapters-list)))
        (success-message "Chapters list extraction test passed!"))
 
@@ -256,8 +256,8 @@
       (and
        (tu/ensure-dependencies-defined extract-comics-list)
        (is-defined-in-file comic-list comic-test-resource)
-       (is (= (sort-by :id comic-list)
-              (sort-by :id (extract-comics-list html)))
+       (is (= (sort-by :comic/id comic-list)
+              (sort-by :comic/id (extract-comics-list html)))
            (tu/display-dependent-data-values extract-comics-list))
        (success-message "Comic list extraction test passed!"))
 
