@@ -15,12 +15,13 @@
      (assoc cfg key val)
      cfg)))
 
-(defrecord EnvConfig [database-uri norms-dir server-port]
+(defrecord EnvConfig [testing? database-uri norms-dir server-port]
   component/Lifecycle
 
   (start [component]
     (log/info "Loading configuration...")
-    (reduce assoc-env component [:database-uri
+    (reduce assoc-env component [[:testing :testing?]
+                                 :database-uri
                                  :norms-dir
                                  [:port :server-port]]))
 
@@ -28,6 +29,8 @@
     component)
 
   config/Config
+  (testing? [cfg] (:testing? cfg))
+
   (database-uri [cfg] (:database-uri cfg))
 
   (norms-dir [cfg] (:norms-dir cfg))

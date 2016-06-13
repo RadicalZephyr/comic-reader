@@ -1,12 +1,15 @@
 (ns comic-reader.config)
 
 (defprotocol Config
+  (testing? [cfg])
   (database-uri [cfg])
   (norms-dir [cfg])
   (server-port [cfg]))
 
 (extend-type clojure.lang.APersistentMap
   Config
+  (testing? [cfg] (:testing? cfg))
+
   (database-uri [cfg] (:database-uri cfg))
 
   (norms-dir [cfg] (:norms-dir cfg))
