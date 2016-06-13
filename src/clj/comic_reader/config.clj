@@ -6,8 +6,14 @@
   (norms-dir [cfg])
   (server-port [cfg]))
 
-(extend-type clojure.lang.APersistentMap
-  Config
+(extend-protocol Config
+  nil
+  (testing? [cfg])
+  (database-uri [cfg])
+  (norms-dir [cfg])
+  (server-port [cfg])
+
+  clojure.lang.APersistentMap
   (testing? [cfg] (:testing? cfg))
 
   (database-uri [cfg] (:database-uri cfg))
