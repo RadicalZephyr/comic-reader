@@ -33,7 +33,16 @@
 
    :page-normalize-format        nil
    :page-normalize-pattern       nil})
+(declare root-url)
 
+(defn get-normalize-fn [options normalize-fn-key]
+  (get {:nothing identity
+        :trim-first (comp clojure.string/trim first)
+        :trim-second (comp clojure.string/trim second)
+        :concat-with-root-url (fn [segment]
+                                (str (root-url options)
+                                     segment))}
+       normalize-fn-key))
 
 ;;; Data functions
 (defn root-url
@@ -117,25 +126,25 @@
   "An expression that evals to a function that will normalize the link
   url."
   [options]
-  (eval (:comic-link-url-normalize options)))
+  (get-normalize-fn options (:comic-link-url-normalize options)))
 
 (defn comic-link-name-normalize
   "An expression that evals to a function that will normalize the link
   name."
   [options]
-  (eval (:comic-link-name-normalize options)))
+  (get-normalize-fn options (:comic-link-name-normalize options)))
 
 (defn chapter-link-url-normalize
   "An expression that evals to a function that will normalize the
   chapter link url."
   [options]
-  (eval (:chapter-link-url-normalize options)))
+  (get-normalize-fn options (:chapter-link-url-normalize options)))
 
 (defn chapter-link-name-normalize
   "An expression that evals to a function that will normalize the link
   name."
   [options]
-  (eval (:chapter-link-name-normalize options)))
+  (get-normalize-fn options (:chapter-link-name-normalize options)))
 
 
 ;; ############################################################
