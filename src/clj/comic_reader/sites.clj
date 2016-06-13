@@ -220,34 +220,30 @@
 ;; ## Protocol functions
 ;; ############################################################
 
-(defrecord MangaSite [opt-map]
+(defrecord MangaSite [options]
   PMangaSite
 
   (get-comic-list [this]
-    (let [options opt-map
-          extract-comics-list (partial extract-comics-list options)]
+    (let [extract-comics-list (partial extract-comics-list options)]
       (some-> (manga-list-url options)
               scrape/fetch-url
               extract-comics-list)))
 
   (get-chapter-list [this comic-id]
-    (let [options opt-map
-          extract-chapters-list (partial extract-chapters-list options)]
+    (let [extract-chapters-list (partial extract-chapters-list options)]
       (if-let [comic-url (comic->url options comic-id)]
         (some-> comic-url
                 scrape/fetch-url
                 (extract-chapters-list comic-url)))))
 
   (get-page-list [this {chapter-url :chapter/url}]
-    (let [options opt-map
-          extract-pages-list (partial extract-pages-list options)]
+    (let [extract-pages-list (partial extract-pages-list options)]
       (some-> chapter-url
               scrape/fetch-url
               (extract-pages-list chapter-url))))
 
   (get-image-data [this {page-url :page/url}]
-    (let [options opt-map
-          extract-image-tag (partial extract-image-tag options)]
+    (let [extract-image-tag (partial extract-image-tag options)]
       (some-> page-url
               scrape/fetch-url
               extract-image-tag))))
