@@ -3,27 +3,27 @@
               :src
               "http://i995.mangareader.net/the-gamer/95/the-gamer-5978527.jpg"}]
  :chapter-url "base.url/1"
- :pages-list [{:name "1", :url "base.url/1"}
-              {:name "2", :url "base.url/1/2"}
-              {:name "3", :url "base.url/1/3"}
-              {:name "4", :url "base.url/1/4"}
-              {:name "5", :url "base.url/1/5"}
-              {:name "6", :url "base.url/1/6"}
-              {:name "7", :url "base.url/1/7"}
-              {:name "8", :url "base.url/1/8"}
-              {:name "9", :url "base.url/1/9"}
-              {:name "10", :url "base.url/1/10"}
-              {:name "11", :url "base.url/1/11"}
-              {:name "12", :url "base.url/1/12"}
-              {:name "13", :url "base.url/1/13"}
-              {:name "14", :url "base.url/1/14"}
-              {:name "15", :url "base.url/1/15"}
-              {:name "16", :url "base.url/1/16"}
-              {:name "17", :url "base.url/1/17"}
-              {:name "18", :url "base.url/1/18"}
-              {:name "19", :url "base.url/1/19"}
-              {:name "20", :url "base.url/1/20"}
-              {:name "21", :url "base.url/1/21"}
-              {:name "22", :url "base.url/1/22"}
-              {:name "23", :url "base.url/1/23"}
-              {:name "24", :url "base.url/1/24"}]}
+ :pages-list [{:page/number 1, :page/url "base.url/1"}
+              {:page/number 2, :page/url "base.url/1/2"}
+              {:page/number 3, :page/url "base.url/1/3"}
+              {:page/number 4, :page/url "base.url/1/4"}
+              {:page/number 5, :page/url "base.url/1/5"}
+              {:page/number 6, :page/url "base.url/1/6"}
+              {:page/number 7, :page/url "base.url/1/7"}
+              {:page/number 8, :page/url "base.url/1/8"}
+              {:page/number 9, :page/url "base.url/1/9"}
+              {:page/number 10, :page/url "base.url/1/10"}
+              {:page/number 11, :page/url "base.url/1/11"}
+              {:page/number 12, :page/url "base.url/1/12"}
+              {:page/number 13, :page/url "base.url/1/13"}
+              {:page/number 14, :page/url "base.url/1/14"}
+              {:page/number 15, :page/url "base.url/1/15"}
+              {:page/number 16, :page/url "base.url/1/16"}
+              {:page/number 17, :page/url "base.url/1/17"}
+              {:page/number 18, :page/url "base.url/1/18"}
+              {:page/number 19, :page/url "base.url/1/19"}
+              {:page/number 20, :page/url "base.url/1/20"}
+              {:page/number 21, :page/url "base.url/1/21"}
+              {:page/number 22, :page/url "base.url/1/22"}
+              {:page/number 23, :page/url "base.url/1/23"}
+              {:page/number 24, :page/url "base.url/1/24"}]}
