@@ -13,7 +13,7 @@
 
  :chapter-link-name-normalize first
  :chapter-link-url-normalize (fn [segment]
-                               (str (comic-reader.sites/root-url)
+                               (str (comic-reader.sites/root-url options)
                                     segment))
 
  :comic-list-selector [:div#container :div#wrapper_body :ul.series_alpha :li :a]
@@ -23,7 +23,7 @@
 
  :comic-link-name-normalize (comp clojure.string/trim first)
  :comic-link-url-normalize (fn [segment]
-                             (str (comic-reader.sites/root-url)
+                             (str (comic-reader.sites/root-url options)
                                   segment))
 
  :manga-list-format "%s/alphabetical"
