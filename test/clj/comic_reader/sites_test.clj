@@ -11,6 +11,37 @@
             [net.cgrand.enlive-html       :as html])
   (:import java.io.PushbackReader))
 
+;; Dynamic options var to simplify process of binding the options map
+;; to pass into sites functions.
+(def ^:dynamic options
+  {:root-url                     nil
+   :manga-list-format            nil
+   :manga-url-format             nil
+   :manga-url-suffix-pattern     nil
+
+   :comic->url-format            nil
+
+   :chapter-list-selector        nil
+   :comic-list-selector          nil
+   :image-selector               nil
+   :page-list-selector           nil
+
+   :chapter-number-pattern       nil
+   :chapter-number-match-pattern nil
+
+   :comic-link-name-normalize    nil
+   :comic-link-url-normalize     nil
+
+   :chapter-link-name-normalize  nil
+   :chapter-link-url-normalize   nil
+
+   :page-normalize-format        nil
+   :page-normalize-pattern       nil})
+
+(defn call-with-options [options f]
+  (binding [options options]
+    (f)))
+
 (defn expect-opts-are-map [site]
   (is
    (try
@@ -91,7 +122,7 @@
 (defmacro has-x-groups [x pattern-fn]
   `(and
     (tu/ensure-dependencies-defined ~pattern-fn)
-    (is (= ~x (num-groups (~pattern-fn ~'options)))
+    (is (= ~x (num-groups (~pattern-fn options)))
         ~(str "There should be exactly " x " matching groups in the `"
               pattern-fn "' regular expression."))))
 
@@ -165,14 +196,14 @@
   (and
    (tu/ensure-dependencies-defined extract-image-tag)
    (is (= image-tag
-          (extract-image-tag html))
+          (extract-image-tag options html))
        (tu/display-dependent-data-values extract-image-tag))))
 
 (defn test-extract-pages-list [html pages-list chapter-url]
   (and
    (tu/ensure-dependencies-defined extract-pages-list)
    (is (= pages-list
-          (extract-pages-list html chapter-url))
+          (extract-pages-list options html chapter-url))
        (tu/display-dependent-data-values extract-pages-list))))
 
 (defmacro is-defined-in-file [data-symbol file-expr]
@@ -237,7 +268,7 @@
        (binding [comic-reader.scrape/raise-null-selection-error
                  (make-retry-selector-fn chapter-list-html-path)]
          (is (= (sort-by :chapter/number chapter-list)
-                (sort-by :chapter/number (extract-chapters-list html "")))
+                (sort-by :chapter/number (extract-chapters-list options html "")))
              (tu/display-dependent-data-values extract-chapters-list)))
        (success-message "Chapters list extraction test passed!"))
 
@@ -283,7 +314,7 @@
 (defmacro test-url [url-fn-sym]
   `(and
     (tu/ensure-dependencies-defined ~url-fn-sym)
-    (is (not (nil? (try-fetch-url (~url-fn-sym ~'options)))))))
+    (is (not (nil? (try-fetch-url (~url-fn-sym options)))))))
 
 (defn test-scrape-urls [options]
   (and
@@ -301,7 +332,7 @@
 
 (defn test-full-site-traversal [site]
   (and
-   (call-with-options site #(ensure-all-dependencies))
+   (call-with-options (:opt-map site) #(ensure-all-dependencies))
    @run-network-tests?
 
    ;; Figure out how to make this a better experience Right now it
@@ -328,28 +359,29 @@
      (binding [~'site-name ~site-name]
        (and
         (expect-opts-are-map site-name)
-        (call-with-options
-         ((scraper/get-sites) site-name)
+        (let [site# ((scraper/get-sites) site-name)]
+          (call-with-options
+           (:opt-map site#)
 
-         #(and
-           (if (has-test-folder?)
-             (and
-              (test-image-page-extraction)
-              (test-extract-chapters-list)
-              (test-extract-comic-list options))
+           #(and
+             (if (has-test-folder?)
+               (and
+                (test-image-page-extraction)
+                (test-extract-chapters-list)
+                (test-extract-comic-list options))
 
-             (error-must-have-test-data))
+               (error-must-have-test-data))
 
-           (test-regexes)
-           (test-enlive-selectors)
-           (test-normalize-functions)
-           (test-format-strings)
+             (test-regexes)
+             (test-enlive-selectors)
+             (test-normalize-functions)
+             (test-format-strings)
 
-           (when (connected-to-network?)
-             (test-scrape-urls options))))
+             (when (connected-to-network?)
+               (test-scrape-urls options))))
 
-        (when (connected-to-network?)
-          (test-full-site-traversal ((scraper/get-sites) site-name)))))))
+          (when (connected-to-network?)
+            (test-full-site-traversal site#)))))))
 
 (defmacro defsite-tests []
   (try

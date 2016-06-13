@@ -124,7 +124,7 @@
   (let [fn-keyword (keyword fn-name)]
     (if (graph/has-node? dependency-dag fn-keyword)
       `(are-with-msg [selector#]
-                     (is (not= (selector# ~'options)
+                     (is (not= (selector# comic-reader.sites-test/options)
                                nil)
                          (str "Site config "
                               "`" 'selector# "'"
