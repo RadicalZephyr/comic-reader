@@ -14,11 +14,11 @@
 
  :manga-url-suffix-pattern #"(.*?)/$"
 
- :comic-link-name-normalize second
- :comic-link-url-normalize identity
+ :comic-link-name-normalize :trim-second
+ :comic-link-url-normalize :nothing
 
- :chapter-link-name-normalize (comp clojure.string/trim first)
- :chapter-link-url-normalize identity
+ :chapter-link-name-normalize :trim-first
+ :chapter-link-url-normalize :nothing
 
  :chapter-list-selector [:div.manga_detail :div.detail_list :ul :li :span.left :a]
  :chapter-number-match-pattern #"c0*(\d*)/"
