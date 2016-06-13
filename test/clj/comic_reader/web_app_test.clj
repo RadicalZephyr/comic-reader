@@ -46,10 +46,10 @@
         (t/is (= (handle (mock/request :get "/api/v1/sites"))
                  {:status 200
                   :headers edn-content-type
-                  :body (str
-                         "({:site/id \"site-one\", :site/name \"Site One\"}"
-                         " {:site/id \"site-two\", :site/name \"Site Two\"}"
-                         " {:site/id \"site-three\", :site/name \"Site Three\"})")}))))
+                  :body ""
+                  :edn-body '({:site/id "site-one"   :site/name "Site One"}
+                              {:site/id "site-two"   :site/name "Site Two"}
+                              {:site/id "site-three" :site/name "Site Three"})}))))
 
     (t/testing "/:site-name/comics"
       (let [handle (app-routes
@@ -58,6 +58,7 @@
                                            [{:id "the_gamer"
                                              :name "The Gamer"
                                              :url "real_url"}
+
                                             {:id "other_comic"
                                              :name "Other Comic"
                                              :url "another_url"}]})))]
@@ -65,5 +66,11 @@
         (t/is (= (handle (mock/request :get "/api/v1/manga-here/comics"))
                  {:status 200
                   :headers edn-content-type
-                  :body (str "({:comic/id \"the_gamer\", :comic/name \"The Gamer\", :comic/url \"real_url\"}"
-                             " {:comic/id \"other_comic\", :comic/name \"Other Comic\", :comic/url \"another_url\"})")}))))))
+                  :body ""
+                  :edn-body '({:comic/id "the_gamer"
+                               :comic/name "The Gamer"
+                               :comic/url "real_url"}
+
+                              {:comic/id "other_comic"
+                               :comic/name "Other Comic"
+                               :comic/url "another_url"})}))))))

@@ -11,10 +11,20 @@
             [ring.middleware.edn :refer [wrap-edn-params]]
             [ring.middleware.params :refer [wrap-params]]))
 
+(defn- wrap-edn-body [handler]
+  (fn [request]
+    (let [response (handler request)]
+      (if (and (nil? (:body response))
+               (:edn-body response))
+        (-> response
+            (assoc :body (pr-str (:edn-body response)))
+            (dissoc :edn-body))
+        response))))
+
 (defn- edn-response [data & [status]]
   {:status (or status 200)
    :headers {"Content-Type" "application/edn; charset=utf-8"}
-   :body (pr-str data)})
+   :edn-body data})
 
 (defn- make-api-routes [repository]
   (c/routes
@@ -62,9 +72,10 @@
        :js [(page/include-js "js/compiled/devcards.js")]))
 
     (c/context "/api/v1" []
-      (-> (make-api-routes repository)
-          wrap-params
-          wrap-edn-params))
+      (cond-> (make-api-routes repository)
+        :always wrap-params
+        :always wrap-edn-params
+        (not testing?) wrap-edn-body))
 
     (route/resources "/")))
 
