@@ -332,7 +332,7 @@
 
 (defn test-full-site-traversal [site]
   (and
-   (call-with-options (:opt-map site) #(ensure-all-dependencies))
+   (call-with-options (:options site) #(ensure-all-dependencies))
    @run-network-tests?
 
    ;; Figure out how to make this a better experience Right now it
@@ -361,7 +361,7 @@
         (expect-opts-are-map site-name)
         (let [site# ((scraper/get-sites) site-name)]
           (call-with-options
-           (:opt-map site#)
+           (:options site#)
 
            #(and
              (if (has-test-folder?)
