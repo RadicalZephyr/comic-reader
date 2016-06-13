@@ -91,7 +91,7 @@
 (defmacro has-x-groups [x pattern-fn]
   `(and
     (tu/ensure-dependencies-defined ~pattern-fn)
-    (is (= ~x (num-groups (~pattern-fn)))
+    (is (= ~x (num-groups (~pattern-fn ~'options)))
         ~(str "There should be exactly " x " matching groups in the `"
               pattern-fn "' regular expression."))))
 
@@ -109,7 +109,7 @@
 
 (defn test-enlive-selectors []
   (tu/are-with-msg [sel-fn]
-                   (is (valid-selector? (sel-fn))
+                   (is (valid-selector? (sel-fn options))
                        (str "All elements of a selector "
                             "must be keywords."))
                    comic-list-selector
@@ -119,7 +119,7 @@
 
 (defn test-normalize-functions []
   (tu/are-with-msg [norm-fn]
-                   (is (function? (norm-fn))
+                   (is (function? (norm-fn options))
                        "Normalize values should eval to a function.")
                    comic-link-name-normalize
                    comic-link-url-normalize
@@ -152,13 +152,13 @@
 
 (defn test-format-strings []
   (and
-   (has (tu/format-specifiers? (manga-list-format)
+   (has (tu/format-specifiers? (manga-list-format options)
                                ["%s"]))
-   (has (tu/format-specifiers? (manga-url-format)
+   (has (tu/format-specifiers? (manga-url-format options)
                                ["%s"]))
-   (has (tu/format-specifiers? (comic->url-format)
+   (has (tu/format-specifiers? (comic->url-format options)
                                ["%s" "%s"]))
-   (has (tu/format-specifiers? (page-normalize-format)
+   (has (tu/format-specifiers? (page-normalize-format options)
                                ["%s" "%s"]))))
 
 (defn test-extract-image-tag [html image-tag]
@@ -246,7 +246,7 @@
            "There must be a sample chapter list html page at `%s'"
            chapter-list-html-path)))))
 
-(defn test-extract-comic-list []
+(defn test-extract-comic-list [options]
   (let [comic-test-resource (site-test-resource "comic_list.clj")
         {:keys [comic-list]}
         (try-read-file
@@ -257,7 +257,7 @@
        (tu/ensure-dependencies-defined extract-comics-list)
        (is-defined-in-file comic-list comic-test-resource)
        (is (= (sort-by :comic/id comic-list)
-              (sort-by :comic/id (extract-comics-list html)))
+              (sort-by :comic/id (extract-comics-list options html)))
            (tu/display-dependent-data-values extract-comics-list))
        (success-message "Comic list extraction test passed!"))
 
@@ -283,9 +283,9 @@
 (defmacro test-url [url-fn-sym]
   `(and
     (tu/ensure-dependencies-defined ~url-fn-sym)
-    (is (not (nil? (try-fetch-url (~url-fn-sym)))))))
+    (is (not (nil? (try-fetch-url (~url-fn-sym ~'options)))))))
 
-(defn test-scrape-urls []
+(defn test-scrape-urls [options]
   (and
    @run-network-tests?
 
@@ -336,7 +336,7 @@
              (and
               (test-image-page-extraction)
               (test-extract-chapters-list)
-              (test-extract-comic-list))
+              (test-extract-comic-list options))
 
              (error-must-have-test-data))
 
@@ -346,7 +346,7 @@
            (test-format-strings)
 
            (when (connected-to-network?)
-             (test-scrape-urls))))
+             (test-scrape-urls options))))
 
         (when (connected-to-network?)
           (test-full-site-traversal ((scraper/get-sites) site-name)))))))
