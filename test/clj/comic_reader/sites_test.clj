@@ -2,9 +2,9 @@
   (:require [clojure.java.io              :as io]
             [clojure.test                 :refer :all]
             [clojure.tools.reader         :as r]
-            [comic-reader.sites           :refer :all]
-            [comic-reader.sites.protocol  :refer :all]
-            [comic-reader.sites.read      :refer :all]
+            [comic-reader.sites           :as sut]
+            [comic-reader.sites.protocol  :as site-proto]
+            [comic-reader.sites.read      :as site-read]
             [comic-reader.sites.test-util :as tu]
             [comic-reader.site-scraper    :as scraper]
             [clansi.core                  :refer [style]]
@@ -45,7 +45,7 @@
 (defn expect-opts-are-map [site]
   (is
    (try
-     (let [opts (read-site-options site)]
+     (let [opts (site-read/read-site-options site)]
        (map? opts))
      (catch java.lang.RuntimeException re
        (when (not= (.getMessage re)
@@ -121,17 +121,17 @@
 
 (defmacro has-x-groups [x pattern-fn]
   `(and
-    (tu/ensure-dependencies-defined ~pattern-fn)
+    (tu/ensure-dependencies-defined options ~pattern-fn)
     (is (= ~x (num-groups (~pattern-fn options)))
         ~(str "There should be exactly " x " matching groups in the `"
               pattern-fn "' regular expression."))))
 
 (defn test-regexes []
   (and
-   (has-x-groups 1 manga-pattern)
-   (has-x-groups 1 chapter-number-match-pattern)
-   (has-x-groups 0 page-normalize-pattern)
-   (has-x-groups 0 chapter-number-pattern)))
+   (has-x-groups 1 sut/manga-pattern)
+   (has-x-groups 1 sut/chapter-number-match-pattern)
+   (has-x-groups 0 sut/page-normalize-pattern)
+   (has-x-groups 0 sut/chapter-number-pattern)))
 
 (defn valid-selector? [selector]
   (and
@@ -143,20 +143,20 @@
                    (is (valid-selector? (sel-fn options))
                        (str "All elements of a selector "
                             "must be keywords."))
-                   comic-list-selector
-                   chapter-list-selector
-                   page-list-selector
-                   image-selector))
+                   sut/comic-list-selector
+                   sut/chapter-list-selector
+                   sut/page-list-selector
+                   sut/image-selector))
 
 (defn test-normalize-functions []
   (tu/are-with-msg [norm-fn]
                    (is (function? (norm-fn options))
                        "Normalize values should eval to a function.")
-                   comic-link-name-normalize
-                   comic-link-url-normalize
+                   sut/comic-link-name-normalize
+                   sut/comic-link-url-normalize
 
-                   chapter-link-name-normalize
-                   chapter-link-url-normalize))
+                   sut/chapter-link-name-normalize
+                   sut/chapter-link-url-normalize))
 
 (def #^{:macro true} has #'is)
 
@@ -183,28 +183,28 @@
 
 (defn test-format-strings []
   (and
-   (has (tu/format-specifiers? (manga-list-format options)
+   (has (tu/format-specifiers? (sut/manga-list-format options)
                                ["%s"]))
-   (has (tu/format-specifiers? (manga-url-format options)
+   (has (tu/format-specifiers? (sut/manga-url-format options)
                                ["%s"]))
-   (has (tu/format-specifiers? (comic->url-format options)
+   (has (tu/format-specifiers? (sut/comic->url-format options)
                                ["%s" "%s"]))
-   (has (tu/format-specifiers? (page-normalize-format options)
+   (has (tu/format-specifiers? (sut/page-normalize-format options)
                                ["%s" "%s"]))))
 
 (defn test-extract-image-tag [html image-tag]
   (and
-   (tu/ensure-dependencies-defined extract-image-tag)
+   (tu/ensure-dependencies-defined options sut/extract-image-tag)
    (is (= image-tag
-          (extract-image-tag options html))
-       (tu/display-dependent-data-values extract-image-tag))))
+          (sut/extract-image-tag options html))
+       (tu/display-dependent-data-values sut/extract-image-tag))))
 
 (defn test-extract-pages-list [html pages-list chapter-url]
   (and
-   (tu/ensure-dependencies-defined extract-pages-list)
+   (tu/ensure-dependencies-defined options sut/extract-pages-list)
    (is (= pages-list
-          (extract-pages-list options html chapter-url))
-       (tu/display-dependent-data-values extract-pages-list))))
+          (sut/extract-pages-list options html chapter-url))
+       (tu/display-dependent-data-values sut/extract-pages-list))))
 
 (defmacro is-defined-in-file [data-symbol file-expr]
   `(let [file# ~file-expr]
@@ -263,13 +263,13 @@
          "Please add a map with a :chapter-list key.")]
     (if-let [html (chapter-list-html)]
       (and
-       (tu/ensure-dependencies-defined extract-chapters-list)
+       (tu/ensure-dependencies-defined options sut/extract-chapters-list)
        (is-defined-in-file chapter-list chapter-test-resource)
        (binding [comic-reader.scrape/raise-null-selection-error
                  (make-retry-selector-fn chapter-list-html-path)]
          (is (= (sort-by :chapter/number chapter-list)
-                (sort-by :chapter/number (extract-chapters-list options html "")))
-             (tu/display-dependent-data-values extract-chapters-list)))
+                (sort-by :chapter/number (sut/extract-chapters-list options html "")))
+             (tu/display-dependent-data-values sut/extract-chapters-list)))
        (success-message "Chapters list extraction test passed!"))
 
       (is false
@@ -285,11 +285,11 @@
          "Please add a map with a :comic-list key.")]
     (if-let [html (comic-list-html)]
       (and
-       (tu/ensure-dependencies-defined extract-comics-list)
+       (tu/ensure-dependencies-defined options sut/extract-comics-list)
        (is-defined-in-file comic-list comic-test-resource)
        (is (= (sort-by :comic/id comic-list)
-              (sort-by :comic/id (extract-comics-list options html)))
-           (tu/display-dependent-data-values extract-comics-list))
+              (sort-by :comic/id (sut/extract-comics-list options html)))
+           (tu/display-dependent-data-values sut/extract-comics-list))
        (success-message "Comic list extraction test passed!"))
 
       (is false
@@ -313,22 +313,22 @@
 
 (defmacro test-url [url-fn-sym]
   `(and
-    (tu/ensure-dependencies-defined ~url-fn-sym)
+    (tu/ensure-dependencies-defined options ~url-fn-sym)
     (is (not (nil? (try-fetch-url (~url-fn-sym options)))))))
 
 (defn test-scrape-urls [options]
   (and
    @run-network-tests?
 
-   (is (not (nil? (test-url root-url))))
-   (is (not (nil? (test-url manga-list-url))))
+   (is (not (nil? (test-url sut/root-url))))
+   (is (not (nil? (test-url sut/manga-list-url))))
    (success-message "Scrape URL test passed!")))
 
 (defn ensure-all-dependencies []
-  (tu/ensure-dependencies-defined get-comic-list)
-  (tu/ensure-dependencies-defined get-chapter-list)
-  (tu/ensure-dependencies-defined get-page-list)
-  (tu/ensure-dependencies-defined get-image-data))
+  (tu/ensure-dependencies-defined options site-proto/get-comic-list :sut)
+  (tu/ensure-dependencies-defined options site-proto/get-chapter-list :sut)
+  (tu/ensure-dependencies-defined options site-proto/get-page-list :sut)
+  (tu/ensure-dependencies-defined options site-proto/get-image-data :sut))
 
 (defn test-full-site-traversal [site]
   (and
@@ -342,15 +342,17 @@
    ;; Maybe a macro that expands to binding forms and is-not-nil assertions?
    (is (not
         (nil?
-         (let [comic-list (get-comic-list site)
+         (let [comic-list (site-proto/get-comic-list site)
                first-comic (first comic-list)
 
-               chapter-list (get-chapter-list site (:id first-comic))
+               chapter-list (site-proto/get-chapter-list site (:id first-comic))
                last-chapter (last chapter-list)
 
-               page-list (get-page-list site last-chapter)
+               page-list (site-proto/get-page-list site last-chapter)
                third-page (nth page-list 3)]
-           (get-image-data site third-page)))))
+
+           (site-proto/get-image-data site third-page)))))
+
    (success-message "Full site traversal test passed!")))
 
 (defn testdef-form [site-name]
