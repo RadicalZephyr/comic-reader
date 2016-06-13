@@ -2,6 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.tools.logging :as log]
             [comic-reader.comic-repository :as repo]
+            [comic-reader.config :as cfg]
             [compojure.core :as c]
             [compojure.route :as route]
             [com.stuartsierra.component :as component]
@@ -40,7 +41,7 @@
                        "js/foundation.min.js")
      ~@js]))
 
-(defn- make-routes [repository]
+(defn- make-routes [repository testing?]
   (c/routes
     (c/GET "/" []
       (render-page
@@ -67,12 +68,12 @@
 
     (route/resources "/")))
 
-(defrecord WebApp [routes repository]
+(defrecord WebApp [config routes repository]
   component/Lifecycle
 
   (start [component]
     (log/info "Generating web app...")
-    (assoc component :routes (make-routes repository)))
+    (assoc component :routes (make-routes repository (cfg/testing? config))))
 
   (stop [component]
     (log/info "Tearing down web app...")

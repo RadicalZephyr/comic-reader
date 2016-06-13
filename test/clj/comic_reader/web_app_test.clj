@@ -9,13 +9,15 @@
 
 (defn server-test-system [scraper]
   (component/system-map
+   :config {:testing? true}
    :site-scraper scraper
    :comic-repository (component/using
                       (new-scraper-repo)
                       {:scraper :site-scraper})
    :web-app (component/using
              (sut/new-web-app)
-             {:repository :comic-repository})))
+             {:config :config
+              :repository :comic-repository})))
 
 (defn test-system [scraper]
   (-> (server-test-system scraper)

@@ -19,10 +19,11 @@
                       {:scraper :site-scraper})
    :web-app      (component/using
                   (web-app/new-web-app)
-                  {:repository :comic-repository})
+                  {:config :config
+                   :repository :comic-repository})
    :server       (component/using
                   (server/new-server)
-                  [:web-app :config])
+                  [:config :web-app])
    #_:database #_(component/using
                   (database/new-database)
                   [:config])))
