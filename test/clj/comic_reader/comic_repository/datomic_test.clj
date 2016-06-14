@@ -14,7 +14,7 @@
               (database/new-database)
               [:config])
    :datomic-repo (component/using
-                  (sut/new-repository)
+                  (sut/new-datomic-repository)
                   [:database])))
 
 (defmacro with-test-db [db-binding & body]

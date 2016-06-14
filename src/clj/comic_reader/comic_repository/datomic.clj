@@ -57,7 +57,7 @@
            [?e :comic/site ?site-ent]]
          db site-id comic-id)))
 
-(defrecord DatomicRepository [database source-repo]
+(defrecord DatomicRepository [database]
   repo/ComicRepository
   (list-sites [this]
     (let [db (d/db (db/connection database))]
@@ -103,5 +103,5 @@
     (let [comic-db-id (get-comic-id (db/connection database) site-id comic-id)]
       (d/transact (db/connection database) (mapcat (partial location-record comic-db-id) locations)))))
 
-(defn new-repository []
+(defn new-datomic-repository []
   (map->DatomicRepository {}))
