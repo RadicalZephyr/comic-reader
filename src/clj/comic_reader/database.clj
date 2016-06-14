@@ -28,7 +28,8 @@
       conn)))
 
 (defprotocol Database
-  (connection [database] "Returns a connection to the database."))
+  (connection [database] "Returns a connection to the database.")
+  (destroy [database] "Destroy the database."))
 
 (defrecord DatomicDatabase [config conn]
 
@@ -44,7 +45,10 @@
     (dissoc component :conn))
 
   Database
-  (connection [database] conn))
+  (connection [database] conn)
+
+  (destroy [database]
+    (d/delete-database (config/database-uri config))))
 
 (defn database? [e]
   (instance? DatomicDatabase e))
