@@ -16,7 +16,7 @@
     (take n (get-in this [site :comics comic-id location :next-locations])))
 
   (image-tag [this site location]
-    (get-in site location)))
+    (get-in this [site location])))
 
 (defn mock-repo
   ([] {})
