@@ -25,28 +25,30 @@
 
   :env {:norms-dir "database/norms"}
 
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha13"]
 
                  ;; Core app dependencies
                  [com.stuartsierra/component "0.3.1"]
-                 [prismatic/schema "1.1.1"]
-                 [environ "1.0.3"]
+                 [prismatic/schema "1.1.3"]
+                 [environ "1.1.0"]
                  [org.clojure/tools.logging "0.3.1" :exclusions
                   [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
-                 [ch.qos.logback/logback-classic "1.1.3"]
-                 [org.clojure/core.async "0.2.374"]
+                 [ch.qos.logback/logback-classic "1.1.7"]
+                 [org.clojure/core.async "0.2.391"]
 
                  ;; Web server
-                 [ring "1.4.0"]
-                 [http-kit "2.1.19"]
-                 [compojure "1.5.0"]
+                 [ring "1.5.0"]
+                 [http-kit "2.2.0"]
+                 [compojure "1.5.1"]
                  [fogus/ring-edn "0.3.0"]
                  [hiccup "1.0.5"]
                  [garden "1.3.2"]
 
                  ;; Data storage
-                 [com.datomic/datomic-pro "0.9.5350"
-                  :exclusions [org.apache.httpcomponents/httpclient
+                 [com.datomic/datomic-pro "0.9.5404"
+                  :exclusions [org.clojure/clojure
+                               com.google.guava/guava
+                               org.apache.httpcomponents/httpclient
                                org.slf4j/slf4j-nop]]
                  [io.rkn/conformity "0.4.0"]
 
@@ -56,20 +58,20 @@
                  [enlive "1.1.6"]
 
                  ;; Clojurescript frontend
-                 [org.clojure/clojurescript "1.8.40"]
+                 [org.clojure/clojurescript "1.9.229"]
                  [re-frame "0.7.0" :exclusions
                   [[org.clojure/clojurescript
                     :extension "jar"]]]
                  [cljsjs/waypoints "4.0.0-0"]
                  [secretary "1.2.3"]
-                 [cljs-ajax "0.5.4"]]
+                 [cljs-ajax "0.5.8"]]
 
   :repositories {"my.datomic.com" {:url "https://my.datomic.com/repo"
                                    :username [:gpg :env/datomic_username]
                                    :password [:gpg :env/datomic_password]}}
 
-  :plugins      [[lein-cljsbuild "1.1.3"]
-                 [lein-environ "1.0.2"]]
+  :plugins      [[lein-cljsbuild "1.1.4"]
+                 [lein-environ "1.1.0"]]
 
   :clean-targets ^{:protect false} [:target-path
                                     "resources/public/js/compiled"]
@@ -92,8 +94,8 @@
                                   [aysylu/loom "0.6.0"]
 
                                   [ring/ring-mock "0.3.0"]
-                                  [figwheel-sidecar "0.5.3-1"]
-                                  [devcards "0.2.1-7"]
+                                  [figwheel-sidecar "0.5.8"]
+                                  [devcards "0.2.2"]
                                   [com.cemerick/piggieback "0.2.1"]]
 
                    :repl-options {:init-ns comic-reader.dev
