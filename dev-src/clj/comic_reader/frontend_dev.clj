@@ -35,11 +35,13 @@
                   :output-to "resources/public/js/compiled/devcards.js"
                   :output-dir (str (cwd) "/resources/public/js/compiled/devcards_out")
                   :asset-path "js/compiled/devcards_out"}}]})
-
-(defn start-dev! [& args]
+(defn- start-dev*! [& args]
   (apply system/go args)
   (start-figwheel! figwheel-config)
-  (start-autobuild)
+  (start-autobuild))
+
+(defn start-dev! [& args]
+  (apply start-dev*! args)
   (browse-url "http://localhost:10555/devcards"))
 
 (defn stop-dev! []
@@ -49,4 +51,4 @@
 
 (defn reset []
   (stop-dev!)
-  (refresh :after 'comic-reader.frontend-dev/start-dev!))
+  (refresh :after 'comic-reader.frontend-dev/start-dev*!))
