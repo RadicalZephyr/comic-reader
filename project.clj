@@ -124,8 +124,7 @@
                              :source-map true
                              :source-map-timestamp true
                              :output-to "resources/public/js/compiled/main.js"
-                             :output-dir ~(str (.getCanonicalPath (java.io.File. "."))
-                                               "/resources/public/js/compiled/out")
+                             :output-dir "/resources/public/js/compiled/out"
                              :asset-path "js/compiled/out"}}}}}
 
              :test {:env {:database-uri "datomic:mem://comics-test"}}
