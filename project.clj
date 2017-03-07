@@ -28,18 +28,18 @@
   :dependencies [[org.clojure/clojure "1.9.0-alpha13"]
 
                  ;; Core app dependencies
-                 [com.stuartsierra/component "0.3.1"]
+                 [com.stuartsierra/component "0.3.2"]
                  [prismatic/schema "1.1.3"]
                  [environ "1.1.0"]
                  [org.clojure/tools.logging "0.3.1" :exclusions
                   [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
-                 [ch.qos.logback/logback-classic "1.1.7"]
-                 [org.clojure/core.async "0.2.391"]
+                 [ch.qos.logback/logback-classic "1.1.11"]
+                 [org.clojure/core.async "0.3.441"]
 
                  ;; Web server
-                 [ring "1.5.0"]
+                 [ring "1.5.1"]
                  [http-kit "2.2.0"]
-                 [compojure "1.5.1"]
+                 [compojure "1.5.2"]
                  [fogus/ring-edn "0.3.0"]
                  [hiccup "1.0.5"]
                  [garden "1.3.2"]
@@ -53,13 +53,13 @@
                  [io.rkn/conformity "0.4.0"]
 
                  ;; Comic scraping
-                 [clj-http "2.1.0"]
+                 [clj-http "2.3.0"]
                  [tempfile "0.2.0"]
                  [enlive "1.1.6"]
 
                  ;; Clojurescript frontend
-                 [org.clojure/clojurescript "1.9.229"]
-                 [re-frame "0.7.0" :exclusions
+                 [org.clojure/clojurescript "1.9.495"]
+                 [re-frame "0.9.2" :exclusions
                   [[org.clojure/clojurescript
                     :extension "jar"]]]
                  [cljsjs/waypoints "4.0.0-0"]
@@ -91,10 +91,10 @@
                    :resource-paths ["dev-resources"]
                    :dependencies [[org.clojure/tools.namespace "0.3.0-alpha3"]
                                   [radicalzephyr/clansi "1.2.0"]
-                                  [aysylu/loom "0.6.0"]
+                                  [aysylu/loom "1.0.0"]
 
                                   [ring/ring-mock "0.3.0"]
-                                  [figwheel-sidecar "0.5.8"]
+                                  [figwheel-sidecar "0.5.9"]
                                   [devcards "0.2.2"]
                                   [com.cemerick/piggieback "0.2.1"]]
 
