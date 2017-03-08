@@ -54,8 +54,7 @@
      (-> db
          (set-page-key :reader)))))
 
-(defn main-panel
-  [page-key]
+(defn main-panel [page-key]
   (case page-key
     :site-list [site-list/site-list-container]
     :comic-list [comic-list/comic-page-container]
@@ -65,11 +64,9 @@
 
 (defn main-panel-container []
   (let [page-key (re-frame/subscribe [:page-key])]
-    (fn []
-      [main-panel (deref page-key)])))
+    [#'main-panel @page-key]))
 
-(defn ^:export main
-  []
+(defn ^:export main []
   (enable-console-print!)
   (setup!)
   (site-list/setup!)
@@ -77,5 +74,3 @@
   (re-frame/dispatch [:view-sites])
   (reagent/render-component [main-panel-container]
                             (.getElementById js/document "app")))
-
-(main)
