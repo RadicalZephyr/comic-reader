@@ -11,12 +11,12 @@
   (assoc db :site-list sites))
 
 (defn setup! []
-  (re-frame/register-sub
+  (re-frame/reg-sub
    :site-list
    (fn [app-db _]
      (reaction (get* @app-db))))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :set-site-list
    (fn [db [_ sites]]
      (set* db sites))))

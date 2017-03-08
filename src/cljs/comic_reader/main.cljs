@@ -22,24 +22,24 @@
       (assoc db :site-list :loading))))
 
 (defn setup! []
-  (re-frame/register-sub
+  (re-frame/reg-sub
    :page-key
    (fn [app-db v]
      (reaction (page-key @app-db))))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :set-page-key
    (fn [db [_ page-key]]
      (set-page-key db page-key)))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :view-sites
    (fn [db _]
      (-> db
          (set-page-key :site-list)
          (maybe-load-sites))))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :view-comics
    (fn [db [_ site-id]]
      (api/get-comics site-id {:on-success comic-list/set})
@@ -48,7 +48,7 @@
          (assoc :site-id site-id
                 :comic-list :loading))))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :read-comic
    (fn [db [_ comic-id]]
      (-> db
