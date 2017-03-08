@@ -11,12 +11,12 @@
   (assoc-in db [:component-css id] garden-css))
 
 (defn setup! []
-  (re-frame/register-sub
+  (re-frame/reg-sub
    :component-css
    (fn [app-db _]
      (reaction (get* @app-db))))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :add-to-component-css
    (fn [db [_ id garden-css]]
      (merge* db id garden-css))))

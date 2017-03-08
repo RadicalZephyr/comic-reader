@@ -1,5 +1,5 @@
 (ns comic-reader.api
-  (:require [re-frame.core :as rf]
+  (:require [re-frame.core :as re-frame]
             [reagent.ratom :refer-macros [reaction]]
             [ajax.core :refer [GET POST]]
             [ajax.edn]))
@@ -12,21 +12,21 @@
   (fnil conj []))
 
 (defn setup! []
-  (rf/register-sub
+  (re-frame/reg-sub
    errors-subscription-key
    (fn [app-db _]
      (reaction (errors-db-key @app-db))))
 
-  (rf/register-handler
+  (re-frame/reg-event-db
    error-handler-key
    (fn [db [_ error]]
      (update db errors-db-key add-error error))))
 
 (defn api-errors []
-  (rf/subscribe [errors-subscription-key]))
+  (re-frame/subscribe [errors-subscription-key]))
 
 (defn report-error [error-response]
-  (rf/dispatch [error-handler-key error-response]))
+  (re-frame/dispatch [error-handler-key error-response]))
 
 (def *last-error*
   (reaction (peek @(api-errors))))

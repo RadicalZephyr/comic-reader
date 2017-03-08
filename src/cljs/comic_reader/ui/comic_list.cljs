@@ -12,22 +12,22 @@
   (assoc db :comic-list comics))
 
 (defn setup! []
-  (re-frame/register-sub
+  (re-frame/reg-sub
    :comic-list
    (fn [app-db _]
      (reaction (get* @app-db))))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :set-comic-list
    (fn [db [_ comics]]
      (set* db comics)))
 
-  (re-frame/register-sub
+  (re-frame/reg-sub
    :search-data
    (fn [app-db _]
      (reaction (:search-data @app-db))))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :set-search-data
    (fn [db [_ search-data]]
      (assoc db :search-data search-data))))
