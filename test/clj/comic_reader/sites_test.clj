@@ -198,7 +198,7 @@
   true)
 
 (defn test-image-page-extraction []
-  (let [image-test-resource (site-test-resource "image.clj")
+  (let [image-test-resource (site-test-resource "image.edn")
         {:keys [image-tag pages-list chapter-url]}
         (try-read-file
          image-test-resource
@@ -206,11 +206,11 @@
               " :pages-list and :chapter-url."))]
     (if-let [html (image-page-html)]
       (and
-       (is-defined-in-file image-tag (site-test-resource "image.clj"))
+       (is-defined-in-file image-tag image-test-resource)
        (test-extract-image-tag html image-tag)
 
-       (is-defined-in-file pages-list (site-test-resource "image.clj"))
-       (is-defined-in-file chapter-url (site-test-resource "image.clj"))
+       (is-defined-in-file pages-list image-test-resource)
+       (is-defined-in-file chapter-url image-test-resource)
        (test-extract-pages-list html pages-list chapter-url)
        (success-message "Image page extraction test passed!"))
 
@@ -235,7 +235,7 @@
 
 (defn test-extract-chapters-list []
   (let [chapter-list-html-path (str "resources/test/" site-name "/chapter_list.html")
-        chapter-test-resource (site-test-resource "chapter_list.clj")
+        chapter-test-resource (site-test-resource "chapter_list.edn")
         {:keys [chapter-list]}
         (try-read-file
          chapter-test-resource
@@ -257,7 +257,7 @@
            chapter-list-html-path)))))
 
 (defn test-extract-comic-list [options]
-  (let [comic-test-resource (site-test-resource "comic_list.clj")
+  (let [comic-test-resource (site-test-resource "comic_list.edn")
         {:keys [comic-list]}
         (try-read-file
          comic-test-resource
