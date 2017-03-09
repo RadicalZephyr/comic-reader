@@ -121,7 +121,6 @@
   (set-env! :source-paths #(conj % "dev-src/clj")
             :resource-paths #(conj %  "dev-resources"))
   (task-options! cljs {:optimizations :none}
-                 repl {:init-ns 'comic-reader.dev}
                  reload {:on-jsload 'comic-reader.main/main})
   identity)
 
