@@ -2,4 +2,4 @@
 ;;; For more information see (info "(emacs) Directory Variables")
 
 ((clojure-mode
-  (cider-boot-parameters . "repl -s testing dev refresh")))
+  (cider-boot-parameters . "repl -s dev refresh")))
