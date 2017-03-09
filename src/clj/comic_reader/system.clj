@@ -35,7 +35,8 @@
     (constantly (comic-reader-system))))
 
 (defn start []
-  (alter-var-root #'system component/start))
+  (when (deref #'system)
+    (alter-var-root #'system component/start)))
 
 (defn stop []
   (alter-var-root #'system
