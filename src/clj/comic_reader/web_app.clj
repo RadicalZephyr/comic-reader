@@ -59,7 +59,8 @@
        [[:div.row
          [:div#app.small-12.columns]]
         [:input#history_state {:type "hidden"}]]
-       :js [(page/include-js "/public/js/main.js")]))
+       :js [(page/include-js "/public/js/main.js")
+            [:script "comic_reader.main.main();"]]))
 
     (c/GET "/devcards" []
       (render-page
