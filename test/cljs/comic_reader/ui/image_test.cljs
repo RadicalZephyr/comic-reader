@@ -4,4 +4,4 @@
             [comic-reader.ui.image :as sut]))
 
 (defcard-rg image-card
-  [sut/comic-image identity [:img {:src "/img/tux.png"}]])
+  [sut/comic-image identity [:img {:src "/public/img/tux.png"}]])
