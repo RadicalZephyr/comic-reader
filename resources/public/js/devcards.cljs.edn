@@ -1,2 +1,4 @@
 {:require [comic-reader.devcards]
- :compiler-options {:asset-path "/public/js/devcards.out"}}
+ :compiler-options {:devcards true
+                    :asset-path "/public/js/devcards.out"}
+ :init-fns [comic-reader.devcards/main]}
