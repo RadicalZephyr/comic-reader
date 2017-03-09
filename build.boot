@@ -19,8 +19,8 @@
                                 ["USERNAME"    "PASSWORD"]
                                 [get-cleartext get-password])]
 
-  (set-env! :source-paths #{"src/cljs" "test/clj" "test/cljs"}
-            :resource-paths #{"src/clj" "resources"}
+  (set-env! :source-paths #{"src/clj" "src/cljs"}
+            :resource-paths #{"resources"}
             :dependencies '[[org.clojure/clojure "1.8.0"]
 
                             ;; Core app dependencies
@@ -118,7 +118,7 @@
   identity)
 
 (deftask development []
-  (set-env! :source-paths #(conj % "dev-src")
+  (set-env! :source-paths #(conj % "dev-src/clj")
             :resource-paths #(conj %  "dev-resources"))
   (task-options! cljs {:optimizations :none}
                  repl {:init-ns 'comic-reader.dev}
@@ -132,7 +132,7 @@
         (run)))
 
 (deftask testing []
-  (set-env! :source-paths #(conj % "test"))
+  (set-env! :source-paths #(conj %  "test/clj" "test/cljs"))
   identity)
 
 ;;; This prevents a name collision WARNING between the test task and
