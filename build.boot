@@ -118,7 +118,10 @@
   identity)
 
 (deftask development []
+  (set-env! :source-paths #(conj % "dev-src")
+            :resource-paths #(conj %  "dev-resources"))
   (task-options! cljs {:optimizations :none}
+                 repl {:init-ns 'comic-reader.dev}
                  reload {:on-jsload 'comic-reader.main/main})
   identity)
 

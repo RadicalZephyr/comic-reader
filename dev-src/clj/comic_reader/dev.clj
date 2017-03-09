@@ -15,17 +15,17 @@
 (defn add-site []
   (doc-print
    "Start by running the tests with `(run-site-tests)'. All the tests
-  should pass. Now add a new site definition file and run the tests
-  again.
+    should pass. Now add a new site definition file and run the tests
+    again.
 
-  Follow the instructions in the test errors, and hopefully you'll end
-  up with a working site scraper.")
+    Follow the instructions in the test errors, and hopefully you'll end
+    up with a working site scraper.")
   (goto-ns 'comic-reader.site-dev))
 
 (defn develop-frontend []
   (doc-print
    "To get started run `(start-dev!)'.  This will kick off the
-  application server, and the figwheel devcard build.")
+    application server, and the figwheel devcard build.")
   (goto-ns 'comic-reader.frontend-dev))
 
 (defn- doc-print [msg]
