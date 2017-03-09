@@ -94,19 +94,49 @@
  '[adzerk.boot-reload    :refer [reload]]
  '[pandeiro.boot-http    :refer [serve]]
  '[crisptrutski.boot-cljs-test :refer [test-cljs]]
- '[powerlaces.boot-cljs-devtools :refer [cljs-devtools]])
-
-(swap! boot.repl/*default-middleware*
-       conj
-       'refactor-nrepl.middleware/wrap-refactor
-       'cider.nrepl/cider-middleware)
+ '[powerlaces.boot-cljs-devtools :refer [cljs-devtools]]
+ '[clojure.string :as str]
+ '[boot.util :as util])
 
 (deftask build []
   (comp (notify :visual true)
         (cljs)))
 
+(deftask run-sym
+  "Run vars as a pre- and post- tasks."
+  [b before SYM sym "The symbol to run inside a pre-wrap task"
+   a after  SYM sym "The symbol to run inside a post-wrap task"]
+  (let [get-ns (fn [str] (let [[ns s] (str/split (name str) #"/" 2)] (when s (symbol ns))))
+        run-symbol (fn [s]
+                     (when s
+                       (when-let [ns (get-ns s)]
+                         (require ns))
+                       (if-let [v (resolve s)]
+                         (v)
+                         (util/warn "Could not find var '%s\n" s))))
+        before-ns (when before (get-ns before))
+        after-ns (when after (get-ns after))]
+    (if (or
+         (and before (not before-ns))
+         (and after  (not after-ns)))
+      (util/warn "Symbols should be fully namespace qualified\n"))
+    (comp
+     (if before
+       (with-pass-thru _
+         (run-symbol before))
+       identity)
+     (if after
+       (with-post-wrap _
+         (run-symbol after))
+       identity))))
+
+(deftask run-server []
+  (run-sym :before 'comic-reader.system/stop
+           :after  'comic-reader.system/go))
+
 (deftask run []
   (comp (watch)
+        (run-server)
         (cljs-repl-env)
         (cljs-devtools)
         (reload)
