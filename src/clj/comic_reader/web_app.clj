@@ -40,15 +40,15 @@
   (page/html5
    `[:head
      ~@head
-     ~(page/include-css "css/normalize.css"
-                        "css/foundation.min.css"
-                        "css/app.css")
+     ~(page/include-css "/public/css/normalize.css"
+                        "/public/css/foundation.min.css"
+                        "/public/css/app.css")
      ~@css
-     ~(page/include-js "js/vendor/modernizr.js")]
+     ~(page/include-js "/public/js/vendor/modernizr.js")]
    `[:body ~@content
-     ~(page/include-js "js/vendor/jquery.js"
-                       "js/vendor/fastclick.js"
-                       "js/foundation.min.js")
+     ~(page/include-js "/public/js/vendor/jquery.js"
+                       "/public/js/vendor/fastclick.js"
+                       "/public/js/foundation.min.js")
      ~@js]))
 
 (defn- make-routes [repository testing?]
@@ -59,7 +59,7 @@
        [[:div.row
          [:div#app.small-12.columns]]
         [:input#history_state {:type "hidden"}]]
-       :js [(page/include-js "js/main.js")]))
+       :js [(page/include-js "/public/js/main.js")]))
 
     (c/GET "/devcards" []
       (render-page
@@ -69,7 +69,7 @@
        :css [[:style (garden/css
                       [:.com-rigsomelight-devcards_rendered-card
                        [:a.button {:color "#FFF !important"}]])]]
-       :js [(page/include-js "js/devcards.js")]))
+       :js [(page/include-js "/public/js/devcards.js")]))
 
     (c/context "/api/v1" []
       (cond-> (make-api-routes repository)
@@ -77,7 +77,7 @@
         :always wrap-edn-params
         (not testing?) wrap-edn-body))
 
-    (route/resources "/")))
+    (route/resources "/public")))
 
 (defrecord WebApp [config routes repository]
   component/Lifecycle
