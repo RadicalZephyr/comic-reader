@@ -59,7 +59,7 @@
        [[:div.row
          [:div#app.small-12.columns]]
         [:input#history_state {:type "hidden"}]]
-       :js [(page/include-js "js/compiled/main.js")]))
+       :js [(page/include-js "js/main.js")]))
 
     (c/GET "/devcards" []
       (render-page
@@ -69,7 +69,7 @@
        :css [[:style (garden/css
                       [:.com-rigsomelight-devcards_rendered-card
                        [:a.button {:color "#FFF !important"}]])]]
-       :js [(page/include-js "js/compiled/devcards.js")]))
+       :js [(page/include-js "js/devcards.js")]))
 
     (c/context "/api/v1" []
       (cond-> (make-api-routes repository)
