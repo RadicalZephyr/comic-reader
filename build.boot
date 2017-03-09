@@ -136,10 +136,10 @@
 
 (deftask run []
   (comp (watch)
-        (run-server)
         (cljs-repl-env)
         (cljs-devtools)
         (reload)
+        (run-server)
         (build)))
 
 (deftask production []
