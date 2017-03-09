@@ -154,15 +154,16 @@
                  reload {:on-jsload 'comic-reader.main/main})
   identity)
 
-(deftask dev
-  "Simple alias to run application in development mode"
-  []
-  (comp (development)
-        (run)))
-
 (deftask testing []
   (set-env! :source-paths #(conj %  "test/clj" "test/cljs"))
   identity)
+
+(deftask dev
+  "Simple alias to run application in development mode"
+  []
+  (comp (testing)
+        (development)
+        (run)))
 
 ;;; This prevents a name collision WARNING between the test task and
 ;;; clojure.core/test, a function that nobody really uses or cares
