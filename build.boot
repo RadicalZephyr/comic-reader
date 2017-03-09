@@ -114,11 +114,11 @@
                        (if-let [v (resolve s)]
                          (v)
                          (util/warn "Could not find var '%s\n" s))))
-        before-ns (when before (get-ns before))
-        after-ns (when after (get-ns after))]
+        [_ before-ns?] (when before (get-ns before))
+        [_ after-ns?]  (when after  (get-ns after))]
     (if (or
-         (and before (not before-ns))
-         (and after  (not after-ns)))
+         (and before (not before-ns?))
+         (and after  (not after-ns?)))
       (util/warn "Symbols should be fully namespace qualified\n"))
     (comp
      (if before
