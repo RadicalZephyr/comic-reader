@@ -1,0 +1,2 @@
+{:require [comic-reader.devcards]
+ :compiler-options {:asset-path "js/devcards.out"}}
