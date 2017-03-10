@@ -87,6 +87,9 @@
             :repositories #(conj % ["my.datomic.com" {:url "https://my.datomic.com/repo" :username username :password password}])
             ))
 
+(task-options!
+ pom {:project 'radicalzephyr/comic-reader})
+
 (require
  '[adzerk.boot-test      :refer [test] :rename {test test-clj}]
  '[adzerk.boot-cljs      :refer [cljs]]
@@ -97,10 +100,6 @@
  '[powerlaces.boot-cljs-devtools :refer [cljs-devtools]]
  '[clojure.string :as str]
  '[boot.util :as util])
-
-(deftask build []
-  (comp (notify :visual true)
-        (cljs)))
 
 (deftask run-sym
   "Run vars as a pre- and post- tasks."
@@ -140,12 +139,8 @@
         (cljs-devtools)
         (reload)
         (run-server)
-        (build)))
-
-(deftask production []
-  (task-options! cljs {:optimizations :advanced
-                       :compiler-options {:closure-defines {:goog.DEBUG false}}})
-  identity)
+        (notify :visual true)
+        (cljs)))
 
 (deftask development []
   (set-env! :source-paths #(conj % "dev-src/clj")
@@ -183,3 +178,25 @@
         (watch)
         (test-clj)
         (test-cljs :js-env :phantom)))
+
+(deftask production []
+  (task-options! cljs {:ids #{"public/js/main"}
+                       :optimizations :advanced
+                       :compiler-options {:output-wrapper true
+                                          :closure-defines {:goog.DEBUG false}}}
+                 jar {:file "comic-reader.jar"
+                      :main 'comic-reader.system})
+  identity)
+
+(deftask build
+  "Create the production uberjar."
+  []
+  (comp (production)
+        (run-sym :pre 'comic-reader.tasks.compile-sites)
+        (cljs)
+        (aot :namespace '#{comic-reader.system})
+        (uber)
+        (sift :include #{#"\.cljs$"} :invert true)
+        (jar)
+        (sift :include #{#"comic-reader.jar"})
+        (target :dir #{"target"})))
