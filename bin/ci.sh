@@ -22,7 +22,7 @@ function wait-for-server-connection() {
 
 echo "Running CI build..."
 echo
-lein ci
+boot test
 
 echo "Building uberjar..."
 echo
