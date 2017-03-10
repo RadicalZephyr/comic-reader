@@ -38,7 +38,7 @@ eval $command # Run the Procfile command
 
 server_pid=$!
 
-timeout_secs=15
+timeout_secs=30
 echo "Waiting ${timeout_secs} seconds for server to boot up..."
 echo
 
