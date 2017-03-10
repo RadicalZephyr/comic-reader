@@ -1,10 +1,22 @@
-language: clojure
-lein: lein2
 sudo: false
+language: java
+jdk:
+  - oraclejdk8
+
 script: bin/ci.sh
+install:
+  - mkdir -p $HOME/.local/bin
+  - export PATH="$HOME/.local/bin/boot":"$PATH"
+  - curl -L https://github.com/boot-clj/boot-bin/releases/download/latest/boot.sh -o $HOME/.local/bin/boot
+  - chmod +x $HOME/.local/bin/boot
+
 cache:
   directories:
+    - $HOME/.local/bin
     - $HOME/.m2
+    - $HOME/.boot/cache/bin
+    - $HOME/.boot/cache/lib
+
 notifications:
   email:
     on_success: never
