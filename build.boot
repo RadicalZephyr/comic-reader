@@ -98,6 +98,7 @@
  '[pandeiro.boot-http    :refer [serve]]
  '[crisptrutski.boot-cljs-test :refer [test-cljs]]
  '[powerlaces.boot-cljs-devtools :refer [cljs-devtools]]
+ '[clojure.java.io :as io]
  '[clojure.string :as str]
  '[boot.util :as util])
 
@@ -188,11 +189,22 @@
                       :main 'comic-reader.system})
   identity)
 
+(deftask compile-sites-file []
+  (let [output-dir (tmp-dir!)]
+    (with-pre-wrap fs
+      (require 'comic-reader.tasks.compile-sites)
+      (let [main (resolve 'comic-reader.tasks.compile-sites/-main)
+            [filename content] (main)
+            output-file (io/file output-dir filename)]
+        (util/info "Compiling sites list file...\n")
+        (spit output-file content)
+        (-> fs (add-resource output-dir) commit!)))))
+
 (deftask build
   "Create the production uberjar."
   []
   (comp (production)
-        (run-sym :pre 'comic-reader.tasks.compile-sites)
+        (compile-sites-file)
         (cljs)
         (aot :namespace '#{comic-reader.system})
         (uber)
