@@ -4,11 +4,12 @@ jdk:
   - oraclejdk8
 
 script: bin/ci.sh
-install:
+before_install:
   - mkdir -p $HOME/.local/bin
   - export PATH="$HOME/.local/bin/boot":"$PATH"
   - curl -L https://github.com/boot-clj/boot-bin/releases/download/latest/boot.sh -o $HOME/.local/bin/boot
   - chmod +x $HOME/.local/bin/boot
+install: boot show -d
 
 cache:
   directories:
