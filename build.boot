@@ -193,8 +193,8 @@
   (let [output-dir (tmp-dir!)]
     (with-pre-wrap fs
       (require 'comic-reader.tasks.compile-sites)
-      (let [main (resolve 'comic-reader.tasks.compile-sites/-main)
-            [filename content] (main)
+      (let [file-and-contents (resolve 'comic-reader.tasks.compile-sites/file-and-contents)
+            [filename content] (file-and-contents)
             output-file (io/file output-dir filename)]
         (util/info "Compiling sites list file...\n")
         (spit output-file content)
