@@ -88,7 +88,7 @@
             ))
 
 (require
- '[adzerk.boot-test      :as boot-test]
+ '[adzerk.boot-test      :refer [test] :rename {test test-clj}]
  '[adzerk.boot-cljs      :refer [cljs]]
  '[adzerk.boot-cljs-repl :refer [cljs-repl-env start-repl]]
  '[adzerk.boot-reload    :refer [reload]]
@@ -172,10 +172,14 @@
 
 (deftask test []
   (comp (testing)
+        (development)
+        (test-clj)
         (test-cljs :js-env :phantom
                    :exit?  true)))
 
 (deftask auto-test []
   (comp (testing)
+        (development)
         (watch)
+        (test-clj)
         (test-cljs :js-env :phantom)))
