@@ -27,7 +27,7 @@ boot test
 echo "Building uberjar..."
 echo
 
-lein uberjar
+boot build
 
 echo "Starting server..."
 echo
