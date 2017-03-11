@@ -1,8 +1,7 @@
 (ns comic-reader.ui.component-css
   (:refer-clojure :exclude [merge])
   (:require [garden.core :as g]
-            [re-frame.core :as re-frame]
-            [reagent.ratom :refer-macros [reaction]]))
+            [re-frame.core :as re-frame]))
 
 (defn get* [db]
   (:component-css db))
@@ -14,7 +13,7 @@
   (re-frame/reg-sub
    :component-css
    (fn [app-db _]
-     (reaction (get* @app-db))))
+     (get* app-db)))
 
   (re-frame/reg-event-db
    :add-to-component-css
@@ -25,7 +24,7 @@
   (re-frame/dispatch [:add-to-component-css id garden-css]))
 
 (defn component-garden-css []
-  (reaction (vals @(re-frame/subscribe [:component-css]))))
+  (vals @(re-frame/subscribe [:component-css])))
 
 (defn component-css []
-  (reaction [:style (g/css @(component-garden-css))]))
+  [:style (g/css @(component-garden-css))])

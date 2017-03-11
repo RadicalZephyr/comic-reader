@@ -1,7 +1,6 @@
 (ns comic-reader.ui.site-list
   (:refer-clojure :exclude [get set])
   (:require [re-frame.core :as re-frame]
-            [reagent.ratom :refer-macros [reaction]]
             [comic-reader.ui.base :as base]))
 
 (defn get* [db]
@@ -14,7 +13,7 @@
   (re-frame/reg-sub
    :site-list
    (fn [app-db _]
-     (reaction (get* @app-db))))
+     (get* app-db)))
 
   (re-frame/reg-event-db
    :set-site-list
