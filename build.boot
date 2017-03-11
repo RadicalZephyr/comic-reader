@@ -88,7 +88,14 @@
             ))
 
 (task-options!
- pom {:project 'radicalzephyr/comic-reader})
+ pom {:project 'radicalzephyr/comic-reader
+      :version "0.1.0-SNAPSHOT"
+      :description "An app for reading comics/manga on or offline"
+      :url "https://github.com/radicalzephyr/comic-reader"
+      :scm {:name "git"
+            :url "https://github.com/radicalzephyr/comic-reader"}
+      :license {:name "Eclipse Public License"
+                :url "http://www.eclipse.org/legal/epl-v10.html"}})
 
 (require
  '[adzerk.boot-test      :refer [test] :rename {test test-clj}]
