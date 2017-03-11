@@ -2,7 +2,6 @@
   (:refer-clojure :exclude [get set])
   (:require [clojure.string :as str]
             [re-frame.core :as re-frame]
-            [reagent.ratom :refer-macros [reaction]]
             [comic-reader.ui.base :as base]))
 
 (defn get* [db]
@@ -15,7 +14,7 @@
   (re-frame/reg-sub
    :comic-list
    (fn [app-db _]
-     (reaction (get* @app-db))))
+     (get* app-db)))
 
   (re-frame/reg-event-db
    :set-comic-list
@@ -25,7 +24,7 @@
   (re-frame/reg-sub
    :search-data
    (fn [app-db _]
-     (reaction (:search-data @app-db))))
+     (:search-data app-db)))
 
   (re-frame/reg-event-db
    :set-search-data

@@ -5,7 +5,6 @@
     [comic-reader.ui.site-list :as site-list]
     [comic-reader.ui.comic-list :as comic-list]
     [reagent.core :as reagent]
-    [reagent.ratom :refer-macros [reaction]]
     [re-frame.core :as re-frame]))
 
 (defn page-key [db]
@@ -25,7 +24,7 @@
   (re-frame/reg-sub
    :page-key
    (fn [app-db v]
-     (reaction (page-key @app-db))))
+     (page-key app-db)))
 
   (re-frame/reg-event-db
    :set-page-key
