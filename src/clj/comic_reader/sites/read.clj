@@ -5,7 +5,7 @@
             [environ.core :refer [env]])
   (:import java.io.PushbackReader))
 
-(def sites-list-file-name "sites-list.clj")
+(def sites-list-file-name "sites-list.edn")
 
 (defn- base-name [file]
   (->> file
@@ -25,7 +25,7 @@
     (find-all-sites)))
 
 (defn read-site-options [site-name]
-  (if-let [file (str "sites/" site-name ".clj")]
+  (if-let [file (str "sites/" site-name ".site.edn")]
     (resources/read-resource file)
     (throw (IllegalArgumentException.
             (str "`sites/" site-name "' "
