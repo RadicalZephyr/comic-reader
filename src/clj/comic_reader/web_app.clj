@@ -51,7 +51,7 @@
                        "/public/js/foundation.min.js")
      ~@js]))
 
-(defn- make-routes [repository testing?]
+(defn- make-routes [repository config]
   (c/routes
     (c/GET "/" []
       (render-page
@@ -76,7 +76,7 @@
       (cond-> (make-api-routes repository)
         :always wrap-params
         :always wrap-edn-params
-        (not testing?) wrap-edn-body))
+        (not (cfg/testing? config)) wrap-edn-body))
 
     (route/resources "/public")))
 
@@ -85,7 +85,7 @@
 
   (start [component]
     (log/info "Generating web app...")
-    (assoc component :routes (make-routes repository (cfg/testing? config))))
+    (assoc component :routes (make-routes repository config)))
 
   (stop [component]
     (log/info "Tearing down web app...")
