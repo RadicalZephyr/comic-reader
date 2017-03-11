@@ -42,41 +42,41 @@
        ~@body)))
 
 (t/deftest find-all-sites-test
-  (with-file-contents ["sites/test-site.clj" "{}"
-                       "sites/sites-list.clj" nil]
+  (with-file-contents ["sites/test.site.edn" "{}"
+                       "sites/sites-list.edn" nil]
     (t/is (= true
              (contains? (set (sut/find-all-sites)) "test-site"))))
 
-  (with-file-contents ["sites/test-site.clj"  nil
-                       "sites/sites-list.clj" nil]
+  (with-file-contents ["sites/test.site.edn"  nil
+                       "sites/sites-list.edn" nil]
     (t/is (= false
              (contains? (set (sut/find-all-sites)) "test-site"))))
 
-  (with-file-contents ["sites/test-site.clj"  ""
-                       "sites/sites-list.clj" nil]
+  (with-file-contents ["sites/test.site.edn"  ""
+                       "sites/sites-list.edn" nil]
     (t/is (= true
              (contains? (set (sut/find-all-sites)) "test-site"))))
 
-  (with-file-contents ["sites/test-site.clj"  "nonsense-site-definition"
-                       "sites/sites-list.clj" nil]
+  (with-file-contents ["sites/test.site.edn"  "nonsense-site-definition"
+                       "sites/sites-list.edn" nil]
     (t/is (= true
              (contains? (set (sut/find-all-sites)) "test-site")))))
 
 (t/deftest read-site-options-test
   (t/is (= nil (sut/read-site-options "non-existent")))
 
-  (with-file-contents ["sites/test-site.clj" "{}"
-                       "sites/sites-list.clj" nil]
+  (with-file-contents ["sites/test.site.edn" "{}"
+                       "sites/sites-list.edn" nil]
     (t/is (= (class (sut/read-site-options "test-site"))
              clojure.lang.PersistentArrayMap))))
 
 (t/deftest get-sites-list-test
-  (with-file-contents ["sites/test-site.clj" "{}"
-                       "sites/sites-list.clj" nil]
+  (with-file-contents ["sites/test.site.edn" "{}"
+                       "sites/sites-list.edn" nil]
     (with-redefs [sut/find-all-sites (constantly ["a" "b" "c"])]
       (t/is (= ["a" "b" "c"] (sut/get-sites-list)))))
 
-  (with-file-contents ["sites/test-site.clj" "{}"
-                       "sites/sites-list.clj" "test-site"]
+  (with-file-contents ["sites/test.site.edn" "{}"
+                       "sites/sites-list.edn" "test-site"]
     (t/is (= true
              (contains? (set (sut/get-sites-list)) "test-site")))))
