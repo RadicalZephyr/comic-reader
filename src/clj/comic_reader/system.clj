@@ -4,7 +4,7 @@
             (comic-reader [database :as database]
                           [server :as server]
                           [web-app :as web-app]
-                          [site-scraper :as sites])
+                          [site-scraper :as site-scraper])
             [comic-reader.config.env :as env-config]
             [comic-reader.comic-repository.scraper :as scraper-repo]
             [com.stuartsierra.component :as component]
@@ -13,7 +13,7 @@
 (defn comic-reader-system []
   (component/system-map
    :config (env-config/new-env-config {:server-port 10555})
-   :site-scraper (sites/new-site-scraper)
+   :site-scraper (site-scraper/new-site-scraper)
    :comic-repository (component/using
                       (scraper-repo/new-scraper-repo)
                       {:scraper :site-scraper})
