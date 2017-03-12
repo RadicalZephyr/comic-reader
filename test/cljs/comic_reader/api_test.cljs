@@ -37,6 +37,20 @@
          "Sites"]
         [:button {:on-click #(sut/get-comics "manga-reader" {:on-success set-data!})
                   :style {:margin-left "10px"}}
-         "Comics"]])))
+         "Comics"]
+        [:button {:on-click #(sut/previous-n-images "manga-reader"
+                                                    "the-gamer"
+                                                    nil
+                                                    1
+                                                    {:on-success set-data!})
+                  :style {:margin-left "10px"}}
+         "Previous Images"]
+        [:button {:on-click #(sut/next-n-images "manga-reader"
+                                                "the-gamer"
+                                                nil
+                                                1
+                                                {:on-success set-data!})
+                  :style {:margin-left "10px"}}
+         "Next Images"]])))
   (reagent/atom {})
   {:inspect-data true})
