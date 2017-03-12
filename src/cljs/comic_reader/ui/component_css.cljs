@@ -24,7 +24,8 @@
   (re-frame/dispatch [:add-to-component-css id garden-css]))
 
 (defn component-garden-css []
-  (vals @(re-frame/subscribe [:component-css])))
+  (when-let [css @(re-frame/subscribe [:component-css])]
+    (vals css)))
 
 (defn component-css []
-  [:style (g/css @(component-garden-css))])
+  [:style (g/css (component-garden-css))])

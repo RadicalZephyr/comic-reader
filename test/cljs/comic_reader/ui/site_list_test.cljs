@@ -1,5 +1,5 @@
 (ns comic-reader.ui.site-list-test
-  (:require [cljs.test :refer-macros [is testing]]
+  (:require [cljs.test :refer-macros [async is testing]]
             [devcards.core :refer-macros [deftest defcard-rg]]
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
