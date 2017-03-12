@@ -51,8 +51,8 @@
     :list-element [:ul.no-bullet]
     :item->li (fn [comic]
                 [:a.button.radius
-                 {:on-click #(view-comic (:id comic))}
-                 (:name comic)])}
+                 {:on-click #(view-comic (:comic/id comic))}
+                 (:comic/name comic)])}
    comics))
 
 (defn letter-filter [set-prefix letter search-prefix]
