@@ -49,10 +49,10 @@
               (remove is-directory?)
               (map (memfn toUri))))))))
 
-(defn- file-relative-to [root-file f]
+(defn- file-relative-to [resource-root root-file f]
   (let [root-path (.toPath root-file)
         p (.toPath f)]
-    (.toFile (.relativize root-path p))))
+    (io/file resource-root (.toFile (.relativize root-path p)))))
 
 (defn resource-seq [resource-prefix]
   (when-let [uri (resource-uri resource-prefix)]
@@ -64,7 +64,7 @@
         (->> file-prefix
              file-seq
              (remove (memfn isDirectory))
-             (map #(file-relative-to file-prefix %))
+             (map #(file-relative-to resource-prefix file-prefix %))
              (map (memfn getPath)))))))
 
 (defn- resource->stream [resource]
