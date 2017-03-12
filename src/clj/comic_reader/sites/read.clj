@@ -24,9 +24,9 @@
         (resources/file-seq "sites")))
 
 (defn get-sites-list []
-  (if (io/resource sites-list-file-name)
-    (resources/read-resource sites-list-file-name)
-    (find-all-sites)))
+  (or
+   (seq (resources/try-read-resource sites-list-file-name))
+   (find-all-sites)))
 
 (defn read-site-options [site-name]
   (if-let [file (str "sites/" site-name ".site.edn")]

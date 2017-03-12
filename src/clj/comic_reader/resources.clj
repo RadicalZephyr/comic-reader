@@ -24,3 +24,10 @@
                         PushbackReader.)]
     (with-open [r r1]
       (r/read r))))
+
+(defn try-read-resource [resource]
+  (when (io/resource resource)
+    (try
+      (read-resource resource)
+      (catch clojure.lang.ExceptionInfo e
+        nil))))
