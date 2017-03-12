@@ -73,3 +73,11 @@
 
 (defn get-next-locations [site comic location n opts]
   (get-locations "next" site comic location n opts))
+
+(defn get-image [site-id location opts]
+  (POST (str "/api/v1/" site-id "/image")
+    {:params {:location location}
+     :format (ajax.edn/edn-request-format)
+     :handler (:on-success opts)
+     :error-handler (or (:on-error opts) report-error)
+     :response-format (ajax.edn/edn-response-format)}))
