@@ -2,6 +2,7 @@
   (:require [cljs.test :refer-macros [is testing]]
             [devcards.core :refer-macros [deftest defcard-rg]]
             [garden.core :as g]
+            [garden.selectors :as gs]
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [comic-reader.ui.reader :as sut]
@@ -16,10 +17,21 @@
                    :image/tag [:img {:src "/public/img/loading.svg"}]}]]
       (reactively
        [:div
-        [:style (g/css [:div.com-rigsomelight-devcards-typog.com-rigsomelight-rendered-edn
-                        {:position "fixed"
-                         :top "10px"
-                         :left "10px"}])]
+        [:style {:dangerouslySetInnerHTML
+                 {:__html
+                  (g/css
+                   [:#com-rigsomelight-devcards-main
+                    [:div.com-rigsomelight-devcard
+                     [(gs/& (gs/nth-child "0n+1"))
+                      [:div.com-rigsomelight-devcards-typog.com-rigsomelight-rendered-edn
+                       {:position "fixed"
+                        :top "10px"
+                        :left "10px"}]]]])}}]
         [sut/comic-image-list set-current images :abc]])))
+  (reagent/atom {})
+  {:inspect-data true})
+
+(defcard-rg comic-image-reader
+  (fn [data _])
   (reagent/atom {})
   {:inspect-data true})
