@@ -82,11 +82,13 @@
   (previous-locations [this site comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]
       (when chapter
-        (locations-for scraper site :backward (site-scraper/list-chapters scraper site comic-id) chapter page n))))
+        (doall
+         (locations-for scraper site :backward (site-scraper/list-chapters scraper site comic-id) chapter page n)))))
 
   (next-locations [this site comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]
-      (locations-for scraper site :forward (site-scraper/list-chapters scraper site comic-id) chapter page n)))
+      (doall
+       (locations-for scraper site :forward (site-scraper/list-chapters scraper site comic-id) chapter page n))))
 
   (image-tag [this site {page :location/page}]
     (when page
