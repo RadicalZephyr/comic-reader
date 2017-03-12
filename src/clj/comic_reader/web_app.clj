@@ -35,10 +35,10 @@
     (c/GET "/:site-id/comics" [site-id]
       (edn-response (repo/list-comics repository site-id)))
 
-    (c/POST "/:site-id/:comic-id/previous/:n" [site-id comic-id location n]
+    (c/POST "/:site-id/:comic-id/previous" [site-id comic-id location n]
       (edn-response (repo/previous-locations repository site-id comic-id location n)))
 
-    (c/POST "/:site-id/:comic-id/next/:n" [site-id comic-id location n]
+    (c/POST "/:site-id/:comic-id/next" [site-id comic-id location n]
       (edn-response (repo/next-locations repository site-id comic-id location n)))))
 
 (defn- render-page [& {:keys [head css js content]}]

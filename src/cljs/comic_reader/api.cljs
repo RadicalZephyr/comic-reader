@@ -60,8 +60,9 @@
      :response-format (ajax.edn/edn-response-format)}))
 
 (defn- *-n-images [direction site comic location n opts]
-  (POST (str "/api/v1/" site "/" comic "/" direction "/" n)
-    {:params {:location location}
+  (POST (str "/api/v1/" site "/" comic "/" direction)
+    {:params {:location location
+              :n n}
      :format (ajax.edn/edn-request-format)
      :handler (:on-success opts)
      :error-handler (or (:on-error opts) report-error)
