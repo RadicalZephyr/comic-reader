@@ -33,8 +33,8 @@
     :list-element [:ul.inline-list]
     :item->li (fn [site]
                 [:a.large.button.radius
-                 {:on-click #(view-site (:id site))}
-                 (:name site)])}
+                 {:on-click #(view-site (:site/id site))}
+                 (:site/name site)])}
    sites))
 
 (defn site-list-container []
