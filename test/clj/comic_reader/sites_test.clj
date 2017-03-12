@@ -368,7 +368,7 @@
   (try
     (let [site-names (->> (scraper/get-sites)
                           (map first)
-                          (filter (complement #{"test-site" "sites-list"})))]
+                          (filter (complement #{"test"})))]
       (prn site-names)
       `(do ~@(map testdef-form site-names)))
     (catch RuntimeException e
