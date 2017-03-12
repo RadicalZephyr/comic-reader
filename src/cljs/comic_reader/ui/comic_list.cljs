@@ -116,7 +116,7 @@
 
 (defn comic-page-container []
   (let [view-comic (fn [comic-id]
-                     (re-frame/dispatch [:view-comic comic-id]))
+                     (re-frame/dispatch [:read-comic comic-id]))
         comics      (get)
         search-data (get-search-data)]
     (fn []
