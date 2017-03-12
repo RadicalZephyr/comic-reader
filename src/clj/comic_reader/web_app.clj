@@ -15,7 +15,7 @@
 (defn- wrap-edn-body [handler]
   (fn [request]
     (let [response (handler request)]
-      (if (and (nil? (:body response))
+      (if (and (nil? (seq (:body response)))
                (:edn-body response))
         (-> response
             (assoc :body (pr-str (:edn-body response)))
