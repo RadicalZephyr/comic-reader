@@ -11,7 +11,11 @@
           (map sut/resource-file
                ["database/test-norms/this-fake-norm.edn"
                 "database/test-norms/enumeration-norm.edn"]))
-         (set (sut/file-seq "database/test-norms")))))
+         (set (sut/file-seq "database/test-norms"))))
+
+  (with-redefs [clojure.core/file-seq (fn [& any] (throw (ex-info "Bad things happened" {})))]
+    (is (= nil
+           (sut/file-seq "database/test-norms/this-fake-norm.edn")))))
 
 (deftest read-resource-test
   (is (nil? (sut/read-resource "non/existent")))

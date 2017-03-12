@@ -7,10 +7,16 @@
 (defn resource-file [name]
   (-> name io/resource io/as-file))
 
+(defn try-file-seq [resource-file]
+  (try
+    (clojure.core/file-seq resource-file)
+    (catch Throwable e
+      nil)))
+
 (defn file-seq [resource-prefix]
   (some->> resource-prefix
            resource-file
-           clojure.core/file-seq
+           try-file-seq
            (remove (memfn isDirectory))))
 
 (defn- resource->stream [resource]
