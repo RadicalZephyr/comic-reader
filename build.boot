@@ -110,10 +110,18 @@
  '[clojure.string :as str]
  '[boot.util :as util])
 
+(defn- get-ns-and-sym [sym]
+  (str/split (name sym) #"/" 2))
+
+(defn- get-ns [sym]
+  (let [[ns s] (get-ns-and-sym sym)]
+    (when s
+      (symbol ns))))
+
 (defn- exists-but-no-ns? [sym]
   (if (nil? sym)
     false
-    (let [[ns just-sym] (get-ns sym)]
+    (let [[ns just-sym] (get-ns-and-sym sym)]
       (if (nil? just-sym)
         true
         false))))
@@ -122,8 +130,7 @@
   "Run vars as a pre- and post- tasks."
   [b before SYM sym "The symbol to run inside a pre-wrap task"
    a after  SYM sym "The symbol to run inside a post-wrap task"]
-  (let [get-ns (fn [str] (let [[ns s] (str/split (name str) #"/" 2)] (when s (symbol ns))))
-        run-symbol (fn [s]
+  (let [run-symbol (fn [s]
                      (when s
                        (when-let [ns (get-ns s)]
                          (require ns))
