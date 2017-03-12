@@ -42,6 +42,11 @@
          (set-page-key :site-list)
          (maybe-load-sites))))
 
+  (re-frame/reg-sub
+   :site-id
+   (fn [app-db _]
+     (:site-id app-db)))
+
   (re-frame/reg-event-db
    :view-comics
    (fn [db [_ site-id]]
@@ -51,17 +56,26 @@
          (assoc :site-id site-id
                 :comic-list :loading))))
 
+  (re-frame/reg-sub
+   :comic-id
+   (fn [app-db _]
+     (:comic-id app-db)))
+
   (re-frame/reg-event-db
    :read-comic
    (fn [db [_ comic-id]]
      (-> db
-         (set-page-key :reader)))))
+         (set-page-key :reader)
+         (assoc :comic-id comic-id
+                :loading-images true)))))
 
 (defn main-panel [page-key]
   (case page-key
     :site-list [site-list/site-list-container]
     :comic-list [comic-list/comic-page-container]
-    :reader [:div [:h1 "Read a Comic!"]]
+    :reader [:div [:h1 "Read a Comic!"]
+             [:pre (pr-str {:site-id @(re-frame/subscribe [:site-id])
+                            :comic-id @(re-frame/subscribe [:comic-id])})]]
     nil [:span ""]
     [base/four-oh-four]))
 
