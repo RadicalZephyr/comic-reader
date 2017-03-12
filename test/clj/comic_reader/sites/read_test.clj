@@ -75,7 +75,7 @@
              (contains? (set (sut/get-sites-list)) "test"))))
 
   (with-file-contents ["sites/test.site.edn" nil
-                       "sites-list.edn" "[foobar]"]
+                       "sites-list.edn" "[\"foobar\"]"]
     (t/is (= false
              (contains? (set (sut/get-sites-list)) "test")))
     (t/is (= true
