@@ -1,23 +1,27 @@
 (ns comic-reader.sites.read
   (:require [clojure.java.io :as io]
             [clojure.tools.reader :as r]
+            [clojure.string :as str]
             [comic-reader.resources :as resources]
             [environ.core :refer [env]])
   (:import java.io.PushbackReader))
 
 (def sites-list-file-name "sites-list.edn")
 
-(defn- base-name [file]
+(defn- file-name [file]
   (->> file
        io/as-file
-       .getName
-       (re-matches #"^(.*)\..*?$")
-       second))
+       .getName))
+
+(def process-sites
+  (comp
+   (filter #(str/ends-with? % ".site.edn"))
+   (map file-name)
+   (map #(str/replace % #"\.site\.edn$" ""))))
 
 (defn find-all-sites []
-  (->> "sites"
-       resources/file-seq
-       (map base-name)))
+  (into [] process-sites
+        (resources/file-seq "sites")))
 
 (defn get-sites-list []
   (if (io/resource sites-list-file-name)
