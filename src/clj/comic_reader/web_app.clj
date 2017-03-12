@@ -77,10 +77,10 @@
           (cond-> (make-api-routes repository)
             :always wrap-params
             :always wrap-edn-params
+            :always wrap-with-logger
             (not (cfg/testing? config)) wrap-edn-body))
 
-        (route/resources "/public"))
-      wrap-with-logger))
+        (route/resources "/public"))))
 
 (defrecord WebApp [config routes repository]
   component/Lifecycle
