@@ -38,8 +38,8 @@
                       (base/do-later
                        #(swap! data assoc
                                :site site-id)))]
-      [sut/site-list view-site [{:id :a :name "Comic A"}
-                                {:id :b :name "Comic B"}
-                                {:id :c :name "Comic C"}]]))
+      [sut/site-list view-site [{:site/id :a :site/name "Comic A"}
+                                {:site/id :b :site/name "Comic B"}
+                                {:site/id :c :site/name "Comic C"}]]))
   (reagent/atom {:site nil})
   {:inspect-data true})

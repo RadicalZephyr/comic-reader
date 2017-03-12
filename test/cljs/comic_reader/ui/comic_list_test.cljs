@@ -22,15 +22,15 @@
          (sut/set* {} [:a :b :c]))))
 
 (deftest test-prefix-filter-comics
-  (is (= [{:name "A"}]
-         (sut/prefix-filter-comics "A" [{:name "A"}
-                                        {:name "B"}
-                                        {:name "C"}])))
-  (is (= [{:name "1"} {:name "\""}]
-         (sut/prefix-filter-comics "#" [{:name "1"}
-                                        {:name "B"}
-                                        {:name "\""}
-                                        {:name "C"}]))))
+  (is (= [{:comic/name "A"}]
+         (sut/prefix-filter-comics "A" [{:comic/name "A"}
+                                        {:comic/name "B"}
+                                        {:comic/name "C"}])))
+  (is (= [{:comic/name "1"} {:comic/name "\""}]
+         (sut/prefix-filter-comics "#" [{:comic/name "1"}
+                                        {:comic/name "B"}
+                                        {:comic/name "\""}
+                                        {:comic/name "C"}]))))
 
 (defcard-rg test-get-set-wiring
   (fn [_ _]
@@ -51,8 +51,8 @@
                                 :comic comic-id)))]
       [sut/comic-list
        view-comic
-       [{:id :a :name "Comic A"}
-        {:id :b :name "Comic B"}]]))
+       [{:comic/id :a :comic/name "Comic A"}
+        {:comic/id :b :comic/name "Comic B"}]]))
   (reagent/atom {:comic nil})
   {:inspect-data true})
 
@@ -97,9 +97,9 @@
 
 (defcard-rg comic-page
   (fn [data _]
-    (let [comics [{:id :a :name "A"}
-                  {:id :b :name "B"}
-                  {:id :c :name "C"}]
+    (let [comics [{:comic/id :a :comic/name "A"}
+                  {:comic/id :b :comic/name "B"}
+                  {:comic/id :c :comic/name "C"}]
           view-comic (fn [comic-id]
                        (base/do-later
                         #(swap! data assoc
