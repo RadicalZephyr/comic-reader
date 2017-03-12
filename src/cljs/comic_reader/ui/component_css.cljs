@@ -28,4 +28,6 @@
     (vals css)))
 
 (defn component-css []
-  [:style (g/css (component-garden-css))])
+  [:style {:dangerouslySetInnerHTML
+           {:__html
+            (g/css (component-garden-css))}}])
