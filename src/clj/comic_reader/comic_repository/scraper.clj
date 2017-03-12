@@ -20,13 +20,6 @@
       (dissoc :name)
       (update :page/number parse-number)))
 
-(defn- unformat-page [page]
-  (-> page
-      (set/rename-keys {:page/url :url
-                        :page/number :name})
-      (dissoc :page/number)
-      (update :name str)))
-
 (defn- page-seq [process scraper site chapters]
   (lazy-seq
    (if (seq chapters)
@@ -93,7 +86,7 @@
 
   (image-tag [this site {page :location/page}]
     (when page
-      (site-scraper/get-page-image scraper site (unformat-page page)))))
+      (site-scraper/get-page-image scraper site page))))
 
 (defn new-scraper-repo []
   (map->ScraperRepository {}))
