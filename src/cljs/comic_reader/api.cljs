@@ -5,6 +5,8 @@
 
 (def ^:private errors-db-key :api-errors)
 (def ^:private errors-subscription-key :api-errors)
+(def ^:private last-error-subscription-key :last-error)
+(def ^:private error-count-subscription-key :error-count)
 (def ^:private error-handler-key :api-error)
 
 (def ^:private add-error
@@ -16,6 +18,18 @@
    (fn [app-db _]
      (errors-db-key app-db)))
 
+  (re-frame/reg-sub
+   last-error-subscription-key
+   :<- [errors-subscription-key]
+   (fn [errors _]
+     (peek errors)))
+
+  (re-frame/reg-sub
+   error-count-subscription-key
+   :<- [errors-subscription-key]
+   (fn [errors _]
+     (count errors)))
+
   (re-frame/reg-event-db
    error-handler-key
    (fn [db [_ error]]
@@ -24,12 +38,14 @@
 (defn api-errors []
   (re-frame/subscribe [errors-subscription-key]))
 
+(defn last-error []
+  (re-frame/subscribe [last-error-subscription-key]))
+
+(defn error-count []
+  (re-frame/subscribe [error-count-subscription-key]))
+
 (defn report-error [error-response]
   (re-frame/dispatch [error-handler-key error-response]))
-
-(defn *last-error* []
-  (peek @(api-errors)))
-
 
 (defn get-sites [opts]
   (GET "/api/v1/sites"
