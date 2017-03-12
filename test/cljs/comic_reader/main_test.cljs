@@ -6,4 +6,4 @@
 
 (defn reload []
   (re-frame/clear-subscription-cache!)
-  (main/main))
+  (main/setup!))

@@ -21,6 +21,10 @@
       (assoc db :site-list :loading))))
 
 (defn setup! []
+  (api/setup!)
+  (site-list/setup!)
+  (comic-list/setup!)
+
   (re-frame/reg-sub
    :page-key
    (fn [app-db v]
@@ -68,8 +72,6 @@
 (defn ^:export main []
   (enable-console-print!)
   (setup!)
-  (site-list/setup!)
-  (comic-list/setup!)
   (re-frame/dispatch [:view-sites])
   (reagent/render-component [main-panel-container]
                             (.getElementById js/document "app")))
