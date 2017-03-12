@@ -67,8 +67,8 @@
      :error-handler (or (:on-error opts) report-error)
      :response-format (ajax.edn/edn-response-format)}))
 
-(defn previous-n-images [site comic location n opts]
+(defn get-images-before [site comic location n opts]
   (*-n-images "previous" site comic location n opts))
 
-(defn next-n-images [site comic location n opts]
+(defn get-images-after [site comic location n opts]
   (*-n-images "next" site comic location n opts))
