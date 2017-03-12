@@ -16,6 +16,16 @@
 
 (defn setup! []
   (re-frame/reg-sub
+   :locations
+   (fn [app-db _]
+     (:locations app-db)))
+
+  (re-frame.core/reg-event-db
+   :set-locations
+   (fn [app-db [_ images]]
+     (assoc app-db :locations images)))
+
+  (re-frame/reg-sub
    :images
    (fn [app-db _]
      (:images app-db)))
@@ -48,8 +58,8 @@
   ;; Level two subscription
 
   (re-frame/reg-sub
-   :partitioned-images
-   :<- [:images]
+   :partitioned-locations
+   :<- [:locations]
    :<- [:current-location]
    (fn [[images current-location] _]
      (partitioned-images images current-location)))

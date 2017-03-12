@@ -70,10 +70,8 @@
 (defcard-rg comic-image-list
   (fn [data _]
     (let [set-current #(swap! data assoc :current-location %)
-          images [{:image/location {:abc 1}
-                   :image/tag [:img {:src "/public/img/tux.png"}]}
-                  {:image/location {:abc 2}
-                   :image/tag [:img {:src "/public/img/loading.svg"}]}]]
+          locations [{:image/location {:abc 1}}
+                     {:image/location {:abc 2}}]]
       (reactively
        [:div
         [:style {:dangerouslySetInnerHTML
@@ -86,7 +84,7 @@
                        {:position "fixed"
                         :top "10px"
                         :left "10px"}]]]])}}]
-        [sut/comic-image-list set-current images]])))
+        [sut/comic-image-list set-current locations]])))
   (reagent/atom {})
   {:inspect-data true})
 
