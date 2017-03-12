@@ -4,18 +4,6 @@
             [clojure.test :as t]
             [comic-reader.sites.read :as sut]))
 
-(def test-base-name (deref (var sut/base-name)))
-
-(t/deftest base-name-test
-  (t/is (= (test-base-name "abc.123")
-           "abc"))
-  (t/is (= (test-base-name "thingy.clj")
-           "thingy"))
-  (t/is (= (test-base-name "thing.part.two.clj")
-           "thing.part.two"))
-  (t/is (= (test-base-name "dir/two/three/four.clj")
-           "four")))
-
 (defn- get-file-mapping [[resource-name content]]
   (let [file (io/as-file (io/resource resource-name))
         old-content (slurp file)]
@@ -45,30 +33,30 @@
   (with-file-contents ["sites/test.site.edn" "{}"
                        "sites/sites-list.edn" nil]
     (t/is (= true
-             (contains? (set (sut/find-all-sites)) "test-site"))))
+             (contains? (set (sut/find-all-sites)) "test"))))
 
   (with-file-contents ["sites/test.site.edn"  nil
                        "sites/sites-list.edn" nil]
     (t/is (= false
-             (contains? (set (sut/find-all-sites)) "test-site"))))
+             (contains? (set (sut/find-all-sites)) "test"))))
 
   (with-file-contents ["sites/test.site.edn"  ""
                        "sites/sites-list.edn" nil]
     (t/is (= true
-             (contains? (set (sut/find-all-sites)) "test-site"))))
+             (contains? (set (sut/find-all-sites)) "test"))))
 
   (with-file-contents ["sites/test.site.edn"  "nonsense-site-definition"
                        "sites/sites-list.edn" nil]
     (t/is (= true
-             (contains? (set (sut/find-all-sites)) "test-site")))))
+             (contains? (set (sut/find-all-sites)) "test")))))
 
 (t/deftest read-site-options-test
   (t/is (= nil (sut/read-site-options "non-existent")))
 
   (with-file-contents ["sites/test.site.edn" "{}"
                        "sites/sites-list.edn" nil]
-    (t/is (= (class (sut/read-site-options "test-site"))
-             clojure.lang.PersistentArrayMap))))
+    (t/is (= clojure.lang.PersistentArrayMap
+             (class (sut/read-site-options "test"))))))
 
 (t/deftest get-sites-list-test
   (with-file-contents ["sites/test.site.edn" "{}"
@@ -77,6 +65,6 @@
       (t/is (= ["a" "b" "c"] (sut/get-sites-list)))))
 
   (with-file-contents ["sites/test.site.edn" "{}"
-                       "sites/sites-list.edn" "test-site"]
+                       "sites/sites-list.edn" "test"]
     (t/is (= true
-             (contains? (set (sut/get-sites-list)) "test-site")))))
+             (contains? (set (sut/get-sites-list)) "test")))))
