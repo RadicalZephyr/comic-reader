@@ -8,7 +8,7 @@
 
 (defn norms-seq [norms-dir]
   (->> norms-dir
-       resources/file-seq
+       resources/resource-seq
        (filter #(str/ends-with? % ".edn"))
        seq))
 

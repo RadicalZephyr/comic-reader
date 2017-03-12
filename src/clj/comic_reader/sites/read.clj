@@ -21,7 +21,7 @@
 
 (defn find-all-sites []
   (into [] process-sites
-        (resources/file-seq "sites")))
+        (resources/resource-seq "sites")))
 
 (defn get-sites-list []
   (or
