@@ -59,7 +59,7 @@
      :error-handler (or (:on-error opts) report-error)
      :response-format (ajax.edn/edn-response-format)}))
 
-(defn- *-n-images [direction site comic location n opts]
+(defn- get-locations [direction site comic location n opts]
   (POST (str "/api/v1/" site "/" comic "/" direction)
     {:params {:location location
               :n n}
@@ -68,8 +68,8 @@
      :error-handler (or (:on-error opts) report-error)
      :response-format (ajax.edn/edn-response-format)}))
 
-(defn get-images-before [site comic location n opts]
-  (*-n-images "previous" site comic location n opts))
+(defn get-prev-locations [site comic location n opts]
+  (get-locations "previous" site comic location n opts))
 
-(defn get-images-after [site comic location n opts]
-  (*-n-images "next" site comic location n opts))
+(defn get-next-locations [site comic location n opts]
+  (get-locations "next" site comic location n opts))

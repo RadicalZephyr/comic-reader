@@ -97,11 +97,11 @@
    :<- [:before-images-count]
    (fn [[comic-coord buffer-size first-location before-buffer-size] _]
      (when (> buffer-size before-buffer-size)
-       (api/get-images-before (:site-id comic-coord)
-                              (:comic-id comic-coord)
-                              first-location
-                              buffer-size
-                              {:on-success #(re-frame/dispatch [:add-images-before %])})
+       (api/get-prev-locations (:site-id comic-coord)
+                               (:comic-id comic-coord)
+                               first-location
+                               buffer-size
+                               {:on-success #(re-frame/dispatch [:add-images-before %])})
        true)))
 
   (re-frame/reg-sub
@@ -112,11 +112,11 @@
    :<- [:after-images-count]
    (fn [[comic-coord buffer-size last-location after-buffer-size] _]
      (when (> buffer-size after-buffer-size)
-       (api/get-images-after (:site-id comic-coord)
-                             (:comic-id comic-coord)
-                             last-location
-                             buffer-size
-                             {:on-success #(re-frame/dispatch [:add-images-after %])})
+       (api/get-next-locations (:site-id comic-coord)
+                               (:comic-id comic-coord)
+                               last-location
+                               buffer-size
+                               {:on-success #(re-frame/dispatch [:add-images-after %])})
        true)))
 
   (re-frame/reg-sub
