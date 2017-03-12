@@ -22,9 +22,10 @@
 
 (defn- unformat-page [page]
   (-> page
-      (set/rename-keys {:page/url :url})
+      (set/rename-keys {:page/url :url
+                        :page/number :name})
       (dissoc :page/number)
-      (assoc :name (str (:page/number page)))))
+      (update :name str)))
 
 (defn- page-seq [process scraper site chapters]
   (lazy-seq
