@@ -44,12 +44,22 @@
                                                      1
                                                      {:on-success set-data!})
                   :style {:margin-left "10px"}}
-         "Previous Images"]
+         "Previous Locations"]
         [:button {:on-click #(sut/get-next-locations "manga-reader"
                                                      "the-gamer"
                                                      nil
                                                      1
                                                      {:on-success set-data!})
+                  :style {:margin-left "10px"}}
+         "Next Locations"]
+        [:button {:on-click #(sut/get-image
+                              "manga-reader"
+                              {:location/chapter {:chapter/title "The Gamer 1"
+                                                  :chapter/url "http://www.mangareader.net/the-gamer/1"
+                                                  :chapter/number 1}
+                               :location/page {:page/number 1
+                                               :page/url "http://www.mangareader.net/the-gamer/1"}}
+                              {:on-success set-data!})
                   :style {:margin-left "10px"}}
          "Next Images"]])))
   (reagent/atom {})

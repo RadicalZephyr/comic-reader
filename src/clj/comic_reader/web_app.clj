@@ -35,6 +35,9 @@
     (c/GET "/:site-id/comics" [site-id]
       (edn-response (repo/list-comics repository site-id)))
 
+    (c/POST "/:site-id/image" [site-id location]
+      (edn-response (repo/image-tag repository site-id location)))
+
     (c/POST "/:site-id/:comic-id/previous" [site-id comic-id location n]
       (edn-response (repo/previous-locations repository site-id comic-id location n)))
 
