@@ -79,9 +79,9 @@
 
         (c/context "/api/v1" []
           (cond-> (make-api-routes repository)
+            :always wrap-with-logger
             :always wrap-params
             :always wrap-edn-params
-            :always wrap-with-logger
             (not (cfg/testing? config)) wrap-edn-body))
 
         (route/resources "/public"))))
