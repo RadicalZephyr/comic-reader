@@ -94,16 +94,16 @@
       {:on-click #(set-prefix "" :clear true)}
       "clear filters"]]))
 
-(defn- re-string [letter]
-  (if (= letter "#")
-    "^[^a-z]"
-    (str "^" letter)))
+(defn- re-string [s]
+  (if (= s "#")
+    "[^a-z]"
+    (str "" s)))
 
 (defn prefix-filter-comics [prefix comics]
   (if-not (str/blank? prefix)
     (let [filter-re (re-pattern (str "(?i)^"
                                      (re-string prefix)))]
-      (filter (fn [{:keys [name]}]
+      (filter (fn [{name :comic/name}]
                 (re-find filter-re name))
               comics))
     comics))
