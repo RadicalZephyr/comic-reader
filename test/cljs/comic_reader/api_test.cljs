@@ -24,9 +24,8 @@
        [:div
         [:button {:on-click #(sut/report-error error)} "Error"]
         [:button {:on-click #(sut/report-error warning) :style {:margin-left "10px"}} "Warning"]
-        [:p (str "Error count " (count @(sut/api-errors)))]
-        [:pre (prn-str (sut/*last-error*))]]))))
-
+        [:p (str "Error count " @(sut/error-count))]
+        [:pre (prn-str @(sut/last-error))]]))))
 
 (defcard-rg test-api-definitions
   (fn [data _]
