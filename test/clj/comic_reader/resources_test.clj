@@ -3,15 +3,14 @@
             [comic-reader.resources :as sut]
             [clojure.java.io :as io]))
 
-(deftest file-seq-test
+(deftest resource-seq-test
   (is (nil?
-       (sut/file-seq "database/no-test-norms")))
+       (sut/resource-seq "database/no-test-norms")))
 
   (is (= (set
-          (map sut/resource-file
-               ["database/test-norms/this-fake-norm.edn"
-                "database/test-norms/enumeration-norm.edn"]))
-         (set (sut/file-seq "database/test-norms")))))
+          ["database/test-norms/this-fake-norm.edn"
+           "database/test-norms/enumeration-norm.edn"])
+         (set (sut/resource-seq "database/test-norms")))))
 
 (deftest read-resource-test
   (is (nil? (sut/read-resource "non/existent")))

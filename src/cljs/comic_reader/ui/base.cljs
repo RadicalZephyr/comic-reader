@@ -4,7 +4,7 @@
   (.setTimeout js/window fn 10))
 
 (defn loading []
-  [:img.loading {:src "img/loading.svg"}])
+  [:img.loading {:src "/public/img/loading.svg"}])
 
 (defn four-oh-four []
   [:div

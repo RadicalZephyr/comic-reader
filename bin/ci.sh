@@ -14,31 +14,41 @@ function wait-for-server-connection() {
         if [ $i -gt $max_seconds_to_wait ]; then
             echo
             echo "Server connection timed out"
-            exit 1
+            return 1
         fi
     done
-    exit 0
+    return 0
 }
 
 echo "Running CI build..."
 echo
-lein ci
+boot test
 
 echo "Building uberjar..."
 echo
 
-lein uberjar
+boot build
 
 echo "Starting server..."
 echo
 export PORT=19832
-eval $(cat Procfile | cut -c6-) & # Run the Procfile command
 
-server_pid=%1
+command=$(cat Procfile | cut -c6-)" &"
+eval $command # Run the Procfile command
 
-timeout_secs=15
+server_pid=$!
+
+timeout_secs=30
 echo "Waiting ${timeout_secs} seconds for server to boot up..."
 echo
-wait-for-server-connection $PORT $timeout_secs
+
+if wait-for-server-connection $PORT $timeout_secs
+then
+    RET=$?
+else
+    RET=$?
+fi
 
 kill $server_pid
+
+exit $RET

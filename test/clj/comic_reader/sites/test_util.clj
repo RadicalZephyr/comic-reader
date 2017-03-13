@@ -88,14 +88,20 @@
     :page-normalize-format
     :page-normalize-pattern})
 
-(def key->sym
-  (comp symbol name))
+(defn- key->sym
+  ([k]
+   (-> k name symbol comp))
+  ([ns-key k]
+   (->> [ns-key k]
+        (map name)
+        (str/join "/")
+        key->sym)))
 
 (defmacro test-data-functions-not-nil []
   `(are [selector] (is (not= (selector)
                              nil))
      ~@(->> (seq data-function?)
-            (map key->sym))))
+            (map (partial key->sym :sut)))))
 
 (defmacro and-template [argv expr & values]
   (let [c (count argv)]
@@ -113,32 +119,38 @@
     `(and-template ~argv ~expr ~@args)
     (throw (IllegalArgumentException. "The number of args doesn't match are's argv."))))
 
-(defn get-doc-string [sym]
-  (let [sites-ns (find-ns 'comic-reader.sites)
-        doc-var (ns-resolve sites-ns sym)]
-    (-> doc-var
-        meta
-        :doc)))
+(defmacro get-doc-string [sym]
+  `(-> ~sym
+       var
+       meta
+       :doc))
 
-(defmacro ensure-dependencies-defined [fn-name]
-  (let [fn-keyword (keyword fn-name)]
-    (if (graph/has-node? dependency-dag fn-keyword)
-      `(are-with-msg [selector#]
-                     (is (not= (selector#)
-                               nil)
-                         (str "Site config "
-                              "`" 'selector# "'"
-                              " cannot be undefined.\n"
-                              "Should be:\n"
-                              (get-doc-string 'selector#)
-                              "\n"))
+(defn- split-fn-name [fn-name]
+  (map keyword [(namespace fn-name) (name fn-name)]))
 
-                     ~@(->> fn-keyword
-                            (alg/topsort dependency-dag)
-                            (filter data-function?)
-                            (map key->sym)))
-      (throw (IllegalArgumentException.
-              (str fn-name " is not a valid function name."))))))
+(defmacro ensure-dependencies-defined
+  ([options-sym fn-name]
+   `(ensure-dependencies-defined ~options-sym ~fn-name nil))
+  ([options-sym fn-name syms-ns]
+   (let [[ns-keyword fn-keyword] (split-fn-name fn-name)
+         syms-ns (or syms-ns ns-keyword)]
+     (if (graph/has-node? dependency-dag fn-keyword)
+       `(are-with-msg [selector#]
+                      (is (not= (selector# ~options-sym)
+                                nil)
+                          (str "Site config "
+                               "`" 'selector# "'"
+                               " cannot be undefined.\n"
+                               "Should be:\n"
+                               (get-doc-string selector#)
+                               "\n"))
+
+                      ~@(->> fn-keyword
+                             (alg/topsort dependency-dag)
+                             (filter data-function?)
+                             (map (partial key->sym syms-ns))))
+       (throw (IllegalArgumentException.
+               (str fn-name " is not a valid function name.")))))))
 
 (defn has-zero-arity? [fn-sym]
   (let [sites-ns (find-ns 'comic-reader.sites)
@@ -152,13 +164,13 @@
   `(str ~(str fn-sym) ": '" (~fn-sym) "'"))
 
 (defmacro display-dependent-data-values [fn-name]
-  (let [fn-keyword (keyword fn-name)]
+  (let [[ns-keyword fn-keyword] (split-fn-name fn-name)]
     (if (graph/has-node? dependency-dag fn-keyword)
       `(str ~(str fn-name) " depends on these data values:\n"
             (str/join "\n"
                       ~(->> fn-keyword
                             (alg/topsort dependency-dag)
-                            (map key->sym)
+                            (map (partial key->sym ns-keyword))
                             (filter has-zero-arity?)
                             (mapv render-print-data-function)))
             "\n")

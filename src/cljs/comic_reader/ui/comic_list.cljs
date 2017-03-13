@@ -2,7 +2,6 @@
   (:refer-clojure :exclude [get set])
   (:require [clojure.string :as str]
             [re-frame.core :as re-frame]
-            [reagent.ratom :refer-macros [reaction]]
             [comic-reader.ui.base :as base]))
 
 (defn get* [db]
@@ -12,22 +11,22 @@
   (assoc db :comic-list comics))
 
 (defn setup! []
-  (re-frame/register-sub
+  (re-frame/reg-sub
    :comic-list
    (fn [app-db _]
-     (reaction (get* @app-db))))
+     (get* app-db)))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :set-comic-list
    (fn [db [_ comics]]
      (set* db comics)))
 
-  (re-frame/register-sub
+  (re-frame/reg-sub
    :search-data
    (fn [app-db _]
-     (reaction (:search-data @app-db))))
+     (:search-data app-db)))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :set-search-data
    (fn [db [_ search-data]]
      (assoc db :search-data search-data))))
@@ -52,8 +51,8 @@
     :list-element [:ul.no-bullet]
     :item->li (fn [comic]
                 [:a.button.radius
-                 {:on-click #(view-comic (:id comic))}
-                 (:name comic)])}
+                 {:on-click #(view-comic (:comic/id comic))}
+                 (:comic/name comic)])}
    comics))
 
 (defn letter-filter [set-prefix letter search-prefix]
@@ -95,16 +94,17 @@
       {:on-click #(set-prefix "" :clear true)}
       "clear filters"]]))
 
-(defn- re-string [letter]
-  (if (= letter "#")
-    "^[^a-z]"
-    (str "^" letter)))
+(defn- re-string [s]
+  (if (= s "#")
+    "[^a-z]"
+    (str "" s)))
 
 (defn prefix-filter-comics [prefix comics]
-  (if-not (str/blank? prefix)
+  (if (and (not (str/blank? prefix))
+           (seqable? comics))
     (let [filter-re (re-pattern (str "(?i)^"
                                      (re-string prefix)))]
-      (filter (fn [{:keys [name]}]
+      (filter (fn [{name :comic/name}]
                 (re-find filter-re name))
               comics))
     comics))
@@ -117,7 +117,7 @@
 
 (defn comic-page-container []
   (let [view-comic (fn [comic-id]
-                     (re-frame/dispatch [:view-comic comic-id]))
+                     (re-frame/dispatch [:read-comic comic-id]))
         comics      (get)
         search-data (get-search-data)]
     (fn []

@@ -7,10 +7,11 @@
                     PushbackReader)))
 
 (defn norms-seq [norms-dir]
-  (->> norms-dir
-       resources/file-seq
-       (filter #(str/ends-with? % ".edn"))
-       seq))
+  (seq
+   (->> norms-dir
+        resources/resource-seq
+        (filter #(str/ends-with? % ".edn"))
+        (keep (comp io/as-file io/resource)))))
 
 (defn- norm-name [file]
   (->> file

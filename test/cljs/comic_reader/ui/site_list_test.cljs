@@ -1,5 +1,5 @@
 (ns comic-reader.ui.site-list-test
-  (:require [cljs.test :refer-macros [is testing]]
+  (:require [cljs.test :refer-macros [async is testing]]
             [devcards.core :refer-macros [deftest defcard-rg]]
             [reagent.core :as reagent]
             [re-frame.core :as re-frame]
@@ -38,8 +38,8 @@
                       (base/do-later
                        #(swap! data assoc
                                :site site-id)))]
-      [sut/site-list view-site [{:id :a :name "Comic A"}
-                                {:id :b :name "Comic B"}
-                                {:id :c :name "Comic C"}]]))
+      [sut/site-list view-site [{:site/id :a :site/name "Comic A"}
+                                {:site/id :b :site/name "Comic B"}
+                                {:site/id :c :site/name "Comic C"}]]))
   (reagent/atom {:site nil})
   {:inspect-data true})
