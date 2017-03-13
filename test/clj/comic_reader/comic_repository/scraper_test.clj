@@ -207,7 +207,7 @@
   (t/testing "returns a valid image tag"
     (let [repo (test-repo (mock-scraper
                            :images {"manga-fox"
-                                    {{:name "3" :url  "url3"} [:img {:src "an-img-url"}]}}))]
+                                    {{:page/number 3 :page/url "url3"} [:img {:src "an-img-url"}]}}))]
 
       (t/is (= [:img {:src "an-img-url"}]
                (repo/image-tag repo "manga-fox" {:location/page {:page/number 3 :page/url "url3"}}))))))
