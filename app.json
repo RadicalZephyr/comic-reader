@@ -2,7 +2,7 @@
   "name":"comic-reader",
   "scripts":{},
   "env":{
-    "BUILD_CONFIG_WHITELIST":{
+    "BOOTBUILD_CONFIG_WHITELIST":{
       "required":true
     },
     "BOOT_VERSION":{
