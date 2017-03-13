@@ -1,7 +1,6 @@
 (ns comic-reader.system
   (:gen-class)
-  (:require [clojure.tools.namespace.repl :refer [refresh]]
-            (comic-reader [database :as database]
+  (:require (comic-reader [database :as database]
                           [server :as server]
                           [web-app :as web-app]
                           [site-scraper :as site-scraper])
@@ -45,10 +44,6 @@
 (defn go []
   (init)
   (start))
-
-(defn reset []
-  (stop)
-  (refresh :after 'comic-reader.system/go))
 
 (defn -main [& args]
   (go))
