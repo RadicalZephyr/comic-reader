@@ -8,64 +8,64 @@
             [comic-reader.ui.reader :as sut]
             [comic-reader.macro-util :refer-macros [reactively]]))
 
-(deftest test-partitioned-images
+(deftest test-partitioned-locations
   (testing "handles no data gracefully"
     (is (= []
-           (sut/partitioned-images [] nil)))
+           (sut/partitioned-locations [] nil)))
 
     (is (= []
-           (sut/partitioned-images nil nil)))
+           (sut/partitioned-locations nil nil)))
 
     (is (= []
-           (sut/partitioned-images nil :location/abc))))
+           (sut/partitioned-locations nil :location/abc))))
 
   (testing "partitions based on the given image location"
     (is (= [[1] [{:image/location :a}] [2]]
-           (sut/partitioned-images [1 {:image/location :a} 2] :a)))
+           (sut/partitioned-locations [1 {:image/location :a} 2] :a)))
 
     (is (= [[1] [{:image/location :a}] [2 3 4]]
-           (sut/partitioned-images [1 {:image/location :a} 2 3 4] :a)))
+           (sut/partitioned-locations [1 {:image/location :a} 2 3 4] :a)))
 
     (is (= [[-1 0 1] [{:image/location :a}] [2]]
-           (sut/partitioned-images [-1 0 1 {:image/location :a} 2] :a))))
+           (sut/partitioned-locations [-1 0 1 {:image/location :a} 2] :a))))
 
   (testing "returns meaningful partitions when there are no preceding items"
     (is (= [[] [{:image/location :a}] [2]]
-           (sut/partitioned-images [{:image/location :a} 2] :a))))
+           (sut/partitioned-locations [{:image/location :a} 2] :a))))
 
   (testing "returns meaningful partitions when there are no following items"
     (is (= [[1 2] [{:image/location :a}] []]
-           (sut/partitioned-images [1 2 {:image/location :a}] :a)))))
+           (sut/partitioned-locations [1 2 {:image/location :a}] :a)))))
 
-(deftest test-current-images
+(deftest test-current-locations
   (testing "can handle having no images"
     (is (= []
-           (sut/current-images [] 1))))
+           (sut/current-locations [] 1))))
 
   (testing "can handle not having any previous items"
     (is (= [:current 2]
-           (sut/current-images [[] [:current] [2 3]]  1))))
+           (sut/current-locations [[] [:current] [2 3]]  1))))
 
   (testing "can handle not having any following items"
     (is (= [2 :current]
-           (sut/current-images [[1 2] [:current] []] 1))))
+           (sut/current-locations [[1 2] [:current] []] 1))))
 
   (testing "can select 1 on either side of the current location"
     (is (= [1 {:image/location :a} 2]
-           (sut/current-images [[1] [{:image/location :a}] [2]] 1)))
+           (sut/current-locations [[1] [{:image/location :a}] [2]] 1)))
 
     (is (= [2 {:image/location :a} 3]
-           (sut/current-images [[1 2] [{:image/location :a}] [3 4]]   1))))
+           (sut/current-locations [[1 2] [{:image/location :a}] [3 4]]   1))))
 
   (testing "selects n on either side of the current location"
     (is (= [1 2 {:image/location :a} 3 4]
-           (sut/current-images [[1 2] [{:image/location :a}] [3 4]] 2))))
+           (sut/current-locations [[1 2] [{:image/location :a}] [3 4]] 2))))
 
   (testing "Only selects as many images as have been loaded"
     (is (= [1 {:image/location :a} 2]
-           (sut/current-images [[1] [{:image/location :a}] [2]] 10)))
+           (sut/current-locations [[1] [{:image/location :a}] [2]] 10)))
     (is (= [1 {:image/location :a} 2 3 4]
-           (sut/current-images [[1] [{:image/location :a}] [2 3 4]] 10)))))
+           (sut/current-locations [[1] [{:image/location :a}] [2 3 4]] 10)))))
 
 (defcard-rg comic-image-list
   (fn [data _]
