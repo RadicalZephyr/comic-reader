@@ -21,7 +21,8 @@
 
   (set-env! :source-paths #{"src/clj" "src/cljs"}
             :resource-paths #{"resources"}
-            :dependencies '[[org.clojure/clojure "1.8.0"]
+            :dependencies (template
+                           [[org.clojure/clojure ~(clojure-version)]
 
                             ;; Core app dependencies
                             [com.stuartsierra/component "0.3.2"]
@@ -36,9 +37,8 @@
                             [ring "1.5.1"]
                             [http-kit "2.2.0"]
                             [compojure "1.5.2"]
-                            [ring.middleware.logger "0.5.0"
-                             :exclusions [[log4j :extension "jar"]
-                                          [org.slf4j/slf4j-log4j12 :extension "jar"]]]
+                            [lambdaisland/ring.middleware.logger "0.5.1"
+                             :exclusions [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
                             [fogus/ring-edn "0.3.0"]
                             [hiccup "1.0.5"]
                             [garden "1.3.2"]
@@ -85,10 +85,9 @@
                             [crisptrutski/boot-cljs-test   "0.3.0"     :scope "test"]
                             [pandeiro/boot-http "0.7.6" :scope "test"]
                             [adzerk/boot-reload "0.4.13" :scope "test"]
-                            [powerlaces/boot-cljs-devtools "0.2.0" :scope "test"]]
+                            [powerlaces/boot-cljs-devtools "0.2.0" :scope "test"]])
 
-            :repositories #(conj % ["my.datomic.com" {:url "https://my.datomic.com/repo" :username username :password password}])
-            ))
+            :repositories #(conj % ["my.datomic.com" {:url "https://my.datomic.com/repo" :username username :password password}])))
 
 (task-options!
  pom {:project 'radicalzephyr/comic-reader
