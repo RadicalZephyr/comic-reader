@@ -103,4 +103,5 @@
 (defn dev-reload []
   (re-frame.core/clear-subscription-cache!)
   (setup!)
+  (.destroyAll js/Waypoint)
   (render-root))
