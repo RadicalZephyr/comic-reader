@@ -12,7 +12,9 @@
 
 (defn current-locations [partitioned-locations n]
   (let [[before current after] partitioned-locations]
-    (concat (take-last n before) current (take n after))))
+    (if (number? n)
+      (concat (take-last n before) current (take n after))
+      [])))
 
 (defn setup! []
   (re-frame/reg-sub
@@ -144,5 +146,7 @@
   [comic-location-list #(re-frame/dispatch [:set-current-location %]) locations])
 
 (defn view []
-  (let [current-locations (re-frame/subscribe [:current-locations])]
+  (let [current-locations (re-frame/subscribe [:current-locations])
+        loading-before (re-frame/subscribe [:loading-before-buffer])
+        loading-after  (re-frame/subscribe [:loading-after-buffer])]
     [reader #(re-frame/dispatch [:set-current-location %]) @current-locations]))
