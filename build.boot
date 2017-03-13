@@ -37,7 +37,7 @@
                             [ring "1.5.1"]
                             [http-kit "2.2.0"]
                             [compojure "1.5.2"]
-                            [lambdaisland/ring.middleware.logger "0.5.1"
+                            [radicalzephyr/ring.middleware.logger "0.6.0"
                              :exclusions [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
                             [fogus/ring-edn "0.3.0"]
                             [hiccup "1.0.5"]
