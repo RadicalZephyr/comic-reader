@@ -29,6 +29,11 @@
   (site-list/setup!)
   (comic-list/setup!)
 
+  (re-frame/reg-event-db
+   :init-db
+   (fn [db _]
+     (assoc db :buffer-size 5)))
+
   (re-frame/reg-sub
    :page-key
    (fn [app-db v]
@@ -88,6 +93,7 @@
 (defn ^:export main []
   (enable-console-print!)
   (setup!)
+  (re-frame/dispatch [:init-db])
   (re-frame/dispatch [:view-sites])
   (reagent/render-component [main-panel-container]
                             (.getElementById js/document "app")))
