@@ -61,6 +61,7 @@
                             [re-frame "0.9.2" :exclusions
                              [[org.clojure/clojurescript
                                :extension "jar"]]]
+                            [org.clojure/data.avl "0.0.17"]
                             [cljsjs/waypoints "4.0.0-0"]
                             [secretary "1.2.3"]
                             [cljs-ajax "0.5.8"]
@@ -70,8 +71,9 @@
                             [aysylu/loom "1.0.0" :scope "test"]
 
                             [ring/ring-mock "0.3.0" :scope "test"]
-                            [figwheel-sidecar "0.5.9" :scope "test"]
                             [devcards "0.2.1-7" :scope "test"]
+                            [day8/re-frame-tracer "0.1.1-SNAPSHOT" :scope "test"]
+                            [org.clojars.stumitchell/clairvoyant "0.2.0" :scope "test"]
                             [com.cemerick/piggieback "0.2.1" :scope "test"]
                             [weasel "0.7.0"     :scope "test"]
                             [org.clojure/tools.nrepl "0.2.12" :scope "test"]
