@@ -38,6 +38,10 @@
            (sut/partitioned-locations [1 2 {:image/location :a}] :a)))))
 
 (deftest test-current-locations
+  (testing "can handle having a nil buffer-size"
+    (is (= []
+           (sut/current-locations [] nil))))
+
   (testing "can handle having no images"
     (is (= []
            (sut/current-locations [] 1))))
