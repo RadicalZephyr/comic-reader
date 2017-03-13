@@ -2,6 +2,8 @@
   (:require
     [comic-reader.api :as api]
     [comic-reader.ui.base :as base]
+    [comic-reader.ui.image :as image]
+    [comic-reader.ui.reader :as reader]
     [comic-reader.ui.site-list :as site-list]
     [comic-reader.ui.comic-list :as comic-list]
     [reagent.core :as reagent]
@@ -22,6 +24,8 @@
 
 (defn setup! []
   (api/setup!)
+  (image/setup!)
+  (reader/setup!)
   (site-list/setup!)
   (comic-list/setup!)
 
@@ -73,9 +77,7 @@
   (case page-key
     :site-list [site-list/site-list-container]
     :comic-list [comic-list/comic-page-container]
-    :reader [:div [:h1 "Read a Comic!"]
-             [:pre (pr-str {:site-id @(re-frame/subscribe [:site-id])
-                            :comic-id @(re-frame/subscribe [:comic-id])})]]
+    :reader [reader/view]
     nil [:span ""]
     [base/four-oh-four]))
 
