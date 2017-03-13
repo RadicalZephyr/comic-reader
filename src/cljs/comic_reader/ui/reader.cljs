@@ -1,7 +1,8 @@
 (ns comic-reader.ui.reader
   (:require [re-frame.core :as re-frame]
             [comic-reader.ui.image :as image]
-            [comic-reader.api :as api]))
+            [comic-reader.api :as api]
+            [comic-reader.ui.base :as base]))
 
 (defn partitioned-locations [images current-location]
   (if (seq images)
@@ -158,13 +159,18 @@
 (defn comic-location-list [set-current-location locations]
   [:div (map #(make-comic-image set-current-location %) locations)])
 
-(defn reader [set-current-location locations]
-  [comic-location-list #(re-frame/dispatch [:set-current-location %]) locations])
+(defn reader [set-current-location locations loading-before loading-after]
+  [:div
+   (when loading-before [base/loading])
+   [comic-location-list #(re-frame/dispatch [:set-current-location %]) locations]
+   (when loading-before [base/loading])])
 
 (defn view []
   (let [current-locations (re-frame/subscribe [:current-locations])
         loading-before (re-frame/subscribe [:loading-before-buffer])
         loading-after  (re-frame/subscribe [:loading-after-buffer])]
-    @loading-before
-    @loading-after
-    [reader #(re-frame/dispatch [:set-current-location %]) @current-locations]))
+    [reader
+     #(re-frame/dispatch [:set-current-location %])
+     @current-locations
+     @loading-before
+     @loading-after]))
