@@ -111,36 +111,20 @@
  '[clojure.string :as str]
  '[boot.util :as util])
 
-(defn- get-ns-and-sym [sym]
-  (str/split (name sym) #"/" 2))
-
-(defn- get-ns [sym]
-  (let [[ns s] (get-ns-and-sym sym)]
-    (when s
-      (symbol ns))))
-
-(defn- exists-but-no-ns? [sym]
-  (if (nil? sym)
-    false
-    (let [[ns just-sym] (get-ns-and-sym sym)]
-      (if (nil? just-sym)
-        true
-        false))))
-
 (deftask run-sym
   "Run vars as a pre- and post- tasks."
   [b before SYM sym "The symbol to run inside a pre-wrap task"
    a after  SYM sym "The symbol to run inside a post-wrap task"]
   (let [run-symbol (fn [s]
                      (when s
-                       (when-let [ns (get-ns s)]
+                       (when-let [ns (-> s namespace symbol)]
                          (require ns))
                        (if-let [v (resolve s)]
                          (v)
-                         (util/warn "Could not find var '%s\n" s))))]
-    (when (exists-but-no-ns? before)
+                         (util/warn "Could not find var #'%s\n" s))))]
+    (when (and before (not (namespace before)))
       (util/warn "Before symbol `%s` should be fully namespace qualified.\n" (pr-str before)))
-    (when (exists-but-no-ns? after)
+    (when (and after (not (namespace after)))
       (util/warn "After symbol `%s` should be fully namespace qualified.\n" (pr-str after)))
     (comp
      (if before
