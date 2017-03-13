@@ -18,11 +18,23 @@
       (concat (take-last n before) current (take n after))
       [])))
 
-(defn add-locations-before [app-db locations]
-  (update app-db :locations #(concat locations %)))
+(defn location-key [location]
+  [(get-in location [:location/chapter :chapter/number])
+   (get-in location [:location/page :page/number])])
 
-(defn add-locations-after [app-db locations]
-  (update app-db :locations #(concat % locations)))
+(defn location-sorted-set []
+  (sorted-set-by (fn [loc-a loc-b]
+                   (compare (location-key loc-a)
+                            (location-key loc-b)))))
+
+(def conj-locations
+  (fnil
+   (fn [locations new-locations]
+     (apply conj locations new-locations))
+   (location-sorted-set)))
+
+(defn add-locations [app-db locations]
+  (update app-db :locations conj-locations))
 
 (defn setup! []
   (re-frame/reg-sub
@@ -100,6 +112,11 @@
    (fn [[_ _ after] _]
      (count after)))
 
+  (re-frame/reg-event-db
+   :add-locations
+   (fn [app-db [_ locations]]
+     (add-locations app-db locations)))
+
   (re-frame/reg-sub
    :loading-before-buffer
    :<- [:comic-coordinates]
@@ -112,13 +129,8 @@
                                (:comic-id comic-coord)
                                first-location
                                buffer-size
-                               {:on-success #(re-frame/dispatch [:add-locations-before %])})
+                               {:on-success #(re-frame/dispatch [:add-locations %])})
        true)))
-
-  (re-frame/reg-event-db
-   :add-locations-before
-   (fn [app-db [_ locations]]
-     (add-locations-before app-db locations)))
 
   (re-frame/reg-sub
    :loading-after-buffer
@@ -132,13 +144,8 @@
                                (:comic-id comic-coord)
                                last-location
                                buffer-size
-                               {:on-success #(re-frame/dispatch [:add-locations-after %])})
+                               {:on-success #(re-frame/dispatch [:add-locations %])})
        true)))
-
-  (re-frame/reg-event-db
-   :add-locations-after
-   (fn [app-db [_ locations]]
-     (add-locations-after app-db locations)))
 
   (re-frame/reg-sub
    :current-locations
