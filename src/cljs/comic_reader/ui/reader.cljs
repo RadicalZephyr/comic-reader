@@ -3,15 +3,15 @@
             [comic-reader.ui.image :as image]
             [comic-reader.api :as api]))
 
-(defn partitioned-images [images current-location]
+(defn partitioned-locations [images current-location]
   (if (seq images)
     (->> (concat [nil] images [nil])
          (partition-by #(= (:image/location %) current-location))
          (map #(keep identity %)))
     []))
 
-(defn current-images [partitioned-images n]
-  (let [[before current after] partitioned-images]
+(defn current-locations [partitioned-locations n]
+  (let [[before current after] partitioned-locations]
     (concat (take-last n before) current (take n after))))
 
 (defn setup! []
@@ -22,20 +22,11 @@
 
   (re-frame.core/reg-event-db
    :set-locations
-   (fn [app-db [_ images]]
-     (assoc app-db :locations images)))
+   (fn [app-db [_ locations]]
+     (assoc app-db :locations locations)))
 
   (re-frame/reg-sub
-   :images
-   (fn [app-db _]
-     (:images app-db)))
-
-  (re-frame.core/reg-event-db
-   :set-images
-   (fn [app-db [_ images]]
-     (assoc app-db :images images)))
-
-  (re-frame/reg-sub
+   :current-location
    (fn [app-db _]
      (:current-location app-db)))
 
@@ -62,7 +53,7 @@
    :<- [:locations]
    :<- [:current-location]
    (fn [[images current-location] _]
-     (partitioned-images images current-location)))
+     (partitioned-locations images current-location)))
 
   (re-frame/reg-sub
    :comic-coordinates
@@ -74,28 +65,28 @@
 
   (re-frame/reg-sub
    :first-image-location
-   :<- [:images]
+   :<- [:locations]
    (fn [[images] _]
-     (:image/location (first images))))
+     (first images)))
 
   (re-frame/reg-sub
    :last-image-location
-   :<- [:images]
+   :<- [:locations]
    (fn [[images] _]
-     (:image/location (last images))))
+     (last images)))
 
 
   ;; Level three subscriptions
 
   (re-frame/reg-sub
-   :before-images-count
-   :<- [:partitioned-images]
+   :before-locations-count
+   :<- [:partitioned-locations]
    (fn [[before _ _] _]
      (count before)))
 
   (re-frame/reg-sub
-   :after-images-count
-   :<- [:partitioned-images]
+   :after-locations-count
+   :<- [:partitioned-locations]
    (fn [[_ _ after] _]
      (count after)))
 
@@ -104,14 +95,14 @@
    :<- [:comic-coordinates]
    :<- [:buffer-size]
    :<- [:first-image-location]
-   :<- [:before-images-count]
+   :<- [:before-locations-count]
    (fn [[comic-coord buffer-size first-location before-buffer-size] _]
      (when (> buffer-size before-buffer-size)
        (api/get-prev-locations (:site-id comic-coord)
                                (:comic-id comic-coord)
                                first-location
                                buffer-size
-                               {:on-success #(re-frame/dispatch [:add-images-before %])})
+                               {:on-success #(re-frame/dispatch [:add-locations-before %])})
        true)))
 
   (re-frame/reg-sub
@@ -119,22 +110,22 @@
    :<- [:comic-coordinates]
    :<- [:buffer-size]
    :<- [:last-image-location]
-   :<- [:after-images-count]
+   :<- [:after-locations-count]
    (fn [[comic-coord buffer-size last-location after-buffer-size] _]
      (when (> buffer-size after-buffer-size)
        (api/get-next-locations (:site-id comic-coord)
                                (:comic-id comic-coord)
                                last-location
                                buffer-size
-                               {:on-success #(re-frame/dispatch [:add-images-after %])})
+                               {:on-success #(re-frame/dispatch [:add-locations-after %])})
        true)))
 
   (re-frame/reg-sub
-   :current-images
-   :<- [:partitioned-images]
+   :current-locations
+   :<- [:partitioned-locations]
    :<- [:buffer-size]
-   (fn [[partitioned-images buffer-size] _]
-     (current-images partitioned-images buffer-size))))
+   (fn [[partitioned-locations buffer-size] _]
+     (current-locations partitioned-locations buffer-size))))
 
 (defn- location-id [location]
   (str (get-in location [:location/chapter :chapter/number])
