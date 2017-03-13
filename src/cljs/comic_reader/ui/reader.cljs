@@ -43,19 +43,31 @@
 (defn setup! []
   (trace-forms {:tracer (tracer :color "green")}
     (re-frame/reg-event-db
-     :set-current-location
-     (fn set-current-version-event [app-db [_ current-location]]
-       (assoc app-db :current-location current-location)))
+     :add-locations
+     (fn add-locations-event [app-db [_ direction locations]]
+       (-> app-db
+           (add-locations locations)
+           (assoc-in [:loading direction] false))))
 
     (re-frame/reg-event-db
-     :add-locations
-     (fn add-locations-event [app-db [_ locations]]
-       (add-locations app-db locations)))
+     :set-current-location
+     (fn set-current-location-event [app-db [_ current-location]]
+       (assoc app-db :current-location current-location)))
 
     (re-frame/reg-event-db
      :set-buffer-size
      (fn set-buffer-size-event [app-db [_ n]]
-       (assoc app-db :buffer-size n))))
+       (assoc app-db :buffer-size n)))
+
+    (re-frame/reg-event-db
+     :set-loading-before
+     (fn set-loading-before-event [app-db _]
+       (assoc-in app-db [:loading :before] true)))
+
+    (re-frame/reg-event-db
+     :set-loading-after
+     (fn set-loading-after-event [app-db _]
+       (assoc-in app-db [:loading :after] true))))
 
   (trace-forms {:tracer (tracer :color "brown")}
     (re-frame/reg-sub
@@ -72,6 +84,16 @@
      :buffer-size
      (fn buffer-size-sub [app-db _]
        (:buffer-size app-db)))
+
+    (re-frame/reg-sub
+     :loading-before
+     (fn loading-before-sub [app-db _]
+       (get-in app-db [:loading :before])))
+
+    (re-frame/reg-sub
+     :loading-after
+     (fn loading-after-sub [app-db _]
+       (get-in app-db [:loading :after])))
 
     ;; Level two subscription
 
@@ -125,13 +147,17 @@
      :<- [:buffer-size]
      :<- [:first-image-location]
      :<- [:before-locations-count]
-     (fn loading-before-buffer-sub [[comic-coord buffer-size first-location before-buffer-size] _]
-       (when (> buffer-size before-buffer-size)
+     :<- [:loading-before]
+     (fn loading-before-buffer-sub
+       [[comic-coord buffer-size first-location before-buffer-size loading-before] _]
+       (when (and (not loading-before)
+                  (> buffer-size before-buffer-size))
+         (base/do-later #(re-frame/dispatch [:set-loading-before]))
          (api/get-prev-locations (:site-id comic-coord)
                                  (:comic-id comic-coord)
                                  first-location
                                  buffer-size
-                                 {:on-success #(re-frame/dispatch [:add-locations %])})
+                                 {:on-success #(re-frame/dispatch [:add-locations :before %])})
          true)))
 
     (re-frame/reg-sub
@@ -140,13 +166,17 @@
      :<- [:buffer-size]
      :<- [:last-image-location]
      :<- [:after-locations-count]
-     (fn loading-after-buffer-sub [[comic-coord buffer-size last-location after-buffer-size] _]
-       (when (> buffer-size after-buffer-size)
+     :<- [:loading-after]
+     (fn loading-after-buffer-sub
+       [[comic-coord buffer-size last-location after-buffer-size loading-after] _]
+       (when (and (not loading-after)
+                  (> buffer-size after-buffer-size))
+         (base/do-later #(re-frame/dispatch [:set-loading-after]))
          (api/get-next-locations (:site-id comic-coord)
                                  (:comic-id comic-coord)
                                  last-location
                                  buffer-size
-                                 {:on-success #(re-frame/dispatch [:add-locations %])})
+                                 {:on-success #(re-frame/dispatch [:add-locations :after %])})
          true)))
 
     (re-frame/reg-sub
@@ -171,9 +201,7 @@
 
 (defn reader [set-current-location locations loading-before loading-after]
   [:div
-   (when loading-before [base/loading])
-   [comic-location-list #(re-frame/dispatch [:set-current-location %]) locations]
-   (when loading-before [base/loading])])
+   [comic-location-list #(re-frame/dispatch [:set-current-location %]) locations]])
 
 (defn view []
   (let [current-locations (re-frame/subscribe [:current-locations])
