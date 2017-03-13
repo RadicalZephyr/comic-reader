@@ -16,6 +16,12 @@
       (concat (take-last n before) current (take n after))
       [])))
 
+(defn add-locations-before [app-db locations]
+  (update app-db :locations #(concat locations %)))
+
+(defn add-locations-after [app-db locations]
+  (update app-db :locations #(concat % locations)))
+
 (defn setup! []
   (re-frame/reg-sub
    :locations
@@ -107,6 +113,11 @@
                                {:on-success #(re-frame/dispatch [:add-locations-before %])})
        true)))
 
+  (re-frame/reg-event-db
+   :add-locations-before
+   (fn [app-db [_ locations]]
+     (add-locations-before app-db locations)))
+
   (re-frame/reg-sub
    :loading-after-buffer
    :<- [:comic-coordinates]
@@ -121,6 +132,11 @@
                                buffer-size
                                {:on-success #(re-frame/dispatch [:add-locations-after %])})
        true)))
+
+  (re-frame/reg-event-db
+   :add-locations-after
+   (fn [app-db [_ locations]]
+     (add-locations-after app-db locations)))
 
   (re-frame/reg-sub
    :current-locations
@@ -149,4 +165,6 @@
   (let [current-locations (re-frame/subscribe [:current-locations])
         loading-before (re-frame/subscribe [:loading-before-buffer])
         loading-after  (re-frame/subscribe [:loading-after-buffer])]
+    @loading-before
+    @loading-after
     [reader #(re-frame/dispatch [:set-current-location %]) @current-locations]))
