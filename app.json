@@ -5,6 +5,12 @@
     "BUILD_CONFIG_WHITELIST":{
       "required":true
     },
+    "BOOT_VERSION":{
+      "required":true
+    },
+    "BOOT_SH_VERSION":{
+      "required":true
+    },
     "DATOMIC_PASSWORD":{
       "required":true
     },
@@ -12,5 +18,10 @@
       "required":true
     }
   },
+  "buildpacks": [
+    {
+      "url": "https://github.com/upworthy/heroku-buildpack-boot.git"
+    }
+  ],
   "addons":[]
 }
