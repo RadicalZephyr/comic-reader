@@ -66,7 +66,6 @@
                             [cljs-ajax "0.5.8"]
 
                             ;; Dev Dependencies
-                            [org.clojure/tools.namespace "0.3.0-alpha3" :scope "test"]
                             [radicalzephyr/clansi "1.2.0" :scope "test"]
                             [aysylu/loom "1.0.0" :scope "test"]
 
