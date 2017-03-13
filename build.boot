@@ -150,8 +150,7 @@
         (cljs)))
 
 (deftask development []
-  (set-env! :source-paths #(conj % "dev-src/clj")
-            :resource-paths #(conj %  "dev-resources"))
+  (set-env! :resource-paths #(conj %  "dev-resources"))
   (task-options! cljs {:optimizations :none}
                  reload {:on-jsload 'comic-reader.main/main})
   identity)
