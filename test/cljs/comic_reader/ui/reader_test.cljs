@@ -55,21 +55,21 @@
            (sut/current-locations [[1 2] [:current] []] 1))))
 
   (testing "can select 1 on either side of the current location"
-    (is (= [1 {:image/location :a} 2]
-           (sut/current-locations [[1] [{:image/location :a}] [2]] 1)))
+    (is (= [1 :a 2]
+           (sut/current-locations [[1] [:a] [2]] 1)))
 
-    (is (= [2 {:image/location :a} 3]
-           (sut/current-locations [[1 2] [{:image/location :a}] [3 4]]   1))))
+    (is (= [2 :a 3]
+           (sut/current-locations [[1 2] [:a] [3 4]]   1))))
 
   (testing "selects n on either side of the current location"
-    (is (= [1 2 {:image/location :a} 3 4]
-           (sut/current-locations [[1 2] [{:image/location :a}] [3 4]] 2))))
+    (is (= [1 2 :a 3 4]
+           (sut/current-locations [[1 2] [:a] [3 4]] 2))))
 
   (testing "Only selects as many images as have been loaded"
-    (is (= [1 {:image/location :a} 2]
-           (sut/current-locations [[1] [{:image/location :a}] [2]] 10)))
-    (is (= [1 {:image/location :a} 2 3 4]
-           (sut/current-locations [[1] [{:image/location :a}] [2 3 4]] 10)))))
+    (is (= [1 :a 2]
+           (sut/current-locations [[1] [:a] [2]] 10)))
+    (is (= [1 :a 2 3 4]
+           (sut/current-locations [[1] [:a] [2 3 4]] 10)))))
 
 (defcard-rg comic-image-list
   (fn [data _]
