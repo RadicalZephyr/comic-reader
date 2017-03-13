@@ -14,11 +14,9 @@
                       [])]
     partitioned))
 
-(defn current-locations [partitioned-locations n]
+(defn current-locations [partitioned-locations]
   (let [[before current after] partitioned-locations]
-    (if (number? n)
-      (concat (take-last n before) current (take n after))
-      [])))
+    (concat before current (take 2 after))))
 
 (defn location-key [location]
   [(get-in location [:location/chapter :chapter/number])
@@ -182,9 +180,8 @@
     (re-frame/reg-sub
      :current-locations
      :<- [:partitioned-locations]
-     :<- [:buffer-size]
-     (fn current-locations-sub [[partitioned-locations buffer-size] _]
-       (current-locations partitioned-locations buffer-size)))))
+     (fn current-locations-sub [[partitioned-locations] _]
+       (current-locations partitioned-locations)))))
 
 (defn- location-id [location]
   (str (get-in location [:location/chapter :chapter/number])
