@@ -75,7 +75,7 @@
    :<- [:locations]
    :<- [:current-location]
    (fn [[locations current-location] _]
-     (partitioned-locations locations current-location)))
+     (partitioned-locations (seq locations) current-location)))
 
   (re-frame/reg-sub
    :comic-coordinates
@@ -88,14 +88,16 @@
   (re-frame/reg-sub
    :first-image-location
    :<- [:locations]
-   (fn [[images] _]
-     (first images)))
+   (fn [locations _]
+     (when locations
+       (first (seq locations)))))
 
   (re-frame/reg-sub
    :last-image-location
    :<- [:locations]
-   (fn [[images] _]
-     (last images)))
+   (fn [locations _]
+     (when locations
+       (first (rseq locations)))))
 
 
   ;; Level three subscriptions
