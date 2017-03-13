@@ -20,22 +20,22 @@
            (sut/partitioned-locations nil :location/abc))))
 
   (testing "partitions based on the given image location"
-    (is (= [[1] [{:image/location :a}] [2]]
-           (sut/partitioned-locations [1 {:image/location :a} 2] :a)))
+    (is (= [[1] [:a] [2]]
+           (sut/partitioned-locations [1 :a 2] :a)))
 
-    (is (= [[1] [{:image/location :a}] [2 3 4]]
-           (sut/partitioned-locations [1 {:image/location :a} 2 3 4] :a)))
+    (is (= [[1] [:a] [2 3 4]]
+           (sut/partitioned-locations [1 :a 2 3 4] :a)))
 
-    (is (= [[-1 0 1] [{:image/location :a}] [2]]
-           (sut/partitioned-locations [-1 0 1 {:image/location :a} 2] :a))))
+    (is (= [[-1 0 1] [:a] [2]]
+           (sut/partitioned-locations [-1 0 1 :a 2] :a))))
 
   (testing "returns meaningful partitions when there are no preceding items"
-    (is (= [[] [{:image/location :a}] [2]]
-           (sut/partitioned-locations [{:image/location :a} 2] :a))))
+    (is (= [[] [:a] [2]]
+           (sut/partitioned-locations [:a 2] :a))))
 
   (testing "returns meaningful partitions when there are no following items"
-    (is (= [[1 2] [{:image/location :a}] []]
-           (sut/partitioned-locations [1 2 {:image/location :a}] :a)))))
+    (is (= [[1 2] [:a] []]
+           (sut/partitioned-locations [1 2 :a] :a)))))
 
 (deftest test-current-locations
   (testing "can handle having a nil buffer-size"

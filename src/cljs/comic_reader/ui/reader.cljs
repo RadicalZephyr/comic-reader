@@ -4,12 +4,13 @@
             [comic-reader.api :as api]
             [comic-reader.ui.base :as base]))
 
-(defn partitioned-locations [images current-location]
-  (if (seq images)
-    (->> (concat [nil] images [nil])
-         (partition-by #(= (:image/location %) current-location))
-         (map #(keep identity %)))
-    []))
+(defn partitioned-locations [locations current-location]
+  (let [partitioned (if (seq locations)
+                      (->> (concat [nil] locations [nil])
+                           (partition-by #(= % current-location))
+                           (map #(keep identity %)))
+                      [])]
+    partitioned))
 
 (defn current-locations [partitioned-locations n]
   (let [[before current after] partitioned-locations]
@@ -61,8 +62,8 @@
    :partitioned-locations
    :<- [:locations]
    :<- [:current-location]
-   (fn [[images current-location] _]
-     (partitioned-locations images current-location)))
+   (fn [[locations current-location] _]
+     (partitioned-locations locations current-location)))
 
   (re-frame/reg-sub
    :comic-coordinates
