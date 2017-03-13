@@ -38,38 +38,21 @@
            (sut/partitioned-locations [1 2 :a] :a)))))
 
 (deftest test-current-locations
-  (testing "can handle having a nil buffer-size"
-    (is (= []
-           (sut/current-locations [] nil))))
-
   (testing "can handle having no images"
     (is (= []
-           (sut/current-locations [] 1))))
+           (sut/current-locations []))))
 
   (testing "can handle not having any previous items"
-    (is (= [:current 2]
-           (sut/current-locations [[] [:current] [2 3]]  1))))
+    (is (= [:current 2 3]
+           (sut/current-locations [[] [:current] [2 3]]))))
 
   (testing "can handle not having any following items"
-    (is (= [2 :current]
-           (sut/current-locations [[1 2] [:current] []] 1))))
+    (is (= [1 2 :current]
+           (sut/current-locations [[1 2] [:current] []]))))
 
-  (testing "can select 1 on either side of the current location"
-    (is (= [1 :a 2]
-           (sut/current-locations [[1] [:a] [2]] 1)))
-
-    (is (= [2 :a 3]
-           (sut/current-locations [[1 2] [:a] [3 4]]   1))))
-
-  (testing "selects n on either side of the current location"
-    (is (= [1 2 :a 3 4]
-           (sut/current-locations [[1 2] [:a] [3 4]] 2))))
-
-  (testing "Only selects as many images as have been loaded"
-    (is (= [1 :a 2]
-           (sut/current-locations [[1] [:a] [2]] 10)))
-    (is (= [1 :a 2 3 4]
-           (sut/current-locations [[1] [:a] [2 3 4]] 10)))))
+  (testing "selects all before and 2 after the current location"
+    (is (= [1 2 3 4 :a 5 6]
+           (sut/current-locations [[1 2 3 4] [:a] [5 6 7 8]])))))
 
 (defcard-rg comic-image-list
   (fn [data _]
@@ -94,8 +77,8 @@
                      [(gs/& (gs/nth-child "0n+3"))
                       [:div.com-rigsomelight-devcards-typog.com-rigsomelight-rendered-edn
                        {:position "fixed"
-                        :top "10px"
-                        :left "10px"}]]]])}}]
+                        :top "30px"
+                        :left "5px"}]]]])}}]
         [sut/comic-location-list set-current locations]])))
   (reagent/atom {})
   {:inspect-data true})

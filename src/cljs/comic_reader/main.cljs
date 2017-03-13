@@ -32,7 +32,7 @@
   (re-frame/reg-event-db
    :init-db
    (fn [db _]
-     (assoc db :buffer-size 5)))
+     (assoc db :buffer-size 10)))
 
   (re-frame/reg-sub
    :page-key
