@@ -90,10 +90,17 @@
   (let [page-key (re-frame/subscribe [:page-key])]
     [#'main-panel @page-key]))
 
+(defn render-root []
+  (reagent/render-component [#'main-panel-container]
+                            (.getElementById js/document "app")))
+
 (defn ^:export main []
-  (enable-console-print!)
   (setup!)
   (re-frame/dispatch [:init-db])
   (re-frame/dispatch [:view-sites])
-  (reagent/render-component [main-panel-container]
-                            (.getElementById js/document "app")))
+  (render-root))
+
+(defn dev-reload []
+  (re-frame.core/clear-subscription-cache!)
+  (setup!)
+  (render-root))

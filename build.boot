@@ -154,7 +154,7 @@
   (set-env! :resource-paths #(conj %  "dev-resources"))
   (task-options! cljs {:optimizations :none
                        :compiler-options {:closure-defines {"clairvoyant.core.devmode" true}}}
-                 reload {:on-jsload 'comic-reader.main/main})
+                 reload {:on-jsload 'comic-reader.main/dev-reload})
   identity)
 
 (deftask testing []
