@@ -58,17 +58,17 @@
   (trace-forms {:tracer (tracer :color "brown")}
     (re-frame/reg-sub
      :locations
-     (fn locations [app-db _]
+     (fn locations-sub [app-db _]
        (:locations app-db)))
 
     (re-frame/reg-sub
      :current-location
-     (fn current-location [app-db _]
+     (fn current-location-sub [app-db _]
        (:current-location app-db)))
 
     (re-frame/reg-sub
      :buffer-size
-     (fn buffer-size [app-db _]
+     (fn buffer-size-sub [app-db _]
        (:buffer-size app-db)))
 
     ;; Level two subscription
@@ -77,28 +77,28 @@
      :partitioned-locations
      :<- [:locations]
      :<- [:current-location]
-     (fn partitioned-locations [[locations current-location] _]
+     (fn partitioned-locations-sub [[locations current-location] _]
        (partitioned-locations (seq locations) current-location)))
 
     (re-frame/reg-sub
      :comic-coordinates
      :<- [:site-id]
      :<- [:comic-id]
-     (fn comic-coordinates [[site-id comic-id] _]
+     (fn comic-coordinates-sub [[site-id comic-id] _]
        {:site-id site-id
         :comic-id comic-id}))
 
     (re-frame/reg-sub
      :first-image-location
      :<- [:locations]
-     (fn first-image-location [locations _]
+     (fn first-image-location-sub [locations _]
        (when locations
          (first (seq locations)))))
 
     (re-frame/reg-sub
      :last-image-location
      :<- [:locations]
-     (fn last-image-location [locations _]
+     (fn last-image-location-sub [locations _]
        (when locations
          (first (rseq locations)))))
 
@@ -108,13 +108,13 @@
     (re-frame/reg-sub
      :before-locations-count
      :<- [:partitioned-locations]
-     (fn before-locations-count [[before _ _] _]
+     (fn before-locations-count-sub [[before _ _] _]
        (count before)))
 
     (re-frame/reg-sub
      :after-locations-count
      :<- [:partitioned-locations]
-     (fn after-locations-count [[_ _ after] _]
+     (fn after-locations-count-sub [[_ _ after] _]
        (count after)))
 
     (re-frame/reg-sub
@@ -123,7 +123,7 @@
      :<- [:buffer-size]
      :<- [:first-image-location]
      :<- [:before-locations-count]
-     (fn loading-before-buffer [[comic-coord buffer-size first-location before-buffer-size] _]
+     (fn loading-before-buffer-sub [[comic-coord buffer-size first-location before-buffer-size] _]
        (when (> buffer-size before-buffer-size)
          (api/get-prev-locations (:site-id comic-coord)
                                  (:comic-id comic-coord)
@@ -138,7 +138,7 @@
      :<- [:buffer-size]
      :<- [:last-image-location]
      :<- [:after-locations-count]
-     (fn loading-after-buffer [[comic-coord buffer-size last-location after-buffer-size] _]
+     (fn loading-after-buffer-sub [[comic-coord buffer-size last-location after-buffer-size] _]
        (when (> buffer-size after-buffer-size)
          (api/get-next-locations (:site-id comic-coord)
                                  (:comic-id comic-coord)
@@ -151,7 +151,7 @@
      :current-locations
      :<- [:partitioned-locations]
      :<- [:buffer-size]
-     (fn current-locations [[partitioned-locations buffer-size] _]
+     (fn current-locations-sub [[partitioned-locations buffer-size] _]
        (current-locations partitioned-locations buffer-size)))))
 
 (defn- location-id [location]
