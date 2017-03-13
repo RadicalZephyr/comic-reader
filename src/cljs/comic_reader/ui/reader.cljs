@@ -36,7 +36,7 @@
    (location-sorted-set)))
 
 (defn add-locations [app-db locations]
-  (update app-db :locations conj-locations))
+  (update app-db :locations conj-locations locations))
 
 (defn setup! []
   (trace-forms {:tracer (tracer :color "green")}
