@@ -99,7 +99,11 @@
 (defcard-rg comic-image-reader
   (fn [data _]
     (let [set-data! #(swap! data assoc :current-location %)
-          locations []]
+          locations [{:location/chapter {:chapter/title "The Gamer 1"
+                                         :chapter/url "http://www.mangareader.net/the-gamer/1"
+                                         :chapter/number 1}
+                      :location/page {:page/number 1
+                                      :page/url "http://www.mangareader.net/the-gamer/1"}}]]
       [sut/reader set-data! locations]))
   (reagent/atom {})
   {:inspect-data true})
