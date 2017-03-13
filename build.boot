@@ -139,9 +139,9 @@
                          (v)
                          (util/warn "Could not find var '%s\n" s))))]
     (when (exists-but-no-ns? before)
-      (util/warn "Before symbol `%s` should be fully namespace qualified.\n" (prn-str before)))
+      (util/warn "Before symbol `%s` should be fully namespace qualified.\n" (pr-str before)))
     (when (exists-but-no-ns? after)
-      (util/warn "After symbol `%s` should be fully namespace qualified.\n" (prn-str after)))
+      (util/warn "After symbol `%s` should be fully namespace qualified.\n" (pr-str after)))
     (comp
      (if before
        (with-pass-thru _
