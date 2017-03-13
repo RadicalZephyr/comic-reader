@@ -1,33 +1,23 @@
-(ns comic-reader.config
-  (:require [com.stuartsierra.component :as component]
-            [environ.core :refer [env]]))
+(ns comic-reader.config)
 
 (defprotocol Config
+  (testing? [cfg])
   (database-uri [cfg])
-  (norms-dir [cfg]))
+  (norms-dir [cfg])
+  (server-port [cfg]))
 
-(defrecord EnvConfig [database-uri norms-dir]
-  component/Lifecycle
+(extend-protocol Config
+  nil
+  (testing? [cfg])
+  (database-uri [cfg])
+  (norms-dir [cfg])
+  (server-port [cfg])
 
-  (start [component]
-    (println "Comic-Reader: Loading configuration...")
-    (assoc component
-           :database-uri (env :database-uri)
-           :norms-dir    (env :norms-dir)))
+  clojure.lang.APersistentMap
+  (testing? [cfg] (:testing? cfg))
 
-  (stop [component]
-    component)
-
-  Config
   (database-uri [cfg] (:database-uri cfg))
 
-  (norms-dir [cfg] (:norms-dir cfg)))
+  (norms-dir [cfg] (:norms-dir cfg))
 
-(extend-type clojure.lang.APersistentMap
-  Config
-  (database-uri [cfg] (:database-uri cfg))
-
-  (norms-dir [cfg] (:norms-dir cfg)))
-
-(defn new-config []
-  (map->EnvConfig {}))
+  (server-port [cfg] (:server-port cfg)))

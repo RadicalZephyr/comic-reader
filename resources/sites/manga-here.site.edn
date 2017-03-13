@@ -1,0 +1,28 @@
+{
+ :site/image-selector [:section#viewer.read_img :a :img]
+ :site/manga-list-format "%s/mangalist/"
+ :site/comic-list-selector [:li :a.manga_info]
+
+ :site/page-normalize-pattern #"(?:\d+\.html)?$"
+ :site/page-normalize-format "%s/%s"
+
+ :site/chapter-number-pattern #"/\d*$"
+
+ :site/page-list-selector [:section.readpage_top :div :span :select.wid60 :option]
+
+ :site/root-url "http://www.mangahere.co"
+ :site/manga-url-format "%s/manga/"
+
+ :site/manga-url-suffix-pattern #"(.*?)/$"
+
+ :site/comic-link-name-normalize :trim-second
+ :site/comic-link-url-normalize :nothing
+
+ :site/chapter-link-name-normalize :trim-first
+ :site/chapter-link-url-normalize :nothing
+
+ :site/chapter-list-selector [:div.manga_detail :div.detail_list :ul :li :span.left :a]
+ :site/chapter-number-match-pattern #"c0*(\d*)/"
+
+ :site/comic->url-format "%s%s/"
+ }

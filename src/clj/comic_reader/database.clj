@@ -1,5 +1,6 @@
 (ns comic-reader.database
-  (:require [com.stuartsierra.component :as component]
+  (:require [clojure.tools.logging :as log]
+            [com.stuartsierra.component :as component]
             [comic-reader.config :as config]
             [comic-reader.database.norms :as norms]
             [datomic.api :as d]
@@ -13,12 +14,12 @@
 
 (defn- setup-and-connect-to-database [config]
   (when (config/database-uri config)
-    (println "Comic-Reader: Connecting to database...")
+    (log/info "Connecting to database...")
     (let [do-seeds? (create-database config)
           conn (connect config)]
       ;; Conform database to schemas here
       (when-let [norms-dir (config/norms-dir config)]
-        (println "Comic-Reader: Conforming database to norms...")
+        (log/info "Conforming database to norms...")
         (conformity/ensure-conforms conn (norms/norms-map norms-dir)))
 
       ;; Add seeds if database was newly created
@@ -27,12 +28,12 @@
       conn)))
 
 (defprotocol Database
-  (get-conn [database] "Return the connection to the database."))
+  (connection [database] "Returns a connection to the database.")
+  (destroy [database] "Destroy the database."))
 
 (defrecord DatomicDatabase [config conn]
 
   component/Lifecycle
-
   (start [component]
     (if-let [config (:config component)]
       (assoc component :conn
@@ -40,11 +41,14 @@
       component))
 
   (stop [component]
-    (println "Comic-Reader: Disconnecting from database...")
+    (log/info "Disconnecting from database...")
     (dissoc component :conn))
 
   Database
-  (get-conn [database] (:conn database)))
+  (connection [database] conn)
+
+  (destroy [database]
+    (d/delete-database (config/database-uri config))))
 
 (defn database? [e]
   (instance? DatomicDatabase e))

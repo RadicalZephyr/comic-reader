@@ -1,36 +1,30 @@
 (ns comic-reader.server
-  (:require [comic-reader.web-app :as web-app]
+  (:require [clojure.tools.logging :as log]
+            [comic-reader.config :as config]
+            [comic-reader.web-app :as web-app]
             [com.stuartsierra.component :as component]
-            [ring.adapter.jetty :refer [run-jetty]])
-  (:import org.eclipse.jetty.server.Server))
+            [org.httpkit.server :as server]))
 
-(defrecord WebServer [port ^Server server web-app]
+(defrecord WebServer [config web-app stop-server]
   component/Lifecycle
 
   (start [component]
-    (if server
+    (if stop-server
       component
-      (do
-        (printf "Comic-Reader: Starting web server on port: %d ...\n"
-                port)
+      (let [port (Integer. (config/server-port config))]
+        (log/info (format "Starting web server on port: %d ...\n" port))
         (assoc component
-               :server (run-jetty (web-app/get-routes web-app)
-                                  {:port port
-                                   :join? false})))))
+               :stop-server (server/run-server (web-app/get-routes web-app)
+                                               {:port port})))))
 
   (stop [component]
-    (if-not server
+    (if-not stop-server
       component
       (do
-        (when-not (or (.isStopped server)
-                      (.isStopping server))
-          (println "Comic-Reader: Shutting down web server...")
-          (.stop server))
-        (if (.isStopped server)
-          (assoc component
-                 :web-app nil
-                 :server nil)
-          component)))))
+        (log/info "Shutting down web server...")
+        (stop-server)
+        (assoc component
+               :stop-server nil)))))
 
-(defn new-server [port]
-  (map->WebServer {:port port}))
+(defn new-server []
+  (map->WebServer {}))

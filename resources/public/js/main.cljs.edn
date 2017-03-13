@@ -1,0 +1,2 @@
+{:require [comic-reader.main]
+ :compiler-options {:asset-path "/public/js/main.out"}}

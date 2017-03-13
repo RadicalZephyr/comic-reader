@@ -8,11 +8,11 @@
   (t/is (= (sut/make-site-entry "non-existent")
            ["non-existent" nil]))
 
-  (let [test-file (io/as-file "resources/sites/test-site.clj")]
+  (let [test-file (io/as-file "resources/sites/test.site.edn")]
     (spit test-file "{}")
-    (let [[label opts] (sut/make-site-entry "test-site")]
+    (let [[label opts] (sut/make-site-entry "test")]
       (t/is (= label
-               "test-site"))
+               "test"))
       (t/is (= (class opts)
                MangaSite)))
     (io/delete-file test-file)))

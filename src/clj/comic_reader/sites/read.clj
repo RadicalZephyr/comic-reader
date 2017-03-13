@@ -1,31 +1,35 @@
 (ns comic-reader.sites.read
   (:require [clojure.java.io :as io]
             [clojure.tools.reader :as r]
+            [clojure.string :as str]
             [comic-reader.resources :as resources]
             [environ.core :refer [env]])
   (:import java.io.PushbackReader))
 
-(def sites-list-file-name "sites-list.clj")
+(def sites-list-file-name "sites-list.edn")
 
-(defn- base-name [file]
+(defn- file-name [file]
   (->> file
        io/as-file
-       .getName
-       (re-matches #"^(.*)\..*?$")
-       second))
+       .getName))
+
+(def process-sites
+  (comp
+   (filter #(str/ends-with? % ".site.edn"))
+   (map file-name)
+   (map #(str/replace % #"\.site\.edn$" ""))))
 
 (defn find-all-sites []
-  (->> "sites"
-       resources/file-seq
-       (map base-name)))
+  (into [] process-sites
+        (resources/resource-seq "sites")))
 
 (defn get-sites-list []
-  (if (io/resource sites-list-file-name)
-    (resources/read-resource sites-list-file-name)
-    (find-all-sites)))
+  (or
+   (seq (resources/try-read-resource sites-list-file-name))
+   (find-all-sites)))
 
 (defn read-site-options [site-name]
-  (if-let [file (str "sites/" site-name ".clj")]
+  (if-let [file (str "sites/" site-name ".site.edn")]
     (resources/read-resource file)
     (throw (IllegalArgumentException.
             (str "`sites/" site-name "' "

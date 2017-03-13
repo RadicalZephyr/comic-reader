@@ -1,6 +1,33 @@
 (ns comic-reader.ui.image
-  (:require [reagent.core :as reagent]
-            [cljsjs.waypoints]))
+  (:require [re-frame.core :as re-frame]
+            [reagent.core :as reagent]
+            [comic-reader.api :as api]
+            [cljsjs.waypoints]
+            [comic-reader.ui.base :as base]))
+
+(defn setup! []
+  (re-frame/reg-sub
+   :raw-image
+   (fn [app-db [_ location]]
+     (get-in app-db [:images location])))
+
+  (re-frame/reg-sub
+   :image
+   (fn [[_ location] _]
+     [(re-frame/subscribe [:site-id])
+      (re-frame/subscribe [:raw-image location])])
+
+   (fn [[site-id image] [_ location]]
+     (if image
+       image
+       (when site-id
+         (api/get-image site-id location {:on-success #(re-frame/dispatch [:store-image location %])})
+         :loading))))
+
+  (re-frame/reg-event-db
+   :store-image
+   (fn [app-db [_ location image-tag]]
+     (assoc-in app-db [:images location] image-tag))))
 
 (defn make-waypoint [options]
   (js/Waypoint. (clj->js options)))
@@ -33,5 +60,11 @@
         (reset! waypoints nil))
       :reagent-render
       (fn [_ tag]
-        [:div.row
-         [:div.medium-12.columns tag]])})))
+        (if (= tag :loading)
+          [base/loading]
+          [:div.row
+           [:div.medium-12.columns tag]]))})))
+
+(defn comic-image-container [set-current-comic location]
+  (let [image (re-frame/subscribe [:image location])]
+    [comic-image set-current-comic @image]))

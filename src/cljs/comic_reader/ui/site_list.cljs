@@ -1,7 +1,6 @@
 (ns comic-reader.ui.site-list
   (:refer-clojure :exclude [get set])
   (:require [re-frame.core :as re-frame]
-            [reagent.ratom :refer-macros [reaction]]
             [comic-reader.ui.base :as base]))
 
 (defn get* [db]
@@ -11,12 +10,12 @@
   (assoc db :site-list sites))
 
 (defn setup! []
-  (re-frame/register-sub
+  (re-frame/reg-sub
    :site-list
    (fn [app-db _]
-     (reaction (get* @app-db))))
+     (get* app-db)))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :set-site-list
    (fn [db [_ sites]]
      (set* db sites))))
@@ -34,8 +33,8 @@
     :list-element [:ul.inline-list]
     :item->li (fn [site]
                 [:a.large.button.radius
-                 {:on-click #(view-site (:id site))}
-                 (:name site)])}
+                 {:on-click #(view-site (:site/id site))}
+                 (:site/name site)])}
    sites))
 
 (defn site-list-container []

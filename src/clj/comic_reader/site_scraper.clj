@@ -1,5 +1,6 @@
 (ns comic-reader.site-scraper
   (:require [clojure.string :as str]
+            [clojure.tools.logging :as log]
             [comic-reader.sites :as sites]
             [comic-reader.sites.protocol :refer :all]
             [comic-reader.sites.read :as site-read]
@@ -53,9 +54,9 @@
   component/Lifecycle
 
   (start [component]
-    (println "Comic-Reader: Loading site definitions...")
+    (log/info "Loading site definitions...")
     (let [sites (dissoc (get-sites) "test-site")]
-      (println "Comic-Reader:   Found sites: " (str/join ", " (keys sites)))
+      (log/info "Found sites: " (str/join ", " (keys sites)))
       (assoc component :sites sites)))
 
   (stop [component] component))

@@ -2,10 +2,11 @@
   (:require
     [comic-reader.api :as api]
     [comic-reader.ui.base :as base]
+    [comic-reader.ui.image :as image]
+    [comic-reader.ui.reader :as reader]
     [comic-reader.ui.site-list :as site-list]
     [comic-reader.ui.comic-list :as comic-list]
     [reagent.core :as reagent]
-    [reagent.ratom :refer-macros [reaction]]
     [re-frame.core :as re-frame]))
 
 (defn page-key [db]
@@ -22,24 +23,40 @@
       (assoc db :site-list :loading))))
 
 (defn setup! []
-  (re-frame/register-sub
+  (api/setup!)
+  (image/setup!)
+  (reader/setup!)
+  (site-list/setup!)
+  (comic-list/setup!)
+
+  (re-frame/reg-event-db
+   :init-db
+   (fn [db _]
+     (assoc db :buffer-size 10)))
+
+  (re-frame/reg-sub
    :page-key
    (fn [app-db v]
-     (reaction (page-key @app-db))))
+     (page-key app-db)))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :set-page-key
    (fn [db [_ page-key]]
      (set-page-key db page-key)))
 
-  (re-frame/register-handler
+  (re-frame/reg-event-db
    :view-sites
    (fn [db _]
      (-> db
          (set-page-key :site-list)
          (maybe-load-sites))))
 
-  (re-frame/register-handler
+  (re-frame/reg-sub
+   :site-id
+   (fn [app-db _]
+     (:site-id app-db)))
+
+  (re-frame/reg-event-db
    :view-comics
    (fn [db [_ site-id]]
      (api/get-comics site-id {:on-success comic-list/set})
@@ -48,34 +65,43 @@
          (assoc :site-id site-id
                 :comic-list :loading))))
 
-  (re-frame/register-handler
+  (re-frame/reg-sub
+   :comic-id
+   (fn [app-db _]
+     (:comic-id app-db)))
+
+  (re-frame/reg-event-db
    :read-comic
    (fn [db [_ comic-id]]
      (-> db
-         (set-page-key :reader)))))
+         (set-page-key :reader)
+         (assoc :comic-id comic-id
+                :loading-images true)))))
 
-(defn main-panel
-  [page-key]
+(defn main-panel [page-key]
   (case page-key
     :site-list [site-list/site-list-container]
     :comic-list [comic-list/comic-page-container]
-    :reader [:div [:h1 "Read a Comic!"]]
+    :reader [reader/view]
     nil [:span ""]
     [base/four-oh-four]))
 
 (defn main-panel-container []
   (let [page-key (re-frame/subscribe [:page-key])]
-    (fn []
-      [main-panel (deref page-key)])))
+    [#'main-panel @page-key]))
 
-(defn ^:export main
-  []
-  (enable-console-print!)
-  (setup!)
-  (site-list/setup!)
-  (comic-list/setup!)
-  (re-frame/dispatch [:view-sites])
-  (reagent/render-component [main-panel-container]
+(defn render-root []
+  (reagent/render-component [#'main-panel-container]
                             (.getElementById js/document "app")))
 
-(main)
+(defn ^:export main []
+  (setup!)
+  (re-frame/dispatch [:init-db])
+  (re-frame/dispatch [:view-sites])
+  (render-root))
+
+(defn dev-reload []
+  (re-frame.core/clear-subscription-cache!)
+  (setup!)
+  (.destroyAll js/Waypoint)
+  (render-root))

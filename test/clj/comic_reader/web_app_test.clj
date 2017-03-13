@@ -1,28 +1,30 @@
 (ns comic-reader.web-app-test
   (:require [clojure.test :as t]
             [comic-reader.site-scraper :as site-scraper]
-            [comic-reader.web-app :refer :all]
+            [comic-reader.web-app :as sut]
             [comic-reader.comic-repository.scraper :refer [new-scraper-repo]]
-            [comic-reader.mock-site-scraper :refer [mock-scraper]]
+            [comic-reader.site-scraper.mock :refer [mock-scraper]]
             [com.stuartsierra.component :as component]
             [ring.mock.request :as mock]))
 
 (defn server-test-system [scraper]
   (component/system-map
+   :config {:testing? true}
    :site-scraper scraper
    :comic-repository (component/using
                       (new-scraper-repo)
                       {:scraper :site-scraper})
    :web-app (component/using
-             (new-web-app)
-             {:repository :comic-repository})))
+             (sut/new-web-app)
+             {:config :config
+              :repository :comic-repository})))
 
 (defn test-system [scraper]
   (-> (server-test-system scraper)
       (component/start)))
 
 (defn app-routes [system]
-  (get-routes (:web-app system)))
+  (sut/get-routes (:web-app system)))
 
 (t/deftest test-home-page
   (t/is (= (:status
@@ -44,10 +46,10 @@
         (t/is (= (handle (mock/request :get "/api/v1/sites"))
                  {:status 200
                   :headers edn-content-type
-                  :body (str
-                         "({:id \"site-one\", :name \"Site One\"}"
-                         " {:id \"site-two\", :name \"Site Two\"}"
-                         " {:id \"site-three\", :name \"Site Three\"})")}))))
+                  :body ""
+                  :edn-body '({:site/id "site-one"   :site/name "Site One"}
+                              {:site/id "site-two"   :site/name "Site Two"}
+                              {:site/id "site-three" :site/name "Site Three"})}))))
 
     (t/testing "/:site-name/comics"
       (let [handle (app-routes
@@ -56,6 +58,7 @@
                                            [{:id "the_gamer"
                                              :name "The Gamer"
                                              :url "real_url"}
+
                                             {:id "other_comic"
                                              :name "Other Comic"
                                              :url "another_url"}]})))]
@@ -63,5 +66,11 @@
         (t/is (= (handle (mock/request :get "/api/v1/manga-here/comics"))
                  {:status 200
                   :headers edn-content-type
-                  :body (str "[{:id \"the_gamer\", :name \"The Gamer\", :url \"real_url\"}"
-                             " {:id \"other_comic\", :name \"Other Comic\", :url \"another_url\"}]")}))))))
+                  :body ""
+                  :edn-body '({:comic/id "the_gamer"
+                               :comic/name "The Gamer"
+                               :comic/url "real_url"}
+
+                              {:comic/id "other_comic"
+                               :comic/name "Other Comic"
+                               :comic/url "another_url"})}))))))

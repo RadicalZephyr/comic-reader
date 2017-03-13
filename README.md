@@ -14,12 +14,16 @@ Just run it!
 
 ## Development
 
-Run `lein repl` then, `(go)`.
+Run `lein repl` then, `(welcome)` to get an overview of your options.
 
 ### Adding a new site
 
-In theory, adding a new site shouldn't require writing any code.  Now
-create a new file in the `resources/sites/` folder. Name it
+From the `comic-reader.dev` namespace you can run `(add-site)`. This
+should set up your REPL to pretty easily run the site scraping tests
+with `(run-site-tests)`.
+
+In theory, adding a new site shouldn't require writing any code.
+First, create a new file in the `resources/sites/` folder. Name it
 `<your-manga-site>.clj`. Now, you need to fill in all the attributes
 for your site. You can look at other site files in that folder for
 guidance but the best source of information is running the tests in
