@@ -136,16 +136,22 @@
    (fn [[partitioned-images buffer-size] _]
      (current-images partitioned-images buffer-size))))
 
-(defn- image-id [image]
-  (:image/location image))
+(defn- location-id [location]
+  (str (get-in location [:location/chapter :chapter/number])
+       "-"
+       (get-in location [:location/page :page/number])))
 
-(defn- make-comic-image [set-current-location image]
+(defn- make-comic-image [set-current-location location]
   (with-meta
-    [image/comic-image #(set-current-location (:image/location image)) (:image/tag image)]
-    {:key (image-id image)}))
+    [image/comic-image-container #(set-current-location location) location]
+    {:key (location-id location)}))
 
-(defn comic-image-list [set-current-location images]
-  [:div (map #(make-comic-image set-current-location %) images)])
+(defn comic-location-list [set-current-location locations]
+  [:div (map #(make-comic-image set-current-location %) locations)])
+
+(defn reader [set-current-location locations]
+  [comic-location-list #(re-frame/dispatch [:set-current-location %]) locations])
 
 (defn view []
-  )
+  (let [current-locations (re-frame/subscribe [:current-locations])]
+    [reader #(re-frame/dispatch [:set-current-location %]) @current-locations]))

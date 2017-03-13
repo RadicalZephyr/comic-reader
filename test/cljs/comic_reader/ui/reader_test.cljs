@@ -70,8 +70,16 @@
 (defcard-rg comic-image-list
   (fn [data _]
     (let [set-current #(swap! data assoc :current-location %)
-          locations [{:image/location {:abc 1}}
-                     {:image/location {:abc 2}}]]
+          locations [{:location/chapter {:chapter/title "The Gamer 1"
+                                         :chapter/url "http://www.mangareader.net/the-gamer/1"
+                                         :chapter/number 1}
+                      :location/page {:page/number 1
+                                      :page/url "http://www.mangareader.net/the-gamer/1"}}
+                     {:location/chapter {:chapter/title "The Gamer 1"
+                                         :chapter/url "http://www.mangareader.net/the-gamer/1"
+                                         :chapter/number 1}
+                      :location/page {:page/number 2
+                                      :page/url "http://www.mangareader.net/the-gamer/1/2"}}]]
       (reactively
        [:div
         [:style {:dangerouslySetInnerHTML
@@ -79,16 +87,19 @@
                   (g/css
                    [:#com-rigsomelight-devcards-main
                     [:div.com-rigsomelight-devcard
-                     [(gs/& (gs/nth-child "0n+1"))
+                     [(gs/& (gs/nth-child "0n+3"))
                       [:div.com-rigsomelight-devcards-typog.com-rigsomelight-rendered-edn
                        {:position "fixed"
                         :top "10px"
                         :left "10px"}]]]])}}]
-        [sut/comic-image-list set-current locations]])))
+        [sut/comic-location-list set-current locations]])))
   (reagent/atom {})
   {:inspect-data true})
 
 (defcard-rg comic-image-reader
-  (fn [data _])
+  (fn [data _]
+    (let [set-data! #(swap! data assoc :current-location %)
+          locations []]
+      [sut/reader set-data! locations]))
   (reagent/atom {})
   {:inspect-data true})
