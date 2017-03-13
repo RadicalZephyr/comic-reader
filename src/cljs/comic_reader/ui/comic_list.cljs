@@ -100,7 +100,8 @@
     (str "" s)))
 
 (defn prefix-filter-comics [prefix comics]
-  (if-not (str/blank? prefix)
+  (if (and (not (str/blank? prefix))
+           (seqable? comics))
     (let [filter-re (re-pattern (str "(?i)^"
                                      (re-string prefix)))]
       (filter (fn [{name :comic/name}]
