@@ -180,7 +180,7 @@
     (re-frame/reg-sub
      :current-locations
      :<- [:partitioned-locations]
-     (fn current-locations-sub [[partitioned-locations] _]
+     (fn current-locations-sub [partitioned-locations _]
        (current-locations partitioned-locations)))))
 
 (defn- location-id [location]
