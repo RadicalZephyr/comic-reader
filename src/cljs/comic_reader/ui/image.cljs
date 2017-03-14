@@ -36,13 +36,15 @@
   (fn [this]
     (let [node (reagent/dom-node this)
           wp-down (make-waypoint {:element node
-                                  :handler #(when (= %
-                                                     "down")
+                                  :handler #(when (= % "down")
+                                              (.log js/console "down wp called")
+                                              (.log js/console %)
                                               (set-current-comic))})
           wp-up (make-waypoint {:element node
                                 :offset "bottom-in-view"
-                                :handler #(when (= %
-                                                   "up")
+                                :handler #(when (= % "up")
+                                            (.log js/console "up wp called")
+                                            (.log js/console %)
                                             (set-current-comic))})]
       (set-waypoints! [wp-up wp-down]))))
 
@@ -71,3 +73,35 @@
 (defn comic-image-container [set-current-comic location]
   (let [image (re-frame/subscribe [:image location])]
     [comic-image set-current-comic @image]))
+
+(defn- location-id [location]
+  (str (get-in location [:location/chapter :chapter/number])
+       "-"
+       (get-in location [:location/page :page/number])))
+
+(defn- make-comic-image [set-current-location location]
+  (with-meta
+    [comic-image-container #(set-current-location location) location]
+    {:key (location-id location)}))
+
+(defn comic-location-list [set-current-location locations]
+  (let [storage (atom {})]
+    (reagent/create-class
+     {:display-name "comic-location-list"
+      :component-will-update
+      (fn [this]
+        (let [node (reagent/dom-node this)]
+          (swap! storage assoc
+                 :scroll-height (.-scrollHeight node)
+                 :scroll-top (.-scrollTop node))))
+      :component-did-update
+      (fn [this]
+        (let [node (reagent/dom-node this)
+              curr-scroll-height (.-scrollTop node)
+              prev-scroll-height (:scroll-height @storage)
+              prev-scroll-top    (:scroll-top @storage)]
+          (set! (.-scrollTop node)
+                (+ prev-scroll-top (- curr-scroll-height prev-scroll-height)))))
+      :reagent-render
+      (fn [set-current-location locations]
+        [:div (map #(make-comic-image set-current-location %) locations)])})))

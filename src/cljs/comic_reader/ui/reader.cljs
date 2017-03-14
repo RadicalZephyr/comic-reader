@@ -1,6 +1,5 @@
 (ns comic-reader.ui.reader
   (:require [re-frame.core :as re-frame]
-            [reagent.core :as reagent]
             [comic-reader.ui.image :as image]
             [comic-reader.api :as api]
             [comic-reader.ui.base :as base]
@@ -184,41 +183,9 @@
      (fn current-locations-sub [partitioned-locations _]
        (current-locations partitioned-locations)))))
 
-(defn- location-id [location]
-  (str (get-in location [:location/chapter :chapter/number])
-       "-"
-       (get-in location [:location/page :page/number])))
-
-(defn- make-comic-image [set-current-location location]
-  (with-meta
-    [image/comic-image-container #(set-current-location location) location]
-    {:key (location-id location)}))
-
-(defn comic-location-list [set-current-location locations]
-  (let [storage (atom {})]
-    (reagent/create-class
-     {:display-name "comic-location-list"
-      :component-will-update
-      (fn [this]
-        (let [node (reagent/dom-node this)]
-          (swap! storage assoc
-                 :scroll-height (.-scrollHeight node)
-                 :scroll-top (.-scrollTop node))))
-      :component-did-update
-      (fn [this]
-        (let [node (reagent/dom-node this)
-              curr-scroll-height (.-scrollTop node)
-              prev-scroll-height (:scroll-height @storage)
-              prev-scroll-top    (:scroll-top @storage)]
-          (set! (.-scrollTop node)
-                (+ prev-scroll-top (- curr-scroll-height prev-scroll-height)))))
-      :reagent-render
-      (fn [set-current-location locations]
-        [:div (map #(make-comic-image set-current-location %) locations)])})))
-
 (defn reader [set-current-location locations loading-before loading-after]
   [:div
-   [comic-location-list #(re-frame/dispatch [:set-current-location %]) locations]])
+   [image/comic-location-list #(re-frame/dispatch [:set-current-location %]) locations]])
 
 (defn view []
   (let [current-locations (re-frame/subscribe [:current-locations])
