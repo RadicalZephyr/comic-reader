@@ -46,18 +46,21 @@
                                             (set-current-comic))})]
       (set-waypoints! [wp-up wp-down]))))
 
+(defn replace-waypoints [waypoints new-waypoints]
+  (doseq [wp waypoints]
+    (.destroy wp) )
+  new-waypoints)
+
 (defn comic-image [set-current-comic tag]
-  (let [waypoints (atom nil)]
+  (let [waypoints (atom nil)
+        set-waypoints! #(swap! waypoints replace-waypoints %)]
     (reagent/create-class
      {:display-name "comic-image"
       :component-did-mount
       (make-img-did-mount
-       #(reset! waypoints %)
+       set-waypoints!
        set-current-comic)
-      :component-will-unmount
-      (fn []
-        (map #(.destroy %) @waypoints)
-        (reset! waypoints nil))
+      :component-will-unmount #(set-waypoints! nil)
       :reagent-render
       (fn [_ tag]
         (if (= tag :loading)
