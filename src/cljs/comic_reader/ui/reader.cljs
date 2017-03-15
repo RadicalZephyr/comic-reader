@@ -42,7 +42,7 @@
   (trace-forms {:tracer (tracer :color "green")}
     (re-frame/reg-event-db
      :add-locations
-     (fn add-locations-event [app-db [_ direction locations]]
+     (fn add-locations-event [app-db [_ locations]]
        (add-locations app-db locations)))
 
     (re-frame/reg-event-db
