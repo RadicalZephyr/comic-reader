@@ -140,44 +140,6 @@
        (count after)))
 
     (re-frame/reg-sub
-     :loading-before-buffer
-     :<- [:comic-coordinates]
-     :<- [:buffer-size]
-     :<- [:first-image-location]
-     :<- [:before-locations-count]
-     :<- [:loading-before]
-     (fn loading-before-buffer-sub
-       [[comic-coord buffer-size first-location before-buffer-size loading-before] _]
-       (when (and (not loading-before)
-                  (> buffer-size before-buffer-size))
-         (base/do-later #(re-frame/dispatch [:set-loading-before]))
-         (api/get-prev-locations (:site-id comic-coord)
-                                 (:comic-id comic-coord)
-                                 first-location
-                                 buffer-size
-                                 {:on-success #(re-frame/dispatch [:add-locations :before %])})
-         true)))
-
-    (re-frame/reg-sub
-     :loading-after-buffer
-     :<- [:comic-coordinates]
-     :<- [:buffer-size]
-     :<- [:last-image-location]
-     :<- [:after-locations-count]
-     :<- [:loading-after]
-     (fn loading-after-buffer-sub
-       [[comic-coord buffer-size last-location after-buffer-size loading-after] _]
-       (when (and (not loading-after)
-                  (> buffer-size after-buffer-size))
-         (base/do-later #(re-frame/dispatch [:set-loading-after]))
-         (api/get-next-locations (:site-id comic-coord)
-                                 (:comic-id comic-coord)
-                                 last-location
-                                 buffer-size
-                                 {:on-success #(re-frame/dispatch [:add-locations :after %])})
-         true)))
-
-    (re-frame/reg-sub
      :current-locations
      :<- [:partitioned-locations]
      (fn current-locations-sub [partitioned-locations _]
@@ -188,11 +150,7 @@
    [image/comic-location-list #(re-frame/dispatch [:set-current-location %]) locations]])
 
 (defn view []
-  (let [current-locations (re-frame/subscribe [:current-locations])
-        loading-before (re-frame/subscribe [:loading-before-buffer])
-        loading-after  (re-frame/subscribe [:loading-after-buffer])]
+  (let [current-locations (re-frame/subscribe [:current-locations])]
     [reader
      #(re-frame/dispatch [:set-current-location %])
-     @current-locations
-     @loading-before
-     @loading-after]))
+     @current-locations]))
