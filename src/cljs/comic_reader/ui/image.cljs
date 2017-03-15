@@ -104,4 +104,4 @@
                 (+ prev-scroll-top (- curr-scroll-height prev-scroll-height)))))
       :reagent-render
       (fn [set-current-location locations]
-        [:div (map #(make-comic-image set-current-location %) locations)])})))
+        [:div.comic-list (map #(make-comic-image set-current-location %) locations)])})))
