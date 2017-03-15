@@ -19,6 +19,4 @@
               prev-scroll-top    (:scroll-top @storage)]
           (set! (.-scrollTop node)
                 (+ prev-scroll-top (- curr-scroll-height prev-scroll-height)))))
-      :reagent-render
-      (fn [child]
-        child)})))
+      :reagent-render identity})))
