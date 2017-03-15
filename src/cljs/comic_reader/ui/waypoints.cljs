@@ -39,33 +39,39 @@
 (defn- page-offset []
   (.-pageYOffset js/window))
 
-(defn check-waypoints [last-scroll-y]
+(defn- crossed? [trigger-point old-scroll-y new-scroll-y]
+  (let [was-before-trigger (<  old-scroll-y trigger-point)
+        now-after-trigger  (>= new-scroll-y trigger-point)
+        crossed-forward?  (and was-before-trigger
+                               now-after-trigger)
+        crossed-backward? (and (not was-before-trigger)
+                               (not now-after-trigger))]
+    (cond
+      crossed-forward?  :forward
+      crossed-backward? :backward
+      :else             nil)))
+
+(defn check-waypoints [old-scroll-y]
   (let [new-scroll-y (page-offset)]
-    (doseq [[id {:keys [options trigger-point]}] @waypoints]
-      (when trigger-point
-        (let [was-before-trigger (< last-scroll-y trigger-point)
-              now-after-trigger (>= new-scroll-y trigger-point)
-              crossed-forward (and was-before-trigger now-after-trigger)
-              crossed-backward (and (not was-before-trigger)
-                                    (not now-after-trigger))]
-          (when (or crossed-forward crossed-backward)
-            (let [direction (if crossed-forward :forward :backward)]
-              (.log js/console "Passed" id "going" direction)
-              (when-let [callback (:callback @options)]
-                (callback direction)))))))))
+    (doseq [[id {:keys [options trigger-point]}] @waypoints
+            :when trigger-point]
+      (when-let [direction (crossed? trigger-point old-scroll-y new-scroll-y)]
+        (.log js/console "Passed" id "going" direction)
+        (when-let [callback (:callback @options)]
+          (callback direction))))))
 
 (defn waypoint-context [_]
   (let [state (atom {})
-        throttler (Throttle. #(let [last-scroll-y (:last-scroll-y @state)]
+        throttler (Throttle. #(let [old-scroll-y (:old-scroll-y @state)]
                                 (swap! state assoc
                                        :ticking false
-                                       :last-scroll-y nil)
-                                (check-waypoints last-scroll-y)) 250)
+                                       :old-scroll-y nil)
+                                (check-waypoints old-scroll-y)) 250)
         listener-fn (fn []
                       (when (not (:ticking @state))
                         (swap! state assoc
                                :ticking true
-                               :last-scroll-y (page-offset)))
+                               :old-scroll-y (page-offset)))
                       (.fire throttler))]
     (reagent/create-class
      {:display-name "waypoint-context"
