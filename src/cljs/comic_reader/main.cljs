@@ -73,13 +73,17 @@
   (re-frame/reg-event-fx
    :read-comic
    (fn [cofx [_ comic-id]]
-     (let [new-db (-> (:db cofx)
-                      (set-page-key :reader)
-                      (assoc :comic-id comic-id
-                             :loading-images true))
-           site-id (:site-id new-db)]
-       {:db new-db
-        :api [[:next-locations  site-id comic-id nil {:on-success #(re-frame/dispatch [:add-locations ])}]]}))))
+     (let [db (:db cofx)
+           site-id (:site-id db)
+           buffer-size (:buffer-size db)]
+       {:db (-> db
+                (set-page-key :reader)
+                (assoc :comic-id comic-id
+                       :loading-images true))
+        :api [[:get-prev-locations site-id comic-id nil buffer-size
+               {:on-success #(re-frame/dispatch [:add-locations %])}]
+              [:get-next-locations site-id comic-id nil buffer-size
+               {:on-success #(re-frame/dispatch [:add-locations %])}]]}))))
 
 (defn main-panel [page-key]
   (case page-key
