@@ -43,9 +43,7 @@
     (re-frame/reg-event-db
      :add-locations
      (fn add-locations-event [app-db [_ direction locations]]
-       (-> app-db
-           (add-locations locations)
-           (assoc-in [:loading direction] false))))
+       (add-locations app-db locations)))
 
     (re-frame/reg-event-db
      :set-current-location
@@ -55,17 +53,7 @@
     (re-frame/reg-event-db
      :set-buffer-size
      (fn set-buffer-size-event [app-db [_ n]]
-       (assoc app-db :buffer-size n)))
-
-    (re-frame/reg-event-db
-     :set-loading-before
-     (fn set-loading-before-event [app-db _]
-       (assoc-in app-db [:loading :before] true)))
-
-    (re-frame/reg-event-db
-     :set-loading-after
-     (fn set-loading-after-event [app-db _]
-       (assoc-in app-db [:loading :after] true))))
+       (assoc app-db :buffer-size n))))
 
   (trace-forms {:tracer (tracer :color "brown")}
     (re-frame/reg-sub
