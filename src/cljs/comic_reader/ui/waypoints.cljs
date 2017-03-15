@@ -8,21 +8,22 @@
   (let [rect (.getBoundingClientRect node)]
     (+ (.-top rect) (.-pageYOffset js/window))))
 
-(defn- make-reset-trigger-point [id]
+(defn- make-reset-trigger-point [id options]
   (fn [this]
     (swap! waypoints assoc-in
            [id :trigger-point]
            (get-element-top (reagent/dom-node this)))))
 
-(defn waypoint [child-el options]
+(defn waypoint [child-el opts]
   (let [id (gensym "waypoint-id")
-        reset-trigger-point! (make-reset-trigger-point id)]
+        options (atom opts)
+        reset-trigger-point! (make-reset-trigger-point id options)]
     (reagent/create-class
      {:display-name "waypoint"
 
       :component-will-mount
       (fn []
-        (swap! waypoints assoc id {:callback (:callback options)}))
+        (swap! waypoints assoc id {:options options}))
       :component-will-unmount
       (fn []
         (swap! waypoints dissoc id))
@@ -31,7 +32,8 @@
       :component-did-update reset-trigger-point!
 
       :reagent-render
-      (fn [child-el]
+      (fn [child-el opts]
+        (reset! options opts)
         child-el)})))
 
 (defn- page-offset []
@@ -39,7 +41,7 @@
 
 (defn check-waypoints [last-scroll-y]
   (let [new-scroll-y (page-offset)]
-    (doseq [[id {:keys [callback trigger-point]}] @waypoints]
+    (doseq [[id {:keys [options trigger-point]}] @waypoints]
       (when trigger-point
         (let [was-before-trigger (< last-scroll-y trigger-point)
               now-after-trigger (>= new-scroll-y trigger-point)
@@ -49,7 +51,8 @@
           (when (or crossed-forward crossed-backward)
             (let [direction (if crossed-forward :forward :backward)]
               (.log js/console "Passed" id "going" direction)
-              (when callback (callback direction)))))))))
+              (when-let [callback (:callback @options)]
+                (callback direction)))))))))
 
 (defn waypoint-context [_]
   (let [state (atom {})
