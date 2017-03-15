@@ -36,30 +36,37 @@
   (let [rect (.getBoundingClientRect node)]
     (+ (.-top rect) (.-pageYOffset js/window))))
 
+(defn- make-reset-trigger-point [id]
+  (fn [this]
+    (swap! waypoints assoc-in
+           [id :trigger-point]
+           (get-element-top (reagent/dom-node this)))))
+
 (defn waypoint [child-el options]
   (let [id (gensym "waypoint-id")
-        reset-trigger-point! (fn [n]
-                               (swap! waypoints assoc-in [id :trigger-point] n))]
+        reset-trigger-point! (make-reset-trigger-point id)]
     (reagent/create-class
      {:display-name "waypoint"
+
       :component-will-mount
       (fn []
         (swap! waypoints assoc id {:callback (:callback options)}))
-      :component-did-mount
-      (fn [this]
-        (reset-trigger-point! (get-element-top (reagent/dom-node this))))
       :component-will-unmount
       (fn []
         (swap! waypoints dissoc id))
-      :component-did-update
-      (fn [this]
-        (reset-trigger-point! (get-element-top (reagent/dom-node this))))
+
+      :component-did-mount reset-trigger-point!
+      :component-did-update reset-trigger-point!
+
       :reagent-render
       (fn [child-el]
         child-el)})))
 
+(defn- page-offset []
+  (.-pageYOffset js/window))
+
 (defn check-waypoints [last-scroll-y]
-  (let [new-scroll-y (.-pageYOffset js/window)]
+  (let [new-scroll-y (page-offset)]
     (doseq [[id {:keys [callback trigger-point]}] @waypoints]
       (when trigger-point
         (let [was-before-trigger (< last-scroll-y trigger-point)
@@ -69,8 +76,8 @@
                                     (not now-after-trigger))]
           (when (or crossed-forward crossed-backward)
             (let [direction (if crossed-forward :forward :backward)]
-              (when callback (callback direction))
-              (.log js/console "Passed" id "going" direction))))))))
+              (.log js/console "Passed" id "going" direction)
+              (when callback (callback direction)))))))))
 
 (defn waypoint-context [child-el]
   (let [state (atom {})
@@ -83,18 +90,16 @@
                       (when (not (:ticking @state))
                         (swap! state assoc
                                :ticking true
-                               :last-scroll-y (.-pageYOffset js/window)))
+                               :last-scroll-y (page-offset)))
                       (.fire throttler))]
     (reagent/create-class
      {:display-name "waypoint-context"
       :component-did-mount
       (fn []
-        (.addEventListener js/window "scroll" listener-fn)
-        (.log js/console "waypoint-context did-mount"))
+        (.addEventListener js/window "scroll" listener-fn))
       :component-will-unmount
       (fn []
-        (.removeEventListener js/window "scroll" listener-fn)
-        (.log js/console "waypoint-context did-unmount"))
+        (.removeEventListener js/window "scroll" listener-fn))
       :reagent-render
       (fn [child-el]
         child-el)})))
