@@ -12,7 +12,30 @@
 (def ^:private add-error
   (fnil conj []))
 
+(declare get-sites
+         get-comics
+         get-prev-locations
+         get-next-locations)
+
+(def ^:private api-fn
+  (delay
+   {:get-sites          get-sites
+    :get-comics         get-comics
+    :get-prev-locations get-prev-locations
+    :get-next-locations get-next-locations}))
+
+(defn null-fn [& args])
+
+(defn call-api-fn [fn-key args]
+  (apply (get @api-fn fn-key null-fn) args))
+
 (defn setup! []
+  (re-frame/reg-fx
+   :api
+   (fn [calls]
+     (doseq [[fn-key & args] calls]
+       (call-api-fn fn-key args))))
+
   (re-frame/reg-sub
    errors-subscription-key
    (fn [app-db _]
