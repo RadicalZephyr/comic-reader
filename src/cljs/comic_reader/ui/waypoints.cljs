@@ -51,7 +51,7 @@
               (.log js/console "Passed" id "going" direction)
               (when callback (callback direction)))))))))
 
-(defn waypoint-context [child-el]
+(defn waypoint-context [_]
   (let [state (atom {})
         throttler (Throttle. #(let [last-scroll-y (:last-scroll-y @state)]
                                 (swap! state assoc
@@ -72,6 +72,4 @@
       :component-will-unmount
       (fn []
         (.removeEventListener js/window "scroll" listener-fn))
-      :reagent-render
-      (fn [child-el]
-        child-el)})))
+      :reagent-render identity})))
