@@ -37,14 +37,10 @@
     (let [node (reagent/dom-node this)
           wp-down (make-waypoint {:element node
                                   :handler #(when (= % "down")
-                                              (.log js/console "down wp called")
-                                              (.log js/console %)
                                               (set-current-comic))})
           wp-up (make-waypoint {:element node
                                 :offset "bottom-in-view"
                                 :handler #(when (= % "up")
-                                            (.log js/console "up wp called")
-                                            (.log js/console %)
                                             (set-current-comic))})]
       (set-waypoints! [wp-up wp-down]))))
 
