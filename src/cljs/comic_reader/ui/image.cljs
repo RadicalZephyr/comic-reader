@@ -32,45 +32,58 @@
 
 (def ^:private waypoints (atom {}))
 
+(defn get-element-top [node]
+  (let [rect (.getBoundingClientRect node)]
+    (+ (.-top rect) (.-pageYOffset js/window))))
+
 (defn waypoint [child-el options]
   (let [id (gensym "waypoint-id")
-        trigger-point (atom nil)
         reset-trigger-point! (fn [n]
-                               (reset! trigger-point n))]
+                               (swap! waypoints assoc-in [id :trigger-point] n))]
     (reagent/create-class
      {:display-name "waypoint"
       :component-will-mount
       (fn []
-        (.log js/console (str id " will-mount"))
-        (swap! waypoints assoc id (fn []
-                                    (.log js/console (str "Waypoint " id " triggered.")))))
+        (swap! waypoints assoc id {:callback (:callback options)}))
       :component-did-mount
-      (fn []
-        (.log js/console (str id " did-mount")))
+      (fn [this]
+        (reset-trigger-point! (get-element-top (reagent/dom-node this))))
       :component-will-unmount
       (fn []
-        (.log js/console (str id " will-unmount"))
         (swap! waypoints dissoc id))
       :component-did-update
-      (fn []
-        (.log js/console (str id " did-update")))
+      (fn [this]
+        (reset-trigger-point! (get-element-top (reagent/dom-node this))))
       :reagent-render
       (fn [child-el]
         child-el)})))
 
 (defn check-waypoints [last-scroll-y]
-  (.log js/console "Last scroll was " last-scroll-y))
+  (let [new-scroll-y (.-pageYOffset js/window)]
+    (doseq [[id {:keys [callback trigger-point]}] @waypoints]
+      (when trigger-point
+        (let [was-before-trigger (< last-scroll-y trigger-point)
+              now-after-trigger (>= new-scroll-y trigger-point)
+              crossed-forward (and was-before-trigger now-after-trigger)
+              crossed-backward (and (not was-before-trigger)
+                                    (not now-after-trigger))]
+          (when (or crossed-forward crossed-backward)
+            (let [direction (if crossed-forward :forward :backward)]
+              (when callback (callback direction))
+              (.log js/console "Passed" id "going" direction))))))))
 
 (defn waypoint-context [child-el]
   (let [state (atom {})
-        throttler (Throttle. #(do
-                                (swap! state assoc :ticking false)
-                                (check-waypoints (:last-scroll-y @state))) 200)
+        throttler (Throttle. #(let [last-scroll-y (:last-scroll-y @state)]
+                                (swap! state assoc
+                                       :ticking false
+                                       :last-scroll-y nil)
+                                (check-waypoints last-scroll-y)) 250)
         listener-fn (fn []
                       (when (not (:ticking @state))
                         (swap! state assoc
                                :ticking true
-                               :last-scroll-y (.-scrollY js/window)))
+                               :last-scroll-y (.-pageYOffset js/window)))
                       (.fire throttler))]
     (reagent/create-class
      {:display-name "waypoint-context"
