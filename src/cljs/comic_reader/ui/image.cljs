@@ -3,7 +3,8 @@
             [reagent.core :as reagent]
             [comic-reader.api :as api]
             [cljsjs.waypoints]
-            [comic-reader.ui.base :as base]))
+            [comic-reader.ui.base :as base])
+  (:import (goog.async Throttle)))
 
 (defn setup! []
   (re-frame/reg-sub
@@ -29,46 +30,68 @@
    (fn [app-db [_ location image-tag]]
      (assoc-in app-db [:images location] image-tag))))
 
-(defn make-waypoint [options]
-  (js/Waypoint. (clj->js options)))
+(def ^:private waypoints (atom {}))
 
-(defn make-img-did-mount [set-waypoints! set-current-comic]
-  (fn [this]
-    (let [node (reagent/dom-node this)
-          wp-down (make-waypoint {:element node
-                                  :group "comic-image"
-                                  :continuous true
-                                  :handler #(when (= % "down")
-                                              (set-current-comic))})
-          wp-up (make-waypoint {:element node
-                                :group "comic-image"
-                                :continuous true
-                                :offset "bottom-in-view"
-                                :handler #(when (= % "up")
-                                            (set-current-comic))})]
-      (set-waypoints! [wp-up wp-down]))))
+(defn waypoint [child-el options]
+  (let [id (gensym "waypoint-id")
+        trigger-point (atom nil)
+        reset-trigger-point! (fn [n]
+                               (reset! trigger-point n))]
+    (reagent/create-class
+     {:display-name "waypoint"
+      :component-will-mount
+      (fn []
+        (.log js/console (str id " will-mount"))
+        (swap! waypoints assoc id (fn []
+                                    (.log js/console (str "Waypoint " id " triggered.")))))
+      :component-did-mount
+      (fn []
+        (.log js/console (str id " did-mount")))
+      :component-will-unmount
+      (fn []
+        (.log js/console (str id " will-unmount"))
+        (swap! waypoints dissoc id))
+      :component-did-update
+      (fn []
+        (.log js/console (str id " did-update")))
+      :reagent-render
+      (fn [child-el]
+        child-el)})))
 
-(defn replace-waypoints [waypoints new-waypoints]
-  (doseq [wp waypoints]
-    (.destroy wp) )
-  new-waypoints)
+(defn check-waypoints [last-scroll-y]
+  (.log js/console "Last scroll was " last-scroll-y))
+
+(defn waypoint-context [child-el]
+  (let [state (atom {})
+        throttler (Throttle. #(do
+                                (swap! state assoc :ticking false)
+                                (check-waypoints (:last-scroll-y @state))) 200)
+        listener-fn (fn []
+                      (when (not (:ticking @state))
+                        (swap! state assoc
+                               :ticking true
+                               :last-scroll-y (.-scrollY js/window)))
+                      (.fire throttler))]
+    (reagent/create-class
+     {:display-name "waypoint-context"
+      :component-did-mount
+      (fn []
+        (.addEventListener js/window "scroll" listener-fn)
+        (.log js/console "waypoint-context did-mount"))
+      :component-will-unmount
+      (fn []
+        (.removeEventListener js/window "scroll" listener-fn)
+        (.log js/console "waypoint-context did-unmount"))
+      :reagent-render
+      (fn [child-el]
+        child-el)})))
 
 (defn comic-image [set-current-comic tag]
-  (let [waypoints (atom nil)
-        set-waypoints! #(swap! waypoints replace-waypoints %)]
-    (reagent/create-class
-     {:display-name "comic-image"
-      :component-did-mount
-      (make-img-did-mount
-       set-waypoints!
-       set-current-comic)
-      :component-will-unmount #(set-waypoints! nil)
-      :reagent-render
-      (fn [_ tag]
-        (if (= tag :loading)
-          [base/loading]
-          [:div.row
-           [:div.medium-12.columns tag]]))})))
+  (if (= tag :loading)
+    [base/loading]
+    [:div.row
+     [:div.medium-12.columns
+      [waypoint tag {}]]]))
 
 (defn comic-image-container [set-current-comic location]
   (let [image (re-frame/subscribe [:image location])]
@@ -104,4 +127,5 @@
                 (+ prev-scroll-top (- curr-scroll-height prev-scroll-height)))))
       :reagent-render
       (fn [set-current-location locations]
-        [:div.comic-list (map #(make-comic-image set-current-location %) locations)])})))
+        [waypoint-context
+         [:div.comic-list (map #(make-comic-image set-current-location %) locations)]])})))
