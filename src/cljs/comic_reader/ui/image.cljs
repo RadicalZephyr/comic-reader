@@ -36,9 +36,13 @@
   (fn [this]
     (let [node (reagent/dom-node this)
           wp-down (make-waypoint {:element node
+                                  :group "comic-image"
+                                  :continuous true
                                   :handler #(when (= % "down")
                                               (set-current-comic))})
           wp-up (make-waypoint {:element node
+                                :group "comic-image"
+                                :continuous true
                                 :offset "bottom-in-view"
                                 :handler #(when (= % "up")
                                             (set-current-comic))})]
