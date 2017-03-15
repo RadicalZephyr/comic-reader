@@ -35,7 +35,10 @@
 
 (defn add-locations [app-db locations]
   (if (seq locations)
-    (update app-db :locations conj-locations locations)
+    (let [locations (conj-locations (:locations app-db) locations)]
+      (cond-> app-db
+        (not (:current-location app-db)) (assoc :current-location (first locations))
+        :always                          (assoc :locations locations)))
     app-db))
 
 (defn setup! []
