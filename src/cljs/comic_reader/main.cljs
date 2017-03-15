@@ -70,13 +70,16 @@
    (fn [app-db _]
      (:comic-id app-db)))
 
-  (re-frame/reg-event-db
+  (re-frame/reg-event-fx
    :read-comic
-   (fn [db [_ comic-id]]
-     (-> db
-         (set-page-key :reader)
-         (assoc :comic-id comic-id
-                :loading-images true)))))
+   (fn [cofx [_ comic-id]]
+     (let [new-db (-> (:db cofx)
+                      (set-page-key :reader)
+                      (assoc :comic-id comic-id
+                             :loading-images true))
+           site-id (:site-id new-db)]
+       {:db new-db
+        :api [[:next-locations  site-id comic-id nil {:on-success #(re-frame/dispatch [:add-locations ])}]]}))))
 
 (defn main-panel [page-key]
   (case page-key
