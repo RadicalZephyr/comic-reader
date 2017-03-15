@@ -21,7 +21,7 @@ div.comic-filter a.button.secondary {
 }
 
 .sub-nav dt.active a:hover, .sub-nav dd.active a:hover, .sub-nav li.active a:hover {
-  cursor:pointer;
+  cursor: pointer;
   background-color: #165e35;
   padding: 0.05rem 0.5rem;
 }
@@ -29,6 +29,10 @@ div.comic-filter a.button.secondary {
 .sub-nav dt.active a:focus, .sub-nav dd.active a:focus, .sub-nav li.active a:focus {
   background-color: #165e35;
   padding: 0.05rem 0.5rem;
+}
+
+.comic-list {
+  margin-bottom: 10px;
 }
 
 .loading {
