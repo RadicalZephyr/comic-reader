@@ -1,18 +1,28 @@
 (ns comic-reader.ui.waypoints
-  (:require [reagent.core :as reagent])
+  (:require [cljs.reader :as r]
+            [clojure.string :as str]
+            [reagent.core :as reagent])
   (:import (goog.async Throttle)))
 
 (def ^:private waypoints (atom {}))
 
-(defn- as-percentage [offset]
-  0)
+(defn- parse-percentage [s]
+  (let [percent-str (str "0." (str/replace s #"%|\." ""))
+        reader-result (r/read-string percent-str)]
+    (if (number? reader-result)
+      reader-result
+      0)))
+
+(defn- as-percentage [node-height offset-percent]
+  (let [percentage (parse-percentage offset-percent)]
+    (* node-height percentage)))
 
 (defn- get-offset-position [node offset]
   (cond
-    (number? offset)    offset
-    (string? offset)    (as-percentage node offset)
-    (function? offset)  (offset node)
-    :else               0))
+    (number? offset)  offset
+    (string? offset)  (as-percentage (.innerHeight node) offset)
+    (fn? offset)      (offset node)
+    :else             0))
 
 (defn- get-node-position-at-offset [node offset]
   (let [offset-position (get-offset-position node offset)
