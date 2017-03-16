@@ -14,27 +14,29 @@
            [id :trigger-point]
            (get-element-top (reagent/dom-node this)))))
 
-(defn waypoint [child-el opts]
-  (let [id (gensym "waypoint-id")
-        options (atom opts)
-        reset-trigger-point! (make-reset-trigger-point id options)]
-    (reagent/create-class
-     {:display-name "waypoint"
+(defn waypoint
+  ([child-el] (waypoint {} child-el))
+  ([opts child-el]
+   (let [id (gensym "waypoint-id")
+         options (atom opts)
+         reset-trigger-point! (make-reset-trigger-point id options)]
+     (reagent/create-class
+      {:display-name "waypoint"
 
-      :component-will-mount
-      (fn []
-        (swap! waypoints assoc id {:options options}))
-      :component-will-unmount
-      (fn []
-        (swap! waypoints dissoc id))
+       :component-will-mount
+       (fn []
+         (swap! waypoints assoc id {:options options}))
+       :component-will-unmount
+       (fn []
+         (swap! waypoints dissoc id))
 
-      :component-did-mount reset-trigger-point!
-      :component-did-update reset-trigger-point!
+       :component-did-mount reset-trigger-point!
+       :component-did-update reset-trigger-point!
 
-      :reagent-render
-      (fn [child-el opts]
-        (reset! options opts)
-        child-el)})))
+       :reagent-render
+       (fn [child-el opts]
+         (reset! options opts)
+         child-el)}))))
 
 (defn- page-offset []
   (.-pageYOffset js/window))
@@ -66,7 +68,8 @@
                                 (swap! state assoc
                                        :ticking false
                                        :old-scroll-y nil)
-                                (check-waypoints old-scroll-y)) 250)
+                                (check-waypoints old-scroll-y))
+                             250)
         listener-fn (fn []
                       (when (not (:ticking @state))
                         (swap! state assoc

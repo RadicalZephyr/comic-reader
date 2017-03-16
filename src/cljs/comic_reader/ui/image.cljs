@@ -36,7 +36,7 @@
     [base/loading]
     [:div.row
      [:div.medium-12.columns
-      [wp/waypoint tag {}]]]))
+      [wp/waypoint tag]]]))
 
 (defn comic-image-container [set-current-comic location]
   (let [image (re-frame/subscribe [:image location])]
