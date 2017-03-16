@@ -4,22 +4,22 @@
 
 (def ^:private waypoints (atom {}))
 
-(defn get-element-top [node]
+(defn get-node-position-at-offset [node offset]
   (let [rect (.getBoundingClientRect node)]
     (+ (.-top rect) (.-pageYOffset js/window))))
 
-(defn- make-reset-trigger-point [id options]
+(defn- make-reset-trigger-point [waypoints id options]
   (fn [this]
     (swap! waypoints assoc-in
            [id :trigger-point]
-           (get-element-top (reagent/dom-node this)))))
+           (get-node-position-at-offset (reagent/dom-node this) (:offset options)))))
 
 (defn waypoint
   ([child-el] (waypoint {} child-el))
   ([opts child-el]
    (let [id (gensym "waypoint-id")
          options (atom opts)
-         reset-trigger-point! (make-reset-trigger-point id options)]
+         reset-trigger-point! (make-reset-trigger-point waypoints id options)]
      (reagent/create-class
       {:display-name "waypoint"
 
