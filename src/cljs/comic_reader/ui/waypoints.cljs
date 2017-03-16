@@ -4,9 +4,22 @@
 
 (def ^:private waypoints (atom {}))
 
-(defn get-node-position-at-offset [node offset]
-  (let [rect (.getBoundingClientRect node)]
-    (+ (.-top rect) (.-pageYOffset js/window))))
+(defn- as-percentage [offset]
+  0)
+
+(defn- get-offset-position [node offset]
+  (cond
+    (number? offset)    offset
+    (string? offset)    (as-percentage node offset)
+    (function? offset)  (offset node)
+    :else               0))
+
+(defn- get-node-position-at-offset [node offset]
+  (let [offset-position (get-offset-position node offset)
+        rect (.getBoundingClientRect node)]
+    (+ (.-top rect)
+       (.-pageYOffset js/window)
+       offset-position)))
 
 (defn- make-reset-trigger-point [waypoints id options]
   (fn [this]
