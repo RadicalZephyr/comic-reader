@@ -8,7 +8,8 @@
             comic-reader.ui.image-test
             comic-reader.ui.overlay-test
             comic-reader.ui.site-list-test
-            comic-reader.ui.reader-test))
+            comic-reader.ui.reader-test
+            comic-reader.ui.waypoints-test))
 
 (defn main []
   (dc/start-devcard-ui!))
