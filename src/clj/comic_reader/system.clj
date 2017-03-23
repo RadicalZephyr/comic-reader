@@ -3,7 +3,6 @@
   (:require (comic-reader [server :as server]
                           [web-app :as web-app]
                           [site-scraper :as site-scraper])
-            [comic-reader.database.datomic :as database]
             [comic-reader.config.env :as env-config]
             [comic-reader.comic-repository.scraper :as scraper-repo]
             [com.stuartsierra.component :as component]

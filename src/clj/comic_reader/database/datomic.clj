@@ -2,6 +2,7 @@
   (:require [clojure.tools.logging :as log]
             [com.stuartsierra.component :as component]
             [comic-reader.config :as config]
+            [comic-reader.database :as db]
             [comic-reader.database.norms :as norms]
             [datomic.api :as d]
             [io.rkn.conformity :as conformity]))
@@ -27,10 +28,6 @@
       ;;   @(d/transact conn (seed/data)))
       conn)))
 
-(defprotocol Database
-  (connection [database] "Returns a connection to the database.")
-  (destroy [database] "Destroy the database."))
-
 (defrecord DatomicDatabase [config conn]
 
   component/Lifecycle
@@ -44,7 +41,7 @@
     (log/info "Disconnecting from database...")
     (dissoc component :conn))
 
-  Database
+  db/Database
   (connection [database] conn)
 
   (destroy [database]
