@@ -72,4 +72,7 @@
      [:div.demo-box "Number offset waypoint"]]
     [sut/waypoint {:offset "50%"
                    :callback #(notify "Hello percentage offset")}
-     [:div.demo-box "Percentage waypoint"]]]))
+     [:div.demo-box "Percentage waypoint"]]
+    [sut/waypoint {:offset :bottom-in-view
+                   :callback #(notify "Hello bottom-in-view offset")}
+     [:div.demo-box "Bottom-in-view waypoint"]]]))
