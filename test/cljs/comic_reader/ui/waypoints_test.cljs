@@ -75,4 +75,7 @@
      [:div.demo-box "Percentage waypoint"]]
     [sut/waypoint {:offset :bottom-in-view
                    :callback #(notify "Hello bottom-in-view offset")}
-     [:div.demo-box "Bottom-in-view waypoint"]]]))
+     [:div.demo-box "Bottom-in-view waypoint"]]
+    [sut/waypoint {:offsets [0 :bottom-in-view]
+                   :callback #(notify "Hello multiple offsets")}
+     [:div.demo-box "Multiple offsets waypoint"]]]))

@@ -36,7 +36,9 @@
     [base/loading]
     [:div.row
      [:div.medium-12.columns
-      [wp/waypoint tag]]]))
+      [wp/waypoint {:offsets [0 :bottom-in-view]
+                    :callback set-current-comic}
+       tag]]]))
 
 (defn comic-image-container [set-current-comic location]
   (let [image (re-frame/subscribe [:image location])]
