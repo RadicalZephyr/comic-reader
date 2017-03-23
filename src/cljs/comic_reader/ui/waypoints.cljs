@@ -4,7 +4,7 @@
             [reagent.core :as reagent])
   (:import (goog.async Throttle)))
 
-(def ^:private waypoints (atom {}))
+(def ^:private all-trigger-points (atom {}))
 
 (defn- parse-percentage [s]
   (let [percent-str (str "0." (str/replace s #"%|\." ""))
@@ -38,30 +38,30 @@
        (.-pageYOffset js/window)
        offset-position)))
 
-(defn- make-reset-trigger-point [waypoints id options]
+(defn- make-reset-trigger-point [all-trigger-points id options]
   (fn [node]
-    (swap! waypoints assoc-in
+    (swap! all-trigger-points assoc-in
            [id :trigger-point]
            (get-node-position-at-offset node (:offset @options)))))
 
-(defn- make-trigger-point [waypoints opts]
+(defn- make-trigger-point [all-trigger-points opts]
   (let [id (gensym "waypoint-id")
         options (atom opts)]
     {:id id
      :options options
-     :reset-trigger-point! (make-reset-trigger-point waypoints id options)}))
+     :reset-trigger-point! (make-reset-trigger-point all-trigger-points id options)}))
 
-(defn- make-trigger-points [waypoints opts]
+(defn- make-trigger-points [all-trigger-points opts]
   (if-let [offsets (:offsets opts)]
     (mapv (fn [offset]
-            (make-trigger-point waypoints (assoc opts :offset offset)))
+            (make-trigger-point all-trigger-points (assoc opts :offset offset)))
           offsets)
-    [(make-trigger-point waypoints opts)]))
+    [(make-trigger-point all-trigger-points opts)]))
 
 (defn waypoint
   ([child-el] (waypoint {} child-el))
   ([opts child-el]
-   (let [trigger-points (make-trigger-points waypoints opts)
+   (let [trigger-points (make-trigger-points all-trigger-points opts)
          reset-trigger-points! (fn [this]
                                  (doseq [trigger-point trigger-points]
                                    ((:reset-trigger-point! trigger-point) (reagent/dom-node this))))]
@@ -71,12 +71,12 @@
        :component-will-mount
        (fn []
          (doseq [trigger-point trigger-points]
-           (swap! waypoints assoc (:id trigger-point) (select-keys trigger-point [:options]))))
+           (swap! all-trigger-points assoc (:id trigger-point) (select-keys trigger-point [:options]))))
 
        :component-will-unmount
        (fn []
          (doseq [trigger-point trigger-points]
-           (swap! waypoints dissoc (:id trigger-point))))
+           (swap! all-trigger-points dissoc (:id trigger-point))))
 
        :component-did-mount  reset-trigger-points!
        :component-did-update reset-trigger-points!
@@ -102,9 +102,9 @@
       crossed-backward? :backward
       :else             nil)))
 
-(defn check-waypoints [old-scroll-y]
+(defn check-trigger-points [old-scroll-y]
   (let [new-scroll-y (page-offset)]
-    (doseq [[id {:keys [options trigger-point]}] @waypoints
+    (doseq [[id {:keys [options trigger-point]}] @all-trigger-points
             :when trigger-point]
       (when-let [direction (crossed? trigger-point old-scroll-y new-scroll-y)]
         (when-let [callback (:callback @options)]
@@ -116,7 +116,7 @@
                                 (swap! state assoc
                                        :ticking false
                                        :old-scroll-y nil)
-                                (check-waypoints old-scroll-y))
+                                (check-trigger-points old-scroll-y))
                              250)
         listener-fn (fn []
                       (when (not (:ticking @state))
