@@ -13,9 +13,9 @@
   (t/is (= (sut/clean-image-tag [:img {:src "abc"}])
            [:img {:src "abc"}]))
   (t/is (= (sut/clean-image-tag [:img {:alt "def"}])
-           [:img {:alt "def"}]))
+           [:img {:src "" :alt "def"}]))
   (t/is (= (sut/clean-image-tag [:img {} '[lots of content]])
-           [:img {}]))
+           [:img {:src ""}]))
   (t/is (= (sut/clean-image-tag [:img {:src "def" :walrus "i am"}])
            [:img {:src "def"}])))
 

@@ -12,7 +12,7 @@
 
 (defn fetch-url [url]
   (with-tempfile [html-file (tempfile (:body (client/get url)))]
-   (html/html-resource html-file)))
+    (html/html-resource html-file)))
 
 (defn extract-list [html selector normalize]
   (if-let [selection (seq (html/select html selector))]
@@ -28,8 +28,16 @@
     [tag attrs]
     [tag attrs content]))
 
+(defn- force-url-to-https [url]
+  (if (and url (string? url))
+    (s/replace url #"^http://" "https://")
+    ""))
+
 (defn clean-image-tag [[tag attrs & content]]
-  [tag (select-keys attrs [:alt :src])])
+  (let [attrs (-> attrs
+                  (select-keys [:alt :src])
+                  (update :src force-url-to-https))]
+    [tag attrs]))
 
 (defn extract-image-tag [html selector]
   (some-> html

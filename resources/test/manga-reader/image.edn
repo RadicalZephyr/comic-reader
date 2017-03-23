@@ -1,7 +1,7 @@
 {:image-tag [:img
              {:alt "The Gamer 95 - Page 1",
               :src
-              "http://i995.mangareader.net/the-gamer/95/the-gamer-5978527.jpg"}]
+              "https://i995.mangareader.net/the-gamer/95/the-gamer-5978527.jpg"}]
  :chapter-url "base.url/1"
  :pages-list [{:page/number 1, :page/url "base.url/1"}
               {:page/number 2, :page/url "base.url/1/2"}
