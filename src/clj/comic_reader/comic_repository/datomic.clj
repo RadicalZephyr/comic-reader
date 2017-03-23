@@ -1,6 +1,6 @@
 (ns comic-reader.comic-repository.datomic
   (:require [comic-reader.comic-repository :as repo]
-            [comic-reader.database.datomic :as db]
+            [comic-reader.database :as db]
             [datomic.api :as d]))
 
 (defn- site-record [site-data & {:keys [temp-id]}]
