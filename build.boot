@@ -50,6 +50,8 @@
                                           org.apache.httpcomponents/httpclient
                                           org.slf4j/slf4j-nop]]
                             [io.rkn/conformity "0.4.0"]
+                            [org.clojure/java.jdbc "0.6.1"]
+                            [org.postgresql/postgresql "9.4-1201-jdbc41"]
 
                             ;; Comic scraping
                             [clj-http "2.3.0"]
