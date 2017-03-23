@@ -44,12 +44,19 @@
            [id :trigger-point]
            (get-node-position-at-offset node (:offset @options)))))
 
-(defn- make-trigger-points [waypoints opts]
+(defn- make-trigger-point [waypoints opts]
   (let [id (gensym "waypoint-id")
         options (atom opts)]
-    [{:id id
-      :options options
-      :reset-trigger-point! (make-reset-trigger-point waypoints id options)}]))
+    {:id id
+     :options options
+     :reset-trigger-point! (make-reset-trigger-point waypoints id options)}))
+
+(defn- make-trigger-points [waypoints opts]
+  (if-let [offsets (:offsets opts)]
+    (mapv (fn [offset]
+            (make-trigger-point waypoints (assoc opts :offset offset)))
+          offsets)
+    [(make-trigger-point waypoints opts)]))
 
 (defn waypoint
   ([child-el] (waypoint {} child-el))
@@ -77,7 +84,7 @@
        :reagent-render
        (fn [opts child-el]
          (doseq [trigger-point trigger-points]
-           (reset! (:options trigger-point) opts))
+           (swap! (:options trigger-point) merge opts))
          child-el)}))))
 
 (defn- page-offset []
@@ -100,7 +107,6 @@
     (doseq [[id {:keys [options trigger-point]}] @waypoints
             :when trigger-point]
       (when-let [direction (crossed? trigger-point old-scroll-y new-scroll-y)]
-        (.log js/console "Passed" id "going" direction)
         (when-let [callback (:callback @options)]
           (callback direction))))))
 
