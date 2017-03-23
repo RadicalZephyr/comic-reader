@@ -20,7 +20,7 @@
 (defn- get-offset-position [node offset]
   (cond
     (number? offset)  offset
-    (string? offset)  (as-percentage (.innerHeight node) offset)
+    (string? offset)  (as-percentage (.-clientHeight node) offset)
     (fn? offset)      (offset node)
     :else             0))
 
@@ -35,7 +35,7 @@
   (fn [this]
     (swap! waypoints assoc-in
            [id :trigger-point]
-           (get-node-position-at-offset (reagent/dom-node this) (:offset options)))))
+           (get-node-position-at-offset (reagent/dom-node this) (:offset @options)))))
 
 (defn waypoint
   ([child-el] (waypoint {} child-el))
@@ -49,6 +49,7 @@
        :component-will-mount
        (fn []
          (swap! waypoints assoc id {:options options}))
+
        :component-will-unmount
        (fn []
          (swap! waypoints dissoc id))
@@ -57,7 +58,7 @@
        :component-did-update reset-trigger-point!
 
        :reagent-render
-       (fn [child-el opts]
+       (fn [opts child-el]
          (reset! options opts)
          child-el)}))))
 
