@@ -1,7 +1,7 @@
-(ns comic-reader.database-test
+(ns comic-reader.database.datomic-test
   (:require [clojure.test :refer :all]
             [com.stuartsierra.component :as component]
-            [comic-reader.database :as sut]
+            [comic-reader.database.datomic :as sut]
             [comic-reader.database.test-util :as test-util]
             [datomic.api :as d]))
 
