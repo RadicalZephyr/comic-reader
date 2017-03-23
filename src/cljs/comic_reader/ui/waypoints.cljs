@@ -39,34 +39,45 @@
        offset-position)))
 
 (defn- make-reset-trigger-point [waypoints id options]
-  (fn [this]
+  (fn [node]
     (swap! waypoints assoc-in
            [id :trigger-point]
-           (get-node-position-at-offset (reagent/dom-node this) (:offset @options)))))
+           (get-node-position-at-offset node (:offset @options)))))
+
+(defn- make-trigger-points [waypoints opts]
+  (let [id (gensym "waypoint-id")
+        options (atom opts)]
+    [{:id id
+      :options options
+      :reset-trigger-point! (make-reset-trigger-point waypoints id options)}]))
 
 (defn waypoint
   ([child-el] (waypoint {} child-el))
   ([opts child-el]
-   (let [id (gensym "waypoint-id")
-         options (atom opts)
-         reset-trigger-point! (make-reset-trigger-point waypoints id options)]
+   (let [trigger-points (make-trigger-points waypoints opts)
+         reset-trigger-points! (fn [this]
+                                 (doseq [trigger-point trigger-points]
+                                   ((:reset-trigger-point! trigger-point) (reagent/dom-node this))))]
      (reagent/create-class
       {:display-name "waypoint"
 
        :component-will-mount
        (fn []
-         (swap! waypoints assoc id {:options options}))
+         (doseq [trigger-point trigger-points]
+           (swap! waypoints assoc (:id trigger-point) (select-keys trigger-point [:options]))))
 
        :component-will-unmount
        (fn []
-         (swap! waypoints dissoc id))
+         (doseq [trigger-point trigger-points]
+           (swap! waypoints dissoc (:id trigger-point))))
 
-       :component-did-mount reset-trigger-point!
-       :component-did-update reset-trigger-point!
+       :component-did-mount  reset-trigger-points!
+       :component-did-update reset-trigger-points!
 
        :reagent-render
        (fn [opts child-el]
-         (reset! options opts)
+         (doseq [trigger-point trigger-points]
+           (reset! (:options trigger-point) opts))
          child-el)}))))
 
 (defn- page-offset []
