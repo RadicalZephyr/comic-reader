@@ -98,8 +98,8 @@
     [#'main-panel @page-key]))
 
 (defn render-root []
-  (reagent/render-component [#'main-panel-container]
-                            (.getElementById js/document "app")))
+  (if-let [node (.getElementById js/document "app")]
+    (reagent/render-component [#'main-panel-container] node)))
 
 (defn ^:export main []
   (setup!)
