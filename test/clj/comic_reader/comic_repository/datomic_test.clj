@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [comic-reader.comic-repository :as repo]
             [comic-reader.comic-repository.datomic :as sut]
-            [comic-reader.database :as database]
+            [comic-reader.database.datomic :as database]
             [comic-reader.database.test-util :as dtu]
             [com.stuartsierra.component :as component]
             [datomic.api :as d]))

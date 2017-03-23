@@ -1,6 +1,6 @@
 (ns comic-reader.database.test-util
   (:require [com.stuartsierra.component :as component]
-            [comic-reader.database :as db]))
+            [comic-reader.database.datomic :as db]))
 
 (defmacro with-test-system [[system-binding system-expression & bindings] & body]
   `(let [~system-binding (component/start ~system-expression)

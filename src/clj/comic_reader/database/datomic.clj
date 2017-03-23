@@ -1,4 +1,4 @@
-(ns comic-reader.database
+(ns comic-reader.database.datomic
   (:require [clojure.tools.logging :as log]
             [com.stuartsierra.component :as component]
             [comic-reader.config :as config]
