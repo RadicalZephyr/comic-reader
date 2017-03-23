@@ -17,11 +17,18 @@
   (let [percentage (parse-percentage offset-percent)]
     (* node-height percentage)))
 
+(defn- as-keyword [node offset]
+  (case offset
+    :bottom-in-view (- (.-clientHeight node)
+                       (.-innerHeight js/window))
+    0))
+
 (defn- get-offset-position [node offset]
   (cond
     (number? offset)  offset
     (string? offset)  (as-percentage (.-clientHeight node) offset)
     (fn? offset)      (offset node)
+    (keyword? offset) (as-keyword node offset)
     :else             0))
 
 (defn- get-node-position-at-offset [node offset]
