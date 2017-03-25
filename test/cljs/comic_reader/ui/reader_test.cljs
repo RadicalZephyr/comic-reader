@@ -47,8 +47,8 @@
     (is (= [1 2 :current]
            (sut/current-locations [[1 2] [:current] []]))))
 
-  (testing "selects all before and 2 after the current location"
-    (is (= [1 2 3 4 :a 5 6]
+  (testing "selects 2 before and 2 after the current location"
+    (is (= [3 4 :a 5 6]
            (sut/current-locations [[1 2 3 4] [:a] [5 6 7 8]])))))
 
 (defcard-rg comic-image-reader
