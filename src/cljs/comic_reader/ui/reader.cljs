@@ -16,7 +16,7 @@
 
 (defn current-locations [partitioned-locations]
   (let [[before current after] partitioned-locations]
-    (concat before current (take 2 after))))
+    (concat (take-last 2 before) current (take 2 after))))
 
 (defn location-key [location]
   [(get-in location [:location/chapter :chapter/number])
