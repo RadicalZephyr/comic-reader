@@ -136,12 +136,8 @@
      (fn current-locations-sub [partitioned-locations _]
        (current-locations partitioned-locations)))))
 
-(defn reader [set-current-location locations]
-  [:div
-   [image/comic-location-list #(re-frame/dispatch [:set-current-location %]) locations]])
-
 (defn view []
   (let [current-locations (re-frame/subscribe [:current-locations])]
-    [reader
+    [image/comic-location-list
      #(re-frame/dispatch [:set-current-location %])
      @current-locations]))
