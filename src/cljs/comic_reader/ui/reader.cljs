@@ -136,7 +136,7 @@
      (fn current-locations-sub [partitioned-locations _]
        (current-locations partitioned-locations)))))
 
-(defn reader [set-current-location locations loading-before loading-after]
+(defn reader [set-current-location locations]
   [:div
    [image/comic-location-list #(re-frame/dispatch [:set-current-location %]) locations]])
 
