@@ -50,15 +50,3 @@
   (testing "selects 2 before and 2 after the current location"
     (is (= [3 4 :a 5 6]
            (sut/current-locations [[1 2 3 4] [:a] [5 6 7 8]])))))
-
-(defcard-rg comic-image-reader
-  (fn [data _]
-    (let [set-data! #(swap! data assoc :current-location %)
-          locations [{:location/chapter {:chapter/title "The Gamer 1"
-                                         :chapter/url "http://www.mangareader.net/the-gamer/1"
-                                         :chapter/number 1}
-                      :location/page {:page/number 1
-                                      :page/url "http://www.mangareader.net/the-gamer/1"}}]]
-      [sut/reader set-data! locations]))
-  (reagent/atom {})
-  {:inspect-data true})
