@@ -115,21 +115,6 @@
        (when locations
          (first (rseq locations)))))
 
-
-    ;; Level three subscriptions
-
-    (re-frame/reg-sub
-     :before-locations-count
-     :<- [:partitioned-locations]
-     (fn before-locations-count-sub [[before _ _] _]
-       (count before)))
-
-    (re-frame/reg-sub
-     :after-locations-count
-     :<- [:partitioned-locations]
-     (fn after-locations-count-sub [[_ _ after] _]
-       (count after)))
-
     (re-frame/reg-sub
      :current-locations
      :<- [:partitioned-locations]
