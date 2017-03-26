@@ -41,6 +41,38 @@
         :always                          (assoc :locations locations)))
     app-db))
 
+(defn reached-first? [db]
+  (contains? (:locations db)
+             {:location/boundary :boundary/first}))
+
+(defn reached-last? [db]
+  (contains? (:locations db)
+             {:location/boundary :boundary/last}))
+
+(defn needs-prev? [db buffer-size before-locations]
+  (and
+   (not (reached-first? db))
+   (> buffer-size (count before-locations))))
+
+(defn needs-next? [db buffer-size after-locations]
+  (and
+   (not (reached-last? db))
+   (> buffer-size (count after-locations))))
+
+(defn api-calls-for-location [db current-location]
+  (let [site-id (:site-id db)
+        comic-id (:comic-id db)
+        buffer-size (:buffer-size db)
+        [before _ after] (partitioned-locations (:locations db) current-location)]
+    (cond-> []
+      (needs-prev? db buffer-size before)
+      (conj [:get-prev-locations site-id comic-id current-location buffer-size
+             {:on-success #(re-frame/dispatch [:add-locations %])}])
+
+      (needs-next? db buffer-size before)
+      (conj [:get-next-locations site-id comic-id current-location buffer-size
+             {:on-success #(re-frame/dispatch [:add-locations %])}]))))
+
 (defn setup! []
   (trace-forms {:tracer (tracer :color "green")}
     (re-frame/reg-event-db
@@ -48,10 +80,12 @@
      (fn add-locations-event [app-db [_ locations]]
        (add-locations app-db locations)))
 
-    (re-frame/reg-event-db
+    (re-frame/reg-event-fx
      :set-current-location
-     (fn set-current-location-event [app-db [_ current-location]]
-       (assoc app-db :current-location current-location)))
+     (fn set-current-location-event [cofx [_ current-location]]
+       (let [db (:db cofx)]
+         {:db (assoc db :current-location current-location)
+          :api (api-calls-for-location db current-location)})))
 
     (re-frame/reg-event-db
      :set-buffer-size

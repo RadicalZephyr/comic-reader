@@ -50,3 +50,29 @@
   (testing "selects 2 before and 2 after the current location"
     (is (= [3 4 :a 5 6]
            (sut/current-locations [[1 2 3 4] [:a] [5 6 7 8]])))))
+
+(deftest test-api-calls-for-location
+  (testing "when first and last markers are present in locations list no api calls are made"
+    (let [db {:locations #{{:location/boundary :boundary/first}
+                           {:location/boundary :boundary/last}}}]
+      (is (= []
+             (sut/api-calls-for-location db [])))))
+
+  (let [site-id :site/id
+        comic-id :comic/id
+        current-location :current/location
+        buffer-size 10
+        db {:site-id site-id
+            :comic-id comic-id
+            :locations #{current-location}
+            :buffer-size buffer-size}]
+
+    (testing "when first is present no prev-locations call is issued"
+      (let [db (update db :locations conj {:location/boundary :boundary/first})]
+        (is (= [[:get-next-locations site-id comic-id current-location buffer-size]]
+               (map butlast (sut/api-calls-for-location db current-location))))))
+
+    (testing "when last is present no next-locations call is issued"
+      (let [db (update db :locations conj {:location/boundary :boundary/last})]
+        (is (= [[:get-prev-locations site-id comic-id current-location buffer-size]]
+               (map butlast (sut/api-calls-for-location db current-location))))))))
