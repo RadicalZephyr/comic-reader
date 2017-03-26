@@ -81,6 +81,12 @@
                    :location/page {:page/number 3 :page/url "url3"}}
                   {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                    :location/page {:page/number 4 :page/url "url4"}}]
+                 (repo/next-locations repo "manga-fox" "the-gamer" location 2)))))
+
+    (t/testing "returns a sentinel value when no more locations are available"
+      (let [location {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                      :location/page {:page/number 4 :page/url "url4"}}]
+        (t/is (= [{:location/boundary :boundary/last}]
                  (repo/next-locations repo "manga-fox" "the-gamer" location 2))))))
 
   (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
@@ -117,7 +123,8 @@
                   {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                    :location/page {:page/number 4 :page/url "url4"}}
                   {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
-                   :location/page {:page/number 5 :page/url "url5"}}]
+                   :location/page {:page/number 5 :page/url "url5"}}
+                  {:location/boundary :boundary/last}]
                  (repo/next-locations repo "manga-fox" "the-gamer" location 10)))))
 
     (t/testing "it can start at an arbitrary chapter (with no page)"
@@ -125,7 +132,8 @@
         (t/is (= [{:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                    :location/page {:page/number 4 :page/url "url4"}}
                   {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
-                   :location/page {:page/number 5 :page/url "url5"}}]
+                   :location/page {:page/number 5 :page/url "url5"}}
+                  {:location/boundary :boundary/last}]
                  (repo/next-locations repo "manga-fox" "the-gamer" location 10)))))))
 
 (t/deftest test-previous-locations
@@ -150,6 +158,12 @@
                                                {:name "The Gamer 2" :ch-num 2}
                                                [{:name "4" :url  "url4"}
                                                 {:name "5" :url  "url5"}]}}))]
+
+    (t/testing "returns a sentinel value when no more locations are available"
+      (let [location {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                      :location/page {:page/number 1 :page/url "url1"}}]
+        (t/is (= [{:location/boundary :boundary/first}]
+                 (repo/previous-locations repo "manga-fox" "the-gamer" location 2)))))
 
     (t/testing "it returns n locations that precede the given location"
       (let [location {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
@@ -179,7 +193,8 @@
                   {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                    :location/page {:page/number 2 :page/url "url2"}}
                   {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
-                   :location/page {:page/number 1 :page/url "url1"}}]
+                   :location/page {:page/number 1 :page/url "url1"}}
+                  {:location/boundary :boundary/first}]
                  (repo/previous-locations repo "manga-fox" "the-gamer" location 10)))))
 
     (t/testing "it can start at an arbitrary chapter (with no page)"

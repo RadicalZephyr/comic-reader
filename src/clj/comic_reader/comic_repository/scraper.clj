@@ -20,29 +20,33 @@
       (dissoc :name)
       (update :page/number parse-number)))
 
-(defn- page-seq [process scraper site chapters]
+(defn- page-seq [process sentinel scraper site chapters]
   (lazy-seq
    (if (seq chapters)
      (let [chapter (first chapters)
            location-base {:location/chapter (format-chapter chapter)}
            location-with-page #(assoc location-base :location/page (format-page %))]
-       (concat (->> (first chapters)
-                    (site-scraper/list-pages scraper site)
-                    (map location-with-page)
-                    process)
-               (page-seq process scraper site (rest chapters))))
-     nil)))
+       (concat
+        (->> (first chapters)
+             (site-scraper/list-pages scraper site)
+             (map location-with-page)
+             process)
+        (page-seq process sentinel scraper site (rest chapters))))
+     [{:location/boundary sentinel}])))
 
 (defn- locations-for [scraper site direction chapters chapter page n]
   (let [processing-fn {:forward identity
-                       :backward reverse}]
+                       :backward reverse}
+        sentinel-val {:forward  :boundary/last
+                      :backward :boundary/first}]
     (cond->> chapters
       (= direction :backward) (reverse)
       chapter (drop-while #(not= (format-chapter %) chapter))
-      :always (page-seq (processing-fn direction) scraper site)
+      :always (page-seq (processing-fn direction) (sentinel-val direction) scraper site)
       page (drop-while #(not= (:location/page %) page))
       page (drop 1)
       :always (take n))))
+
 
 (defn- capitalize-all [words]
   (map str/capitalize words))
