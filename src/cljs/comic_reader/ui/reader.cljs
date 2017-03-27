@@ -7,12 +7,11 @@
             [re-frame-tracer.core :refer [tracer]]))
 
 (defn partitioned-locations [locations current-location]
-  (let [partitioned (if (seq locations)
-                      (->> (concat [nil] locations [nil])
-                           (partition-by #(= % current-location))
-                           (map #(keep identity %)))
-                      [])]
-    partitioned))
+  (if (seq locations)
+    (->> (concat [nil] locations [nil])
+         (partition-by #(= % current-location))
+         (map #(keep identity %)))
+    []))
 
 (defn current-locations [partitioned-locations]
   (let [[before current after] partitioned-locations]
