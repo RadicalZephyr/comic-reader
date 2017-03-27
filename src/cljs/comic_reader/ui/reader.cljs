@@ -103,50 +103,11 @@
        (:current-location app-db)))
 
     (re-frame/reg-sub
-     :buffer-size
-     (fn buffer-size-sub [app-db _]
-       (:buffer-size app-db)))
-
-    (re-frame/reg-sub
-     :loading-before
-     (fn loading-before-sub [app-db _]
-       (get-in app-db [:loading :before])))
-
-    (re-frame/reg-sub
-     :loading-after
-     (fn loading-after-sub [app-db _]
-       (get-in app-db [:loading :after])))
-
-    ;; Level two subscription
-
-    (re-frame/reg-sub
      :partitioned-locations
      :<- [:locations]
      :<- [:current-location]
      (fn partitioned-locations-sub [[locations current-location] _]
        (partitioned-locations (seq locations) current-location)))
-
-    (re-frame/reg-sub
-     :comic-coordinates
-     :<- [:site-id]
-     :<- [:comic-id]
-     (fn comic-coordinates-sub [[site-id comic-id] _]
-       {:site-id site-id
-        :comic-id comic-id}))
-
-    (re-frame/reg-sub
-     :first-image-location
-     :<- [:locations]
-     (fn first-image-location-sub [locations _]
-       (when locations
-         (first (seq locations)))))
-
-    (re-frame/reg-sub
-     :last-image-location
-     :<- [:locations]
-     (fn last-image-location-sub [locations _]
-       (when locations
-         (first (rseq locations)))))
 
     (re-frame/reg-sub
      :current-locations
