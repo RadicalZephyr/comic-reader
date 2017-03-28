@@ -2,7 +2,6 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]
             [comic-reader.api :as api]
-            [cljsjs.waypoints]
             [comic-reader.ui.base :as base]
             [comic-reader.ui.scroll :as scroll]
             [comic-reader.ui.waypoints :as wp]))
