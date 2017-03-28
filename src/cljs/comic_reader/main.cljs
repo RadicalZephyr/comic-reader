@@ -26,6 +26,8 @@
 
 (defn setup! []
   (api/setup!)
+  (history/setup!)
+  (routing/setup!)
   (image/setup!)
   (reader/setup!)
   (site-list/setup!)
