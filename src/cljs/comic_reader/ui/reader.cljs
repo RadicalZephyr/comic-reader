@@ -72,6 +72,23 @@
       (conj [:get-next-locations site-id comic-id current-location buffer-size
              {:on-success #(re-frame/dispatch [:add-locations %])}]))))
 
+(defn- chapter-number [location]
+  (get-in location [:location/chapter :chapter/number] 1))
+
+(defn- page-number [location]
+  (get-in location [:location/page :page/number] 1))
+
+(defn- fx-for-route [[route-name route-data] current-location]
+  (let [site-id  (get route-data :site-id)
+        comic-id (get route-data :comic-id)]
+    (if (and site-id comic-id)
+      [[:navigate! [:comic-reader/reader-view
+                    {:site-id site-id
+                     :comic-id comic-id
+                     :chapter-number (chapter-number current-location)
+                     :page-number (page-number current-location)}]]]
+      [])))
+
 (defn setup! []
   (trace-forms {:tracer (tracer :color "green")}
     (re-frame/reg-event-db
@@ -81,10 +98,13 @@
 
     (re-frame/reg-event-fx
      :set-current-location
+     [(re-frame/inject-cofx :current-route)]
      (fn set-current-location-event [cofx [_ current-location]]
        (let [db (:db cofx)]
-         {:db (assoc db :current-location current-location)
-          :api (api-calls-for-location db current-location)})))
+         (into
+          {:db (assoc db :current-location current-location)
+           :api (api-calls-for-location db current-location)}
+          (fx-for-route (:current-route cofx) current-location)))))
 
     (re-frame/reg-event-db
      :set-buffer-size
