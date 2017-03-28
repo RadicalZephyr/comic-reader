@@ -51,7 +51,8 @@
   (re-frame/reg-event-fx
    :view-sites
    (fn [cofx _]
-     {:db (-> (:db cofx)
+     {:navigate [:comic-reader/site-list]
+      :db (-> (:db cofx)
               (set-page-key :site-list)
               (maybe-load-sites))}))
 
@@ -64,7 +65,8 @@
    :view-comics
    (fn [cofx [_ site-id]]
      (api/get-comics site-id {:on-success comic-list/set})
-     {:db (-> (:db cofx)
+     {:navigate [:comic-reader/comic-list {:site-id site-id}]
+      :db (-> (:db cofx)
               (set-page-key :comic-list)
               (assoc :site-id site-id
                      :comic-list :loading))}))
@@ -80,7 +82,8 @@
      (let [db (:db cofx)
            site-id (:site-id db)
            buffer-size (:buffer-size db)]
-       {:db (-> db
+       {:navigate [:comic-reader/reader-view-start {:site-id site-id :comic-id comic-id}]
+        :db (-> db
                 (set-page-key :reader)
                 (assoc :comic-id comic-id
                        :loading-images true))
