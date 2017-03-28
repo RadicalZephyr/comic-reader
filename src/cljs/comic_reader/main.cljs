@@ -90,7 +90,18 @@
         :api [[:get-prev-locations site-id comic-id nil buffer-size
                {:on-success #(re-frame/dispatch [:add-locations %])}]
               [:get-next-locations site-id comic-id nil buffer-size
-               {:on-success #(re-frame/dispatch [:add-locations %])}]]}))))
+               {:on-success #(re-frame/dispatch [:add-locations %])}]]})))
+
+  (re-frame/reg-event-fx
+   :change-route
+   (fn change-route-fx-handler [cofx [_ [route-name route-data]]]
+     (case route-name
+       :comic-reader/site-list {:dispatch [:view-sites]}
+       :comic-reader/comic-list {:dispatch [:view-comics (:site-id route-data)]}
+       :comic-reader/reader-view-start {:db (assoc (:db cofx) :site-id (:site-id route-data))
+                                        :dispatch [:read-comic (:comic-id route-data)]}
+       :comic-reader/reader-view {:db (assoc (:db cofx) :site-id (:site-id route-data))
+                                  :dispatch [:read-comic (:comic-id route-data)]}))))
 
 (defn main-panel [page-key]
   (case page-key
