@@ -2,6 +2,7 @@
   (:require
     [comic-reader.api :as api]
     [comic-reader.ui.base :as base]
+    [comic-reader.ui.history :as history]
     [comic-reader.ui.image :as image]
     [comic-reader.ui.reader :as reader]
     [comic-reader.ui.site-list :as site-list]
