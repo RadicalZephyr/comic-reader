@@ -36,5 +36,10 @@
    (fn navigate-fx [route-data]
      (ignore-next-token-change!)
      (history/set! (route->token (apply routing/resolve router route-data)))))
+  (re-frame/reg-fx
+   :navigate!
+   (fn navigate-fx [route-data]
+     (ignore-next-token-change!)
+     (history/replace! (route->token (apply routing/resolve router route-data)))))
 
   (history/add-listener! match-and-dispatch-route))
