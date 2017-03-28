@@ -64,6 +64,7 @@
                              [[org.clojure/clojurescript
                                :extension "jar"]]]
                             [cljs-ajax "0.5.8"]
+                            [funcool/bide "1.4.0"]
 
                             ;; Dev Dependencies
                             [radicalzephyr/clansi "1.2.0" :scope "test"]
