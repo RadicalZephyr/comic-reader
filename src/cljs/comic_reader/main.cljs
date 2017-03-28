@@ -48,26 +48,26 @@
    (fn [db [_ page-key]]
      (set-page-key db page-key)))
 
-  (re-frame/reg-event-db
+  (re-frame/reg-event-fx
    :view-sites
-   (fn [db _]
-     (-> db
-         (set-page-key :site-list)
-         (maybe-load-sites))))
+   (fn [cofx _]
+     {:db (-> (:db cofx)
+              (set-page-key :site-list)
+              (maybe-load-sites))}))
 
   (re-frame/reg-sub
    :site-id
    (fn [app-db _]
      (:site-id app-db)))
 
-  (re-frame/reg-event-db
+  (re-frame/reg-event-fx
    :view-comics
-   (fn [db [_ site-id]]
+   (fn [cofx [_ site-id]]
      (api/get-comics site-id {:on-success comic-list/set})
-     (-> db
-         (set-page-key :comic-list)
-         (assoc :site-id site-id
-                :comic-list :loading))))
+     {:db (-> (:db cofx)
+              (set-page-key :comic-list)
+              (assoc :site-id site-id
+                     :comic-list :loading))}))
 
   (re-frame/reg-sub
    :comic-id
