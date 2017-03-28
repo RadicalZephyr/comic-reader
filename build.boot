@@ -63,9 +63,6 @@
                             [re-frame "0.9.2" :exclusions
                              [[org.clojure/clojurescript
                                :extension "jar"]]]
-                            [org.clojure/data.avl "0.0.17"]
-                            [cljsjs/waypoints "4.0.0-0"]
-                            [secretary "1.2.3"]
                             [cljs-ajax "0.5.8"]
 
                             ;; Dev Dependencies
