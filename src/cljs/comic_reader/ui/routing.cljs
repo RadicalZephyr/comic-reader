@@ -14,16 +14,19 @@
 (defn- token->route [token]
   (-> token
       (str/replace-first #"#" "")
-      (str/replace-first #"!/" "")))
+      (str/replace-first #"!" "")))
 
 (defn- route->token [route]
   (str "!" route))
 
 (defonce ^:private dispatch? (atom true))
 
+(defn match [token]
+  (routing/match router (token->route token)))
+
 (defn- match-and-dispatch-route [token]
   (if @dispatch?
-    (when-let [route-data (routing/match router (token->route token))]
+    (when-let [route-data (match token)]
       (re-frame/dispatch [:change-route route-data]))
     (reset! dispatch? true)))
 
@@ -31,14 +34,20 @@
   (reset! dispatch? false))
 
 (defn setup! []
+  (re-frame/reg-cofx
+   :current-route
+   (fn route-cofx [cofx _]
+     (assoc cofx :current-route (match (history/get)))))
+
   (re-frame/reg-fx
    :navigate
    (fn navigate-fx [route-data]
      (ignore-next-token-change!)
      (history/set! (route->token (apply routing/resolve router route-data)))))
+
   (re-frame/reg-fx
    :navigate!
-   (fn navigate-fx [route-data]
+   (fn navigate!-fx [route-data]
      (ignore-next-token-change!)
      (history/replace! (route->token (apply routing/resolve router route-data)))))
 
