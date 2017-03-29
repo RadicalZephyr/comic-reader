@@ -122,7 +122,7 @@
 (defn ^:export main []
   (setup!)
   (re-frame/dispatch [:init-db])
-  (re-frame/dispatch [:view-sites])
+  (routing/match-and-dispatch-route (history/get))
   (render-root))
 
 (defn dev-reload []

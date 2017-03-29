@@ -2,7 +2,10 @@
   (:require [bide.core :as routing]
             [clojure.string :as str]
             [comic-reader.ui.history :as history]
-            [re-frame.core :as re-frame]))
+            [re-frame.core :as re-frame]
+            [goog.events :as events]
+            [goog.events.EventType :as EventType]
+            [comic-reader.ui.base :as base]))
 
 (def router
   (routing/router
@@ -24,7 +27,7 @@
 (defn match [token]
   (routing/match router (token->route token)))
 
-(defn- match-and-dispatch-route [token]
+(defn match-and-dispatch-route [token]
   (if @dispatch?
     (when-let [route-data (match token)]
       (re-frame/dispatch [:change-route route-data]))
