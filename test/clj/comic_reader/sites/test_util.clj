@@ -3,7 +3,6 @@
             [clojure.test :refer :all]
             [clojure.template :as template]
             [clojure.template :refer [do-template]]
-            [clj-http.client :as client]
             [loom.graph :as graph]
             [loom.alg :as alg]))
 
