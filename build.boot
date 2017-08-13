@@ -66,26 +66,26 @@
                             [funcool/bide "1.4.0"]
 
                             ;; Dev Dependencies
-                            [radicalzephyr/clansi "1.2.0" :scope "test"]
-                            [aysylu/loom "1.0.0" :scope "test"]
+                            [radicalzephyr/clansi "1.2.0"                :scope "test"]
+                            [aysylu/loom "1.0.0"                         :scope "test"]
 
-                            [ring/ring-mock "0.3.0" :scope "test"]
-                            [devcards "0.2.1-7" :scope "test"]
-                            [day8/re-frame-tracer "0.1.1-SNAPSHOT" :scope "test"]
+                            [ring/ring-mock "0.3.0"                      :scope "test"]
+                            [devcards "0.2.1-7"                          :scope "test"]
+                            [day8/re-frame-tracer "0.1.1-SNAPSHOT"       :scope "test"]
                             [org.clojars.stumitchell/clairvoyant "0.2.0" :scope "test"]
-                            [com.cemerick/piggieback "0.2.1" :scope "test"]
-                            [weasel "0.7.0"     :scope "test"]
-                            [org.clojure/tools.nrepl "0.2.12" :scope "test"]
-                            [binaryage/devtools "0.9.2" :scope "test"]
+                            [com.cemerick/piggieback "0.2.1"             :scope "test"]
+                            [weasel "0.7.0"                              :scope "test"]
+                            [org.clojure/tools.nrepl "0.2.12"            :scope "test"]
+                            [binaryage/devtools "0.9.2"                  :scope "test"]
 
                             ;; Boot Dependencies
-                            [adzerk/boot-test "1.2.0" :scope "test"]
-                            [adzerk/boot-cljs "1.7.228-2" :scope "test"]
-                            [adzerk/boot-cljs-repl "0.3.3" :scope "test"]
-                            [crisptrutski/boot-cljs-test   "0.3.0"     :scope "test"]
-                            [pandeiro/boot-http "0.7.6" :scope "test"]
-                            [adzerk/boot-reload "0.4.13" :scope "test"]
-                            [powerlaces/boot-cljs-devtools "0.2.0" :scope "test"]])
+                            [adzerk/boot-test "1.2.0"                    :scope "test"]
+                            [adzerk/boot-cljs "1.7.228-2"                :scope "test"]
+                            [adzerk/boot-cljs-repl "0.3.3"               :scope "test"]
+                            [crisptrutski/boot-cljs-test   "0.3.0"       :scope "test"]
+                            [pandeiro/boot-http "0.7.6"                  :scope "test"]
+                            [adzerk/boot-reload "0.4.13"                 :scope "test"]
+                            [powerlaces/boot-cljs-devtools "0.2.0"       :scope "test"]])
 
             :repositories #(conj % ["my.datomic.com" {:url "https://my.datomic.com/repo" :username username :password password}])))
 
