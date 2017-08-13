@@ -1,7 +1,12 @@
 (ns comic-reader.comic-repository.datomic
-  (:require [comic-reader.comic-repository :as repo]
+  (:require [clojure.tools.logging :as log]
+            [com.stuartsierra.component :as component]
+            [comic-reader.comic-repository :as repo]
+            [comic-reader.config :as config]
             [comic-reader.database :as db]
-            [datomic.api :as d]))
+            [comic-reader.database.norms :as norms]
+            [datomic.api :as d]
+            [io.rkn.conformity :as conformity]))
 
 (defn- site-record [site-data & {:keys [temp-id]}]
   (let [temp-id (if temp-id
@@ -57,16 +62,54 @@
            [?e :comic/site ?site-ent]]
          db site-id comic-id)))
 
-(defrecord DatomicRepository [database]
+
+(defn- create-database [config]
+  (d/create-database (config/database-uri config)))
+
+(defn- connect [config]
+  (d/connect (config/database-uri config)))
+
+(defn- setup-and-connect-to-database [config]
+  (when (config/database-uri config)
+    (log/info "Connecting to database...")
+    (let [do-seeds? (create-database config)
+          conn (connect config)]
+      ;; Conform database to schemas here
+      (when-let [norms-dir (config/norms-dir config)]
+        (log/info "Conforming database to norms...")
+        (conformity/ensure-conforms conn (norms/norms-map norms-dir)))
+
+      ;; Add seeds if database was newly created
+      ;; (when do-seeds?
+      ;;   @(d/transact conn (seed/data)))
+      conn)))
+
+(defrecord DatomicRepository [config conn]
+  component/Lifecycle
+  (start [component]
+    (if-let [config (:config component)]
+      (assoc component :conn
+             (setup-and-connect-to-database config))
+      component))
+
+  (stop [component]
+    (log/info "Disconnecting from database...")
+    (dissoc component :conn))
+
+  db/Database
+  (connection [database])
+  (destroy [database]
+    (d/delete-database (config/database-uri config)))
+
   repo/ComicRepository
   (list-sites [this]
-    (let [db (d/db (db/connection database))]
+    (let [db (d/db conn)]
       (d/q '[:find [(pull ?e [:site/id :site/name]) ...]
              :where [?e :site/name]]
            db)))
 
   (list-comics [this site-id]
-    (let [db (d/db (db/connection database))]
+    (let [db (d/db conn)]
       (d/q '[:find [(pull ?e [:comic/id :comic/name]) ...]
              :in $ ?site-id
              :where [?seid :site/id ?site-id]
@@ -76,7 +119,7 @@
   (previous-locations [this site comic-id location n])
 
   (next-locations [this site-id comic-id location n]
-    (let [db (d/db (db/connection database))]
+    (let [db (d/db conn)]
       (->> (d/q '[:find [(pull ?loc-ent [{:location/chapter [:chapter/title :chapter/number]}
                                          {:location/page [:page/number :page/url]}]) ...]
                   :in $ ?site-id ?comic-id
@@ -93,15 +136,15 @@
 
   repo/WritableComicRepository
   (store-sites [this sites]
-    (d/transact (db/connection database) (mapv site-record sites)))
+    (d/transact conn (mapv site-record sites)))
 
   (store-comics [this site-id comics]
-    (let [site-db-id (get-site-id (db/connection database) site-id)]
-      (d/transact (db/connection database) (mapv (partial comic-record site-db-id) comics))))
+    (let [site-db-id (get-site-id conn site-id)]
+      (d/transact conn (mapv (partial comic-record site-db-id) comics))))
 
   (store-locations [this site-id comic-id locations]
-    (let [comic-db-id (get-comic-id (db/connection database) site-id comic-id)]
-      (d/transact (db/connection database) (mapcat (partial location-record comic-db-id) locations)))))
+    (let [comic-db-id (get-comic-id conn site-id comic-id)]
+      (d/transact conn (mapcat (partial location-record comic-db-id) locations)))))
 
 (defn new-datomic-repository []
   (map->DatomicRepository {}))
