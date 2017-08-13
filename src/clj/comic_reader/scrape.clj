@@ -1,7 +1,7 @@
 (ns comic-reader.scrape
   (:require [clojure.string :as s]
             [clojure.java.io :as io]
-            [clj-http.client :as client]
+            [org.httpkit.client :as http]
             [tempfile.core :refer [tempfile with-tempfile]]
             [net.cgrand.enlive-html :as html])
   (:import java.net.URL))
@@ -11,7 +11,7 @@
                                          :selector selector})))
 
 (defn fetch-url [url]
-  (with-tempfile [html-file (tempfile (:body (client/get url)))]
+  (with-tempfile [html-file (tempfile (:body @(http/get url)))]
     (html/html-resource html-file)))
 
 (defn extract-list [html selector normalize]

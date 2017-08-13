@@ -53,7 +53,6 @@
                             [org.postgresql/postgresql "9.4-1201-jdbc41"]
 
                             ;; Comic scraping
-                            [clj-http "2.3.0"]
                             [tempfile "0.2.0"]
                             [enlive "1.1.6"]
 
