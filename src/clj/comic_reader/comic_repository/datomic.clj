@@ -97,7 +97,6 @@
     (dissoc component :conn))
 
   db/Database
-  (connection [database])
   (destroy [database]
     (d/delete-database (config/database-uri config)))
 
