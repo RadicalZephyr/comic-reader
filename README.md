@@ -37,7 +37,7 @@ guidance but the best source of information is running the tests in
 
 ## License
 
-Copyright © 2015 Zefira Shannon
+Copyright © 2015-2017 Zefira Shannon
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
