@@ -1,92 +1,73 @@
-(defn get-cleartext [prompt]
-  (print prompt)
-  (read-line))
+(set-env! :source-paths #{"src/clj" "src/cljs"}
+          :resource-paths #{"resources"}
+          :dependencies (template
+                         [[org.clojure/clojure ~(clojure-version)]
 
-(defn get-password [prompt]
-  (print prompt)
-  (apply str (.readPassword (System/console))))
+                          ;; Core app dependencies
+                          [com.stuartsierra/component "0.3.2"]
+                          [environ "1.1.0"]
+                          [org.clojure/tools.logging "0.3.1"
+                           :exclusions [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
+                          [ch.qos.logback/logback-classic "1.1.11"]
+                          [org.clojure/core.async "0.3.441"]
 
-(require '[clojure.string :as str])
+                          ;; Web server
+                          [ring "1.5.1"]
+                          [http-kit "2.2.0"]
+                          [compojure "1.5.2"]
+                          [radicalzephyr/ring.middleware.logger "0.6.0"
+                           :exclusions [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
+                          [fogus/ring-edn "0.3.0"]
+                          [hiccup "1.0.5"]
+                          [garden "1.3.2"]
 
-(defn get-env-or-prompt [prefix prompt-fmt word get-fn]
-  (let [env-name (str prefix word)]
-    (or (System/getenv env-name)
-        (get-fn (format prompt-fmt env-name (str/capitalize word))))))
+                          ;; Data storage
+                          [com.datomic/datomic-pro "0.9.5404"
+                           :exclusions [org.clojure/clojure
+                                        com.google.guava/guava
+                                        org.apache.httpcomponents/httpclient
+                                        org.slf4j/slf4j-nop]]
+                          [io.rkn/conformity "0.4.0"]
+                          [org.clojure/java.jdbc "0.6.1"]
+                          [org.postgresql/postgresql "9.4-1201-jdbc41"]
 
-(let [[username password] (mapv #(get-env-or-prompt "DATOMIC_"
-                                                    "%s was not defined.\n%s"
-                                                    %1 %2)
-                                ["USERNAME"    "PASSWORD"]
-                                [get-cleartext get-password])]
+                          ;; Comic scraping
+                          [tempfile "0.2.0"]
+                          [enlive "1.1.6"]
 
-  (set-env! :source-paths #{"src/clj" "src/cljs"}
-            :resource-paths #{"resources"}
-            :dependencies (template
-                           [[org.clojure/clojure ~(clojure-version)]
+                          ;; Clojurescript frontend
+                          [org.clojure/clojurescript "1.9.495"]
+                          [re-frame "0.9.2" :exclusions
+                           [[org.clojure/clojurescript
+                             :extension "jar"]]]
+                          [cljs-ajax "0.5.8"]
+                          [funcool/bide "1.4.0"]
 
-                            ;; Core app dependencies
-                            [com.stuartsierra/component "0.3.2"]
-                            [environ "1.1.0"]
-                            [org.clojure/tools.logging "0.3.1"
-                             :exclusions [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
-                            [ch.qos.logback/logback-classic "1.1.11"]
-                            [org.clojure/core.async "0.3.441"]
+                          ;; Dev Dependencies
+                          [radicalzephyr/clansi "1.2.0"                :scope "test"]
+                          [aysylu/loom "1.0.0"                         :scope "test"]
 
-                            ;; Web server
-                            [ring "1.5.1"]
-                            [http-kit "2.2.0"]
-                            [compojure "1.5.2"]
-                            [radicalzephyr/ring.middleware.logger "0.6.0"
-                             :exclusions [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
-                            [fogus/ring-edn "0.3.0"]
-                            [hiccup "1.0.5"]
-                            [garden "1.3.2"]
+                          [ring/ring-mock "0.3.0"                      :scope "test"]
+                          [devcards "0.2.1-7"                          :scope "test"]
+                          [day8/re-frame-tracer "0.1.1-SNAPSHOT"       :scope "test"]
+                          [org.clojars.stumitchell/clairvoyant "0.2.0" :scope "test"]
+                          [com.cemerick/piggieback "0.2.1"             :scope "test"]
+                          [weasel "0.7.0"                              :scope "test"]
+                          [org.clojure/tools.nrepl "0.2.12"            :scope "test"]
+                          [binaryage/devtools "0.9.2"                  :scope "test"]
 
-                            ;; Data storage
-                            [com.datomic/datomic-pro "0.9.5404"
-                             :exclusions [org.clojure/clojure
-                                          com.google.guava/guava
-                                          org.apache.httpcomponents/httpclient
-                                          org.slf4j/slf4j-nop]]
-                            [io.rkn/conformity "0.4.0"]
-                            [org.clojure/java.jdbc "0.6.1"]
-                            [org.postgresql/postgresql "9.4-1201-jdbc41"]
+                          ;; Boot Dependencies
+                          [adzerk/boot-test "1.2.0"                    :scope "test"]
+                          [adzerk/boot-cljs "1.7.228-2"                :scope "test"]
+                          [adzerk/boot-cljs-repl "0.3.3"               :scope "test"]
+                          [crisptrutski/boot-cljs-test   "0.3.0"       :scope "test"]
+                          [pandeiro/boot-http "0.7.6"                  :scope "test"]
+                          [adzerk/boot-reload "0.4.13"                 :scope "test"]
+                          [powerlaces/boot-cljs-devtools "0.2.0"       :scope "test"]])
 
-                            ;; Comic scraping
-                            [tempfile "0.2.0"]
-                            [enlive "1.1.6"]
-
-                            ;; Clojurescript frontend
-                            [org.clojure/clojurescript "1.9.495"]
-                            [re-frame "0.9.2" :exclusions
-                             [[org.clojure/clojurescript
-                               :extension "jar"]]]
-                            [cljs-ajax "0.5.8"]
-                            [funcool/bide "1.4.0"]
-
-                            ;; Dev Dependencies
-                            [radicalzephyr/clansi "1.2.0"                :scope "test"]
-                            [aysylu/loom "1.0.0"                         :scope "test"]
-
-                            [ring/ring-mock "0.3.0"                      :scope "test"]
-                            [devcards "0.2.1-7"                          :scope "test"]
-                            [day8/re-frame-tracer "0.1.1-SNAPSHOT"       :scope "test"]
-                            [org.clojars.stumitchell/clairvoyant "0.2.0" :scope "test"]
-                            [com.cemerick/piggieback "0.2.1"             :scope "test"]
-                            [weasel "0.7.0"                              :scope "test"]
-                            [org.clojure/tools.nrepl "0.2.12"            :scope "test"]
-                            [binaryage/devtools "0.9.2"                  :scope "test"]
-
-                            ;; Boot Dependencies
-                            [adzerk/boot-test "1.2.0"                    :scope "test"]
-                            [adzerk/boot-cljs "1.7.228-2"                :scope "test"]
-                            [adzerk/boot-cljs-repl "0.3.3"               :scope "test"]
-                            [crisptrutski/boot-cljs-test   "0.3.0"       :scope "test"]
-                            [pandeiro/boot-http "0.7.6"                  :scope "test"]
-                            [adzerk/boot-reload "0.4.13"                 :scope "test"]
-                            [powerlaces/boot-cljs-devtools "0.2.0"       :scope "test"]])
-
-            :repositories #(conj % ["my.datomic.com" {:url "https://my.datomic.com/repo" :username username :password password}])))
+          :repositories (let [username(System/getenv "DATOMIC_USERNAME")
+                              password (System/getenv "DATOMIC_PASSWORD")]
+                          #(conj % ["my.datomic.com" {:url "https://my.datomic.com/repo" :username username :password password}])))
 
 (task-options!
  pom {:project 'radicalzephyr/comic-reader
