@@ -21,10 +21,7 @@
                    :repository :comic-repository})
    :server       (component/using
                   (server/new-server)
-                  [:config :web-app])
-   #_:database #_(component/using
-                  (database/new-database)
-                  [:config])))
+                  [:config :web-app])))
 
 (def system nil)
 

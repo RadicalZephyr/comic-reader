@@ -2,24 +2,67 @@
   (:require [clojure.test :refer :all]
             [comic-reader.comic-repository :as repo]
             [comic-reader.comic-repository.datomic :as sut]
-            [comic-reader.database.datomic :as database]
             [comic-reader.database.test-util :as dtu]
             [com.stuartsierra.component :as component]
             [datomic.api :as d]))
+
+(defn test-system [norms-dir]
+  (component/system-map
+   :config {:database-uri "datomic:mem://comics-test"
+            :norms-dir norms-dir}
+   :database (component/using
+              (sut/new-datomic-repository)
+              [:config])
+   :db-cleaner (component/using
+                (dtu/new-database-cleaner)
+                [:database])))
+
+(defn wrap-cleanup-datomic [f]
+  (f)
+  (d/shutdown false))
+
+(use-fixtures :each wrap-cleanup-datomic)
+
+(deftest test-database-component
+  (let [db (sut/new-datomic-repository)]
+    (testing "with no config, no connection is started"
+      (is (nil? (:conn (component/start db)))))
+
+    (let [system (test-system nil)]
+      (testing "connection is nil before start"
+        (is (nil? (:conn (:database system)))))
+
+      (testing "connection is non-nil after successful start"
+
+        (let [started-system (component/start system)]
+          (try
+            (is (not (nil? (:conn (:database started-system)))))
+            (finally
+              (component/stop started-system))))))
+
+    (testing "norms conformation happens on startup"
+      (let [system (component/start (test-system "database/test-norms"))
+            db (:database system)]
+        (try
+          (is (= 1
+                 (count
+                  (d/q '[:find ?e
+                         :in $
+                         :where [?e :db/ident :test.enum/one]]
+                       (d/db (:conn db))))))
+          (finally
+            (component/stop system)))))))
 
 (defn datomic-test-system []
   (component/system-map
    :config {:database-uri "datomic:mem://comics-test"
             :norms-dir "database/norms"}
-   :database (component/using
-              (database/new-database)
-              [:config])
    :database-cleaner (component/using
                       (dtu/new-database-cleaner)
-                      [:database])
+                      {:database :datomic-repo})
    :datomic-repo (component/using
                   (sut/new-datomic-repository)
-                  [:database])))
+                  [:config])))
 
 (deftest test-get-and-store-sites
   (testing "returns no results for an empty database"
