@@ -26,7 +26,6 @@
 
                             ;; Core app dependencies
                             [com.stuartsierra/component "0.3.2"]
-                            [prismatic/schema "1.1.3"]
                             [environ "1.1.0"]
                             [org.clojure/tools.logging "0.3.1"
                              :exclusions [[org.slf4j/slf4j-log4j12 :extension "jar"]]]
