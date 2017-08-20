@@ -1,7 +1,8 @@
 (ns comic-reader.api
   (:require [re-frame.core :as re-frame]
             [ajax.core :refer [GET POST]]
-            [ajax.edn]))
+            [ajax.edn]
+            [ajax.ring]))
 
 (def ^:private errors-db-key :api-errors)
 (def ^:private errors-subscription-key :api-errors)
@@ -78,9 +79,13 @@
 
 (defn get-comics [site opts]
   (GET (str "/api/v1/" site "/comics")
-    {:handler (:on-success opts)
+    {:handler (fn [response]
+                (case (:status response)
+                  200 ((:on-success opts) (:body response))
+                  202 (.setTimeout js/window (fn [] (get-comics site opts)) 2000)))
      :error-handler (or (:on-error opts) report-error)
-     :response-format (ajax.edn/edn-response-format)}))
+     :response-format (ajax.ring/ring-response-format
+                       {:format (ajax.edn/edn-response-format)})}))
 
 (defn- get-locations [direction site comic location n opts]
   (POST (str "/api/v1/" site "/" comic "/" direction)
