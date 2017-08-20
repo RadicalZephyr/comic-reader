@@ -40,7 +40,7 @@
                           [re-frame "0.9.2" :exclusions
                            [[org.clojure/clojurescript
                              :extension "jar"]]]
-                          [cljs-ajax "0.5.8"]
+                          [cljs-ajax "0.5.9"]
                           [funcool/bide "1.4.0"]
 
                           ;; Dev Dependencies
