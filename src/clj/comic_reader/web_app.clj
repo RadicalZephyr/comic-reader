@@ -78,34 +78,34 @@
      ~@js]))
 
 (defn- make-routes [repository config]
-  (-> (c/routes
-        (c/GET "/" []
-          (render-page
-           :content
-           [[:div.row
-             [:div#app.small-12.columns]]
-            [:input#history_state {:type "hidden"}]]
-           :js [(page/include-js "/public/js/main.js")
-                [:script "comic_reader.main.main();"]]))
+  (c/routes
+    (c/GET "/" []
+      (render-page
+       :content
+       [[:div.row
+         [:div#app.small-12.columns]]
+        [:input#history_state {:type "hidden"}]]
+       :js [(page/include-js "/public/js/main.js")
+            [:script "comic_reader.main.main();"]]))
 
-        (c/GET "/devcards" []
-          (render-page
-           :content
-           [[:div.row
-             [:div#cards.small-12.columns]]]
-           :css [[:style (garden/css
-                          [:.com-rigsomelight-devcards_rendered-card
-                           [:a.button {:color "#FFF !important"}]])]]
-           :js [(page/include-js "/public/js/devcards.js")]))
+    (c/GET "/devcards" []
+      (render-page
+       :content
+       [[:div.row
+         [:div#cards.small-12.columns]]]
+       :css [[:style (garden/css
+                      [:.com-rigsomelight-devcards_rendered-card
+                       [:a.button {:color "#FFF !important"}]])]]
+       :js [(page/include-js "/public/js/devcards.js")]))
 
-        (c/context "/api/v1" []
-          (cond-> (make-api-routes repository)
-            :always wrap-with-logger
-            :always wrap-params
-            :always wrap-edn-params
-            (not (cfg/testing? config)) wrap-edn-body))
+    (c/context "/api/v1" []
+      (cond-> (make-api-routes repository)
+        :always wrap-with-logger
+        :always wrap-params
+        :always wrap-edn-params
+        (not (cfg/testing? config)) wrap-edn-body))
 
-        (route/resources "/public"))))
+    (route/resources "/public")))
 
 (defrecord WebApp [config routes repository]
   component/Lifecycle
