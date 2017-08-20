@@ -98,7 +98,9 @@
   (let [run-symbol (fn [s]
                      (when s
                        (when-let [ns (-> s namespace symbol)]
-                         (require ns))
+                         (try
+                           (require ns)
+                           (catch Throwable e)))
                        (if-let [v (resolve s)]
                          (v)
                          (util/warn "Could not find var #'%s\n" s))))]
