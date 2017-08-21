@@ -92,13 +92,13 @@
     (d/delete-database (config/database-uri config)))
 
   repo/ComicRepository
-  (list-sites [this]
+  (-list-sites [this]
     (let [db (d/db conn)]
       (d/q '[:find [(pull ?e [:site/id :site/name]) ...]
              :where [?e :site/name]]
            db)))
 
-  (list-comics [this site-id]
+  (-list-comics [this site-id]
     (let [db (d/db conn)]
       (d/q '[:find [(pull ?e [:comic/id :comic/name]) ...]
              :in $ ?site-id
@@ -106,9 +106,9 @@
                     [?e :comic/site ?seid]]
            db site-id)))
 
-  (previous-locations [this site comic-id location n])
+  (-previous-locations [this site comic-id location n])
 
-  (next-locations [this site-id comic-id location n]
+  (-next-locations [this site-id comic-id location n]
     (let [db (d/db conn)]
       (->> (d/q '[:find [(pull ?loc-ent [{:location/chapter [:chapter/title :chapter/number]}
                                          {:location/page [:page/number :page/url]}]) ...]
@@ -124,7 +124,7 @@
            (drop-while (if location #(not= % location) (constantly false)))
            (take n))))
 
-  (image-tag [this site location])
+  (-image-tag [this site location])
 
 
   repo/WritableComicRepository

@@ -4,27 +4,27 @@
 
 (defrecord MemoryRepository [store]
   repo/ComicRepository
-  (list-sites [this]
+  (-list-sites [this]
     (async/thread (:sites @store)))
 
-  (list-comics [this site-id]
+  (-list-comics [this site-id]
     (async/thread (get-in @store [:comics site-id])))
 
-  (previous-locations [this site-id comic-id location n]
+  (-previous-locations [this site-id comic-id location n]
     (async/thread
       (->> (get-in @store [:locations site-id comic-id])
            rseq
            (drop-while #(not= % location))
            (take n))))
 
-  (next-locations [this site-id comic-id location n]
+  (-next-locations [this site-id comic-id location n]
     (async/thread
       (->> (get-in @store [:locations site-id comic-id])
            seq
            (drop-while #(not= % location))
            (take n))))
 
-  (image-tag [this site location]
+  (-image-tag [this site location]
     (async/thread (get-in @store [site location])))
 
   repo/WritableComicRepository
