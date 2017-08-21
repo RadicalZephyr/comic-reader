@@ -4,7 +4,7 @@
             [comic-reader.comic-repository.scraper :as sut]
             [comic-reader.site-scraper.mock :refer [mock-scraper]]
             [com.stuartsierra.component :as component]
-            [clojure.core.async :as async]))
+            [clojure.core.async :refer [<!!]]))
 
 (defn scraper-test-system [scraper]
   (component/system-map
@@ -27,7 +27,7 @@
   (t/testing "returns nil when no sites are known"
     (let [repo (test-repo (mock-scraper :sites []))]
       (t/is (= []
-               (async/<!! (repo/list-sites repo))))))
+               (<!! (repo/list-sites repo))))))
 
   (t/testing "returns site data with names formatted for display"
     (let [repo (test-repo (mock-scraper
@@ -37,7 +37,7 @@
       (t/is (= [{:site/id "site-one"   :site/name "Site One"}
                 {:site/id "site-two"   :site/name "Site Two"}
                 {:site/id "site-three" :site/name "Site Three"}]
-               (async/<!! (repo/list-sites repo)))))))
+               (<!! (repo/list-sites repo)))))))
 
 (t/deftest test-list-comics
   (let [repo (test-repo (mock-scraper
@@ -50,12 +50,12 @@
                                     :url "another_url"}]}))]
     (t/testing "returns nil for an unknown site-id"
       (t/is (= []
-               (async/<!! (repo/list-comics repo "pants")))))
+               (<!! (repo/list-comics repo "pants")))))
 
     (t/testing "returns comic data for a site"
       (t/is (= [{:comic/id "the_gamer"   :comic/name "The Gamer"   :comic/url "real_url"}
                 {:comic/id "other_comic" :comic/name "Other Comic" :comic/url "another_url"}]
-               (async/<!! (repo/list-comics repo "manga-fox")))))))
+               (<!! (repo/list-comics repo "manga-fox")))))))
 
 (t/deftest test-next-locations
   (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
@@ -70,12 +70,12 @@
     (t/testing "starts at the beginning when location is nil"
       (t/is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                  :location/page {:page/number 1 :page/url "url1"}}]
-               (async/<!! (repo/next-locations repo "manga-fox" "the-gamer" nil 1)))))
+               (<!! (repo/next-locations repo "manga-fox" "the-gamer" nil 1)))))
 
     (t/testing "starts at the beginning when location is an empty map"
       (t/is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                  :location/page {:page/number 1 :page/url "url1"}}]
-               (async/<!! (repo/next-locations repo "manga-fox" "the-gamer" {} 1)))))
+               (<!! (repo/next-locations repo "manga-fox" "the-gamer" {} 1)))))
 
     (t/testing "doesn't include the passed page when starting at a page"
       (let [location {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
@@ -84,13 +84,13 @@
                    :location/page {:page/number 3 :page/url "url3"}}
                   {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                    :location/page {:page/number 4 :page/url "url4"}}]
-                 (async/<!! (repo/next-locations repo "manga-fox" "the-gamer" location 2))))))
+                 (<!! (repo/next-locations repo "manga-fox" "the-gamer" location 2))))))
 
     (t/testing "returns a sentinel value when no more locations are available"
       (let [location {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                       :location/page {:page/number 4 :page/url "url4"}}]
         (t/is (= [{:location/boundary :boundary/last}]
-                 (async/<!! (repo/next-locations repo "manga-fox" "the-gamer" location 2)))))))
+                 (<!! (repo/next-locations repo "manga-fox" "the-gamer" location 2)))))))
 
   (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
                                                  {"the-gamer" [{:name "The Gamer 1" :ch-num 1}
@@ -114,7 +114,7 @@
                    :location/page {:page/number 4 :page/url "url4"}}
                   {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                    :location/page {:page/number 5 :page/url "url5"}}]
-                 (async/<!! (repo/next-locations repo "manga-fox" "the-gamer" location 3))))))
+                 (<!! (repo/next-locations repo "manga-fox" "the-gamer" location 3))))))
 
     (t/testing "it only fetches as many pages as there are up-to the requested n"
       (let [location {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
@@ -128,7 +128,7 @@
                   {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                    :location/page {:page/number 5 :page/url "url5"}}
                   {:location/boundary :boundary/last}]
-                 (async/<!! (repo/next-locations repo "manga-fox" "the-gamer" location 10))))))
+                 (<!! (repo/next-locations repo "manga-fox" "the-gamer" location 10))))))
 
     (t/testing "it can start at an arbitrary chapter (with no page)"
       (let [location {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}}]
@@ -137,7 +137,7 @@
                   {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                    :location/page {:page/number 5 :page/url "url5"}}
                   {:location/boundary :boundary/last}]
-                 (async/<!! (repo/next-locations repo "manga-fox" "the-gamer" location 10))))))))
+                 (<!! (repo/next-locations repo "manga-fox" "the-gamer" location 10))))))))
 
 (t/deftest test-previous-locations
   (let [repo (test-repo (mock-scraper))]
@@ -166,7 +166,7 @@
       (let [location {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                       :location/page {:page/number 1 :page/url "url1"}}]
         (t/is (= [{:location/boundary :boundary/first}]
-                 (async/<!! (repo/previous-locations repo "manga-fox" "the-gamer" location 2))))))
+                 (<!! (repo/previous-locations repo "manga-fox" "the-gamer" location 2))))))
 
     (t/testing "it returns n locations that precede the given location"
       (let [location {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
@@ -175,7 +175,7 @@
                    :location/page {:page/number 2 :page/url "url2"}}
                   {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                    :location/page {:page/number 1 :page/url "url1"}}]
-                 (async/<!! (repo/previous-locations repo "manga-fox" "the-gamer" location 2))))))
+                 (<!! (repo/previous-locations repo "manga-fox" "the-gamer" location 2))))))
 
     (t/testing "it returns locations across chapter boundaries"
       (let [location {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
@@ -184,7 +184,7 @@
                    :location/page {:page/number 4 :page/url "url4"}}
                   {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                    :location/page {:page/number 3 :page/url "url3"}}]
-                 (async/<!! (repo/previous-locations repo "manga-fox" "the-gamer" location 2))))))
+                 (<!! (repo/previous-locations repo "manga-fox" "the-gamer" location 2))))))
 
     (t/testing "only fetches as many pages as there are"
       (let [location {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
@@ -198,7 +198,7 @@
                   {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                    :location/page {:page/number 1 :page/url "url1"}}
                   {:location/boundary :boundary/first}]
-                 (async/<!! (repo/previous-locations repo "manga-fox" "the-gamer" location 10))))))
+                 (<!! (repo/previous-locations repo "manga-fox" "the-gamer" location 10))))))
 
     (t/testing "it can start at an arbitrary chapter (with no page)"
       (let [location {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}}]
@@ -208,7 +208,7 @@
                    :location/page {:page/number 4 :page/url "url4"}}
                   {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                    :location/page {:page/number 3 :page/url "url3"}}]
-                 (async/<!! (repo/previous-locations repo "manga-fox" "the-gamer" location 3))))))))
+                 (<!! (repo/previous-locations repo "manga-fox" "the-gamer" location 3))))))))
 
 (t/deftest test-image-tag
   (t/testing "returns nil when"
@@ -228,4 +228,4 @@
                                     {{:page/number 3 :page/url "url3"} [:img {:src "an-img-url"}]}}))]
 
       (t/is (= [:img {:src "an-img-url"}]
-               (async/<!! (repo/image-tag repo "manga-fox" {:location/page {:page/number 3 :page/url "url3"}})))))))
+               (<!! (repo/image-tag repo "manga-fox" {:location/page {:page/number 3 :page/url "url3"}})))))))
