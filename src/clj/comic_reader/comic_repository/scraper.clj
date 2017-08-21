@@ -86,13 +86,17 @@
   (previous-locations [this site comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]
       (when chapter
-        (doall
-         (take n (locations-for :backward scraper site comic-id chapter page))))))
+        (let [ret (async/chan 10)]
+          (async/thread
+            (async/onto-chan ret (take n (locations-for :backward scraper site comic-id chapter page))))
+          ret))))
 
   (next-locations [this site comic-id location n]
-    (let [{page :location/page chapter :location/chapter} location]
-      (doall
-       (take n (locations-for :forward scraper site comic-id chapter page)))))
+    (let [{page :location/page chapter :location/chapter} location
+          ret (async/chan 10)]
+      (async/thread
+        (async/onto-chan ret (take n (locations-for :forward scraper site comic-id chapter page))))
+      ret))
 
   (image-tag [this site {page :location/page}]
     (when page
