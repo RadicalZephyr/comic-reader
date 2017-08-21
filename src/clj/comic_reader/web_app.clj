@@ -10,7 +10,8 @@
             [garden.core :as garden]
             [ring.middleware.edn :refer [wrap-edn-params]]
             [ring.middleware.logger :refer [wrap-with-logger]]
-            [ring.middleware.params :refer [wrap-params]]))
+            [ring.middleware.params :refer [wrap-params]]
+            [clojure.core.async :as async]))
 
 (defn- wrap-edn-body [handler]
   (fn [request]
@@ -28,22 +29,30 @@
    :headers {"Content-Type" "application/edn; charset=utf-8"}
    :edn-body data})
 
-(defn- make-api-routes [repository]
+(def accepted-response
+  {:status 202})
+
+(defn- chan-response [timeout ch]
+  (async/alt!!
+    ch ([value] (edn-response value))
+    (async/timeout timeout) accepted-response))
+
+(defn- make-api-routes [timeout repository]
   (c/routes
     (c/GET "/sites" []
-      (edn-response (repo/list-sites repository)))
+      (chan-response timeout (repo/list-sites repository)))
 
     (c/GET "/:site-id/comics" [site-id]
-      (edn-response (repo/list-comics repository site-id)))
+      (chan-response timeout (repo/list-comics repository site-id)))
 
     (c/POST "/:site-id/image" [site-id location]
-      (edn-response (repo/image-tag repository site-id location)))
+      (chan-response timeout (repo/image-tag repository site-id location)))
 
     (c/POST "/:site-id/:comic-id/previous" [site-id comic-id location n]
-      (edn-response (repo/previous-locations repository site-id comic-id location n)))
+      (chan-response timeout (repo/previous-locations repository site-id comic-id location n)))
 
     (c/POST "/:site-id/:comic-id/next" [site-id comic-id location n]
-      (edn-response (repo/next-locations repository site-id comic-id location n)))))
+      (chan-response timeout (repo/next-locations repository site-id comic-id location n)))))
 
 (defn- render-page [& {:keys [head css js content]}]
   (page/html5
@@ -99,7 +108,7 @@
        :js [(page/include-js "/public/js/devcards.js")]))
 
     (c/context "/api/v1" []
-      (cond-> (make-api-routes repository)
+      (cond-> (make-api-routes 400 repository)
         :always wrap-with-logger
         :always wrap-params
         :always wrap-edn-params
