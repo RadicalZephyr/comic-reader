@@ -42,15 +42,6 @@
       :location/chapter chapter-temp-id
       :location/page page-temp-id}]))
 
-(defn- get-site-id
-  "Resolve the db/id for the given site-id"
-  [conn site-id]
-  (let [db (d/db conn)]
-    (d/q '[:find ?e .
-           :in $ ?site-id
-           :where [?e :site/id ?site-id]]
-         db site-id)))
-
 (defn- get-comic-id
   "Resolve the db/id for the given comic and site."
   [conn site-id comic-id]
@@ -141,8 +132,8 @@
     (d/transact conn (mapv site-record sites)))
 
   (store-comics [this site-id comics]
-    (let [site-db-id (get-site-id conn site-id)]
-      (d/transact conn (mapv (partial comic-record site-db-id) comics))))
+    (let [site-db-ref [:site/id site-id]]
+      (d/transact conn (mapv (partial comic-record site-db-ref) comics))))
 
   (store-locations [this site-id comic-id locations]
     (let [comic-db-id (get-comic-id conn site-id comic-id)]
