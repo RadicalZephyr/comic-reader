@@ -72,31 +72,23 @@
 (defrecord ScraperRepository [scraper]
   repo/ComicRepository
   (list-sites [this]
-    (let [ret (async/chan 5 (map format-site))]
-      (async/thread
-        (async/onto-chan ret (site-scraper/list-sites scraper)))
-      ret))
+    (async/thread
+      (map format-site (site-scraper/list-sites scraper))))
 
   (list-comics [this site]
-    (let [ret (async/chan 100 (map format-comic))]
-      (async/thread
-        (async/onto-chan ret (site-scraper/list-comics scraper site)))
-      ret))
+    (async/thread
+      (map format-comic (site-scraper/list-comics scraper site))))
 
   (previous-locations [this site comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]
       (when chapter
-        (let [ret (async/chan 10)]
-          (async/thread
-            (async/onto-chan ret (take n (locations-for :backward scraper site comic-id chapter page))))
-          ret))))
+        (async/thread
+          (take n (locations-for :backward scraper site comic-id chapter page))))))
 
   (next-locations [this site comic-id location n]
-    (let [{page :location/page chapter :location/chapter} location
-          ret (async/chan 10)]
+    (let [{page :location/page chapter :location/chapter} location]
       (async/thread
-        (async/onto-chan ret (take n (locations-for :forward scraper site comic-id chapter page))))
-      ret))
+        (take n (locations-for :forward scraper site comic-id chapter page)))))
 
   (image-tag [this site {page :location/page}]
     (when page
