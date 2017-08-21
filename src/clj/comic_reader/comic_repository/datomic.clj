@@ -122,13 +122,16 @@
       (->> (d/q '[:find [(pull ?loc-ent [{:location/chapter [:chapter/title :chapter/number]}
                                          {:location/page [:page/number :page/url]}]) ...]
                   :in $ ?site-id ?comic-id
-                  :where [?site-ent :site/id ?site-id]
+                  :where
+                  [?site-ent :site/id ?site-id]
                   [?comic-ent :comic/id ?comic-id]
                   [?comic-ent :comic/site ?site-ent]
                   [?loc-ent :location/comic ?comic-ent]]
                 db site-id comic-id)
            (sort-by #(get-in % [:location/page :page/number]))
-           (sort-by #(get-in % [:location/chapter :chapter/number])))))
+           (sort-by #(get-in % [:location/chapter :chapter/number]))
+           (drop-while (if location #(not= % location) (constantly false)))
+           (take n))))
 
   (image-tag [this site location])
 
