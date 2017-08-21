@@ -100,7 +100,7 @@
 
   (image-tag [this site {page :location/page}]
     (when page
-      (site-scraper/get-page-image scraper site page))))
+      (async/thread (site-scraper/get-page-image scraper site page)))))
 
 (defn new-scraper-repo []
   (map->ScraperRepository {}))
