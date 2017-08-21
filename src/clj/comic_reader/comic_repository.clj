@@ -1,4 +1,41 @@
-(ns comic-reader.comic-repository)
+(ns comic-reader.comic-repository
+  (:require [clojure.spec.alpha :as s]))
+
+(s/def :site/id keyword?)
+(s/def :site/name string?)
+
+(s/def ::site (s/keys :req [:site/id :site/name]))
+
+
+(s/def :comic/id qualified-keyword?)
+(s/def :comic/name string?)
+(s/def :comic/url string?)
+
+(s/def ::comic (s/keys :req [:comic/id :comic/name :comic/url]))
+
+
+(s/def :chapter/number int?)
+(s/def :chapter/title string?)
+
+(s/def ::chapter (s/keys :req [:chapter/number :chapter/title]))
+
+
+(s/def :page/number int?)
+(s/def :page/url string?)
+
+(s/def ::page (s/keys :req [:page/number :page/url]))
+
+
+(s/def :location/boundary (s/and qualified-keyword?
+                                 #{:boundary/first
+                                   :boundary/last}))
+(s/def :location/chapter (s/keys :req [:chapter/number :chapter/title]))
+(s/def :location/page (s/keys :req [:page/number :page/url]))
+
+(s/def ::location
+  (s/or :present (s/keys :req [:location/chapter :location/chapter])
+        :absent  (s/keys :req [:location/boundary])))
+
 
 (defprotocol ComicRepository
   (-list-sites         [this] "List all the comic sites available from this repository.")
