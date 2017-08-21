@@ -32,13 +32,13 @@
     (store-call call-log :image-tag [site-id location]))
 
   repo/WritableComicRepository
-  (store-sites [this sites]
+  (-store-sites [this sites]
     (store-call call-log :store-sites [sites]))
 
-  (store-comics [this site-id comics]
+  (-store-comics [this site-id comics]
     (store-call call-log :store-comics [site-id comics]))
 
-  (store-locations [this site-id comic-id locations]
+  (-store-locations [this site-id comic-id locations]
     (store-call call-log :store-locations [site-id comic-id locations])))
 
 (defn spy-repo []

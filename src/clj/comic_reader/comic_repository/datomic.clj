@@ -128,14 +128,14 @@
 
 
   repo/WritableComicRepository
-  (store-sites [this sites]
+  (-store-sites [this sites]
     (d/transact conn (mapv site-record sites)))
 
-  (store-comics [this site-id comics]
+  (-store-comics [this site-id comics]
     (let [site-db-ref [:site/id site-id]]
       (d/transact conn (mapv (partial comic-record site-db-ref) comics))))
 
-  (store-locations [this site-id comic-id locations]
+  (-store-locations [this site-id comic-id locations]
     (let [comic-db-id (get-comic-id conn site-id comic-id)]
       (d/transact conn (mapcat (partial location-record comic-db-id) locations)))))
 

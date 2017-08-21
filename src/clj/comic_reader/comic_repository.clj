@@ -24,6 +24,15 @@
 
 
 (defprotocol WritableComicRepository
-  (store-sites [this sites] "Store a seq of site records.")
-  (store-comics [this site-id comics] "Store a seq of comic records.")
-  (store-locations [this site-id comic-id locations] "Store a seq of location records."))
+  (-store-sites [this sites] "Store a seq of site records.")
+  (-store-comics [this site-id comics] "Store a seq of comic records.")
+  (-store-locations [this site-id comic-id locations] "Store a seq of location records."))
+
+(defn store-sites [this sites]
+  (-store-sites this sites))
+
+(defn store-comics [this site-id comics]
+  (-store-comics this site-id comics))
+
+(defn store-locations [this site-id comic-id locations]
+  (-store-locations this site-id comic-id locations))

@@ -28,13 +28,13 @@
     (async/thread (get-in @store [site location])))
 
   repo/WritableComicRepository
-  (store-sites [this sites]
+  (-store-sites [this sites]
     (swap! store assoc :sites sites))
 
-  (store-comics [this site-id comics]
+  (-store-comics [this site-id comics]
     (swap! store assoc-in [:comics site-id] comics))
 
-  (store-locations [this site-id comic-id locations]
+  (-store-locations [this site-id comic-id locations]
     (let [sorted-locations (->> locations
                                 (sort-by #(get-in % [:location/page :page/number]))
                                 (sort-by #(get-in % [:location/chapter :chapter/number])))]
