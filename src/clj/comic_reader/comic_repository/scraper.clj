@@ -61,13 +61,15 @@
       spacify))
 
 (defn- format-site [site-id]
-  {:site/id site-id
+  {:site/id (keyword site-id)
    :site/name (titleize site-id)})
 
 (defn- format-comic [comic]
-  (set/rename-keys comic {:id :comic/id
-                          :name :comic/name
-                          :url :comic/url}))
+  (-> comic
+      (set/rename-keys {:id :comic/id
+                        :name :comic/name
+                        :url :comic/url})
+      (update :comic/id keyword)))
 
 (defrecord ScraperRepository [scraper]
   repo/ComicRepository
@@ -75,24 +77,24 @@
     (async/thread
       (map format-site (site-scraper/list-sites scraper))))
 
-  (list-comics [this site]
+  (list-comics [this site-id]
     (async/thread
-      (map format-comic (site-scraper/list-comics scraper site))))
+      (map format-comic (site-scraper/list-comics scraper (name site-id)))))
 
-  (previous-locations [this site comic-id location n]
+  (previous-locations [this site-id comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]
       (when chapter
         (async/thread
-          (take n (locations-for :backward scraper site comic-id chapter page))))))
+          (take n (locations-for :backward scraper (name site-id) comic-id chapter page))))))
 
-  (next-locations [this site comic-id location n]
+  (next-locations [this site-id comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]
       (async/thread
-        (take n (locations-for :forward scraper site comic-id chapter page)))))
+        (take n (locations-for :forward scraper (name site-id) comic-id chapter page)))))
 
-  (image-tag [this site {page :location/page}]
+  (image-tag [this site-id {page :location/page}]
     (when page
-      (async/thread (site-scraper/get-page-image scraper site page)))))
+      (async/thread (site-scraper/get-page-image scraper (name site-id) page)))))
 
 (defn new-scraper-repo []
   (map->ScraperRepository {}))
