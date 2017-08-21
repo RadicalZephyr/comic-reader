@@ -35,18 +35,17 @@
         (page-seq process sentinel scraper site (rest chapters))))
      [{:location/boundary sentinel}])))
 
-(defn- locations-for [scraper site direction chapters chapter page n]
+(defn- locations-for [direction scraper site comic-id chapter page]
   (let [processing-fn {:forward identity
                        :backward reverse}
         sentinel-val {:forward  :boundary/last
                       :backward :boundary/first}]
-    (cond->> chapters
+    (cond->> (site-scraper/list-chapters scraper site comic-id)
       (= direction :backward) (reverse)
       chapter (drop-while #(not= (format-chapter %) chapter))
       :always (page-seq (processing-fn direction) (sentinel-val direction) scraper site)
       page (drop-while #(not= (:location/page %) page))
-      page (drop 1)
-      :always (take n))))
+      page (drop 1))))
 
 
 (defn- capitalize-all [words]
@@ -88,12 +87,12 @@
     (let [{page :location/page chapter :location/chapter} location]
       (when chapter
         (doall
-         (locations-for scraper site :backward (site-scraper/list-chapters scraper site comic-id) chapter page n)))))
+         (take n (locations-for :backward scraper site comic-id chapter page))))))
 
   (next-locations [this site comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]
       (doall
-       (locations-for scraper site :forward (site-scraper/list-chapters scraper site comic-id) chapter page n))))
+       (take n (locations-for :forward scraper site comic-id chapter page)))))
 
   (image-tag [this site {page :location/page}]
     (when page
