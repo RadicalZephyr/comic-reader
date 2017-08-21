@@ -19,10 +19,6 @@
     (keep normalize selection)
     (raise-null-selection-error html selector)))
 
-(defn fetch-list [{:keys [url selector normalize]}]
-  (when (every? (complement nil?) [url selector normalize])
-    (extract-list (fetch-url url) selector normalize)))
-
 (defn enlive->hiccup [{:keys [tag attrs content]}]
   (if (nil? content)
     [tag attrs]
@@ -46,8 +42,3 @@
           first
           enlive->hiccup
           clean-image-tag))
-
-(defn fetch-image-tag [{:keys [url selector]}]
-  (when (every? (complement nil?) [url selector])
-    (-> (fetch-url url)
-        (extract-image-tag selector))))
