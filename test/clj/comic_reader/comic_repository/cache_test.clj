@@ -4,7 +4,8 @@
             [comic-reader.comic-repository.cache :as sut]
             [comic-reader.comic-repository.mock :refer [mock-repo]]
             [comic-reader.comic-repository.spy :as spy :refer [spy-repo]]
-            [com.stuartsierra.component :as component]))
+            [com.stuartsierra.component :as component]
+            [clojure.core.async :refer [<!!]]))
 
 (defn cache-test-system [source-repo storage-repo]
   (component/system-map
@@ -26,7 +27,7 @@
             spy-repo (spy-repo)
             mock-repo (mock-repo :sites sites)
             test-repo (test-repo mock-repo spy-repo)]
-        (is (= sites (repo/list-sites test-repo)))
+        (is (= sites (<!! (repo/list-sites test-repo))))
         (is (= [{:args [sites]}] (spy/calls spy-repo :store-sites)))))
 
     (testing "for list-comics"
@@ -34,7 +35,7 @@
             spy-repo (spy-repo)
             mock-repo (mock-repo :comics {:site-one comics})
             test-repo (test-repo mock-repo spy-repo)]
-        (is (= comics (repo/list-comics test-repo :site-one)))
+        (is (= comics (<!! (repo/list-comics test-repo :site-one))))
         (is (= [{:args [:site-one comics]}] (spy/calls spy-repo :store-comics)))))
 
     (testing "for previous-locations"
@@ -44,7 +45,7 @@
             mock-repo (mock-repo :site-one {:comics {"comic-one" {location {:previous-locations previous-locations}}}})
             test-repo (test-repo mock-repo spy-repo)]
         (is (= previous-locations
-               (repo/previous-locations test-repo :site-one "comic-one" location 2)))
+               (<!! (repo/previous-locations test-repo :site-one "comic-one" location 2))))
         (is (= [{:args [:site-one "comic-one" previous-locations]}]
                (spy/calls spy-repo :store-locations)))))
 
@@ -55,7 +56,7 @@
             mock-repo (mock-repo :site-one {:comics {"comic-one" {location {:next-locations next-locations}}}})
             test-repo (test-repo mock-repo spy-repo)]
         (is (= next-locations
-               (repo/next-locations test-repo :site-one "comic-one" location 2)))
+               (<!! (repo/next-locations test-repo :site-one "comic-one" location 2))))
         (is (= [{:args [:site-one "comic-one" next-locations]}]
                (spy/calls spy-repo :store-locations)))))
 
@@ -65,6 +66,6 @@
             spy-repo (spy-repo)
             mock-repo (mock-repo :site-one {location image-tag})
             test-repo (test-repo mock-repo spy-repo)]
-        (is (= image-tag (repo/image-tag test-repo :site-one location)))
+        (is (= image-tag (<!! (repo/image-tag test-repo :site-one location))))
         #_(is (= [{:args [:site-one location]}] (spy/calls spy-repo :store-image-tag)))))
     ))

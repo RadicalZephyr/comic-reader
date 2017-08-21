@@ -1,22 +1,23 @@
 (ns comic-reader.comic-repository.mock
-  (:require [comic-reader.comic-repository :as repo]))
+  (:require [comic-reader.comic-repository :as repo]
+            [clojure.core.async :as async]))
 
 (extend-type clojure.lang.IPersistentMap
   repo/ComicRepository
   (list-sites [this]
-    (:sites this))
+    (async/thread (:sites this)))
 
   (list-comics [this site]
-    (get-in this [:comics site]))
+    (async/thread (get-in this [:comics site])))
 
   (previous-locations [this site comic-id location n]
-    (take n (get-in this [site :comics comic-id location :previous-locations])))
+    (async/thread (take n (get-in this [site :comics comic-id location :previous-locations]))))
 
   (next-locations [this site comic-id location n]
-    (take n (get-in this [site :comics comic-id location :next-locations])))
+    (async/thread (take n (get-in this [site :comics comic-id location :next-locations]))))
 
   (image-tag [this site location]
-    (get-in this [site location])))
+    (async/thread (get-in this [site location]))))
 
 (defn mock-repo
   ([] {})
