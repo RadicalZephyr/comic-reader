@@ -4,19 +4,19 @@
 
 (extend-type clojure.lang.IPersistentMap
   repo/ComicRepository
-  (list-sites [this]
+  (-list-sites [this]
     (async/thread (:sites this)))
 
-  (list-comics [this site]
+  (-list-comics [this site]
     (async/thread (get-in this [:comics site])))
 
-  (previous-locations [this site comic-id location n]
+  (-previous-locations [this site comic-id location n]
     (async/thread (take n (get-in this [site :comics comic-id location :previous-locations]))))
 
-  (next-locations [this site comic-id location n]
+  (-next-locations [this site comic-id location n]
     (async/thread (take n (get-in this [site :comics comic-id location :next-locations]))))
 
-  (image-tag [this site location]
+  (-image-tag [this site location]
     (async/thread (get-in this [site location]))))
 
 (defn mock-repo

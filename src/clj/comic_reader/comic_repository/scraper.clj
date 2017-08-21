@@ -71,26 +71,26 @@
 
 (defrecord ScraperRepository [scraper]
   repo/ComicRepository
-  (list-sites [this]
+  (-list-sites [this]
     (async/thread
       (map format-site (site-scraper/list-sites scraper))))
 
-  (list-comics [this site-id]
+  (-list-comics [this site-id]
     (async/thread
       (map #(format-comic (name site-id) %) (site-scraper/list-comics scraper (name site-id)))))
 
-  (previous-locations [this site-id comic-id location n]
+  (-previous-locations [this site-id comic-id location n]
     (let [{:keys [:location/page :location/chapter]} location]
       (when chapter
         (async/thread
           (take n (locations-for :backward scraper (name site-id) comic-id chapter page))))))
 
-  (next-locations [this site-id comic-id location n]
+  (-next-locations [this site-id comic-id location n]
     (let [{:keys [:location/page :location/chapter]} location]
       (async/thread
         (take n (locations-for :forward scraper (name site-id) comic-id chapter page)))))
 
-  (image-tag [this site-id {page :location/page}]
+  (-image-tag [this site-id {page :location/page}]
     (when page
       (async/thread (site-scraper/get-page-image scraper (name site-id) page)))))
 

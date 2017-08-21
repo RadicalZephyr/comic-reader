@@ -16,19 +16,19 @@
     (get @call-log fn-name []))
 
   repo/ComicRepository
-  (list-sites [this]
+  (-list-sites [this]
     (store-call call-log :list-sites []))
 
-  (list-comics [this site-id]
+  (-list-comics [this site-id]
     (store-call call-log :list-comics [site-id]))
 
-  (previous-locations [this site-id comic-id location n]
+  (-previous-locations [this site-id comic-id location n]
     (store-call call-log :previous-locations [site-id comic-id location n]))
 
-  (next-locations [this site-id comic-id location n]
+  (-next-locations [this site-id comic-id location n]
     (store-call call-log :next-locations [site-id comic-id location n]))
 
-  (image-tag [this site-id location]
+  (-image-tag [this site-id location]
     (store-call call-log :image-tag [site-id location]))
 
   repo/WritableComicRepository
