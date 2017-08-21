@@ -3,7 +3,8 @@
             [comic-reader.comic-repository :as repo]
             [comic-reader.comic-repository.scraper :as sut]
             [comic-reader.site-scraper.mock :refer [mock-scraper]]
-            [com.stuartsierra.component :as component]))
+            [com.stuartsierra.component :as component]
+            [clojure.core.async :as async]))
 
 (defn scraper-test-system [scraper]
   (component/system-map
@@ -22,10 +23,14 @@
     (t/is (not (nil? repo)))
     (t/is (not (nil? (:scraper repo))))))
 
+(defn ch->vec [ch]
+  (async/<!! (async/into [] ch)))
+
 (t/deftest test-list-sites
   (t/testing "returns nil when no sites are known"
     (let [repo (test-repo (mock-scraper :sites []))]
-      (t/is (= [] (repo/list-comics repo "pants")))))
+      (t/is (= []
+               (ch->vec (repo/list-sites repo))))))
 
   (t/testing "returns site data with names formatted for display"
     (let [repo (test-repo (mock-scraper
@@ -35,7 +40,7 @@
       (t/is (= [{:site/id "site-one"   :site/name "Site One"}
                 {:site/id "site-two"   :site/name "Site Two"}
                 {:site/id "site-three" :site/name "Site Three"}]
-               (repo/list-sites repo))))))
+               (ch->vec (repo/list-sites repo)))))))
 
 (t/deftest test-list-comics
   (let [repo (test-repo (mock-scraper
@@ -47,12 +52,13 @@
                                     :name "Other Comic"
                                     :url "another_url"}]}))]
     (t/testing "returns nil for an unknown site-id"
-      (t/is (= [] (repo/list-comics repo "pants"))))
+      (t/is (= []
+               (ch->vec (repo/list-comics repo "pants")))))
 
     (t/testing "returns comic data for a site"
       (t/is (= [{:comic/id "the_gamer"   :comic/name "The Gamer"   :comic/url "real_url"}
                 {:comic/id "other_comic" :comic/name "Other Comic" :comic/url "another_url"}]
-               (repo/list-comics repo "manga-fox"))))))
+               (ch->vec (repo/list-comics repo "manga-fox")))))))
 
 (t/deftest test-next-locations
   (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
