@@ -73,17 +73,17 @@
   (testing "returns one stored site record"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (repo/store-sites test-repo [{:id "site-one", :name "Site One"}])
-      (is (= [{:site/id "site-one" :site/name "Site One"}]
+      (repo/store-sites test-repo [{:id :site-one, :name "Site One"}])
+      (is (= [{:site/id :site-one :site/name "Site One"}]
              (repo/list-sites test-repo)))))
 
   (testing "returns many stored site records"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (repo/store-sites test-repo [{:id "site-one", :name "Site One"}
-                                   {:id "site-two", :name "Site Two"}])
-      (is (= [{:site/id "site-one" :site/name "Site One"}
-              {:site/id "site-two" :site/name "Site Two"}]
+      (repo/store-sites test-repo [{:id :site-one, :name "Site One"}
+                                   {:id :site-two, :name "Site Two"}])
+      (is (= [{:site/id :site-one :site/name "Site One"}
+              {:site/id :site-two :site/name "Site Two"}]
              (repo/list-sites test-repo))))))
 
 (deftest test-get-and-store-comics
@@ -95,36 +95,36 @@
   (testing "returns one stored comic record"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id "site-one", :name "Site One"}]
+      (let [site {:id :site-one, :name "Site One"}]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:id site) [{:id "comic-one" :name "Comic One"}])
+        @(repo/store-comics test-repo (:id site) [{:id :comic-one :name "Comic One"}])
 
-        (is (= [{:comic/id "comic-one" :comic/name "Comic One"}]
-               (repo/list-comics test-repo "site-one"))))))
+        (is (= [{:comic/id :comic-one :comic/name "Comic One"}]
+               (repo/list-comics test-repo (:id site)))))))
 
   (testing "returns one stored comic record"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id "site-one", :name "Site One"}
-            other-site {:id "site-two", :name "Site Two"}]
+      (let [site {:id :site-one, :name "Site One"}
+            other-site {:id :site-two, :name "Site Two"}]
         @(repo/store-sites test-repo [site other-site])
-        @(repo/store-comics test-repo (:id site) [{:id "comic-one" :name "Comic One"}])
+        @(repo/store-comics test-repo (:id site) [{:id :comic-one :name "Comic One"}])
         @(repo/store-comics test-repo (:id other-site) [{:id "not-good-comic" :name "Not Good Comic"}])
 
-        (is (= [{:comic/id "comic-one" :comic/name "Comic One"}]
+        (is (= [{:comic/id :comic-one :comic/name "Comic One"}]
                (repo/list-comics test-repo "site-one"))))))
 
   (testing "returns many stored comic records"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id "site-one", :name "Site One"}]
+      (let [site {:id :site-one, :name "Site One"}]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:id site) [{:id "comic-one" :name "Comic One"}
-                                                  {:id "comic-two" :name "Comic Two"}]))
+        @(repo/store-comics test-repo (:id site) [{:id :comic-one :name "Comic One"}
+                                                  {:id :comic-two :name "Comic Two"}]))
 
-      (is (= #{{:comic/id "comic-one" :comic/name "Comic One"}
-               {:comic/id "comic-two" :comic/name "Comic Two"}}
-             (set (repo/list-comics test-repo "site-one")))))))
+      (is (= #{{:comic/id :comic-one :comic/name "Comic One"}
+               {:comic/id :comic-two :comic/name "Comic Two"}}
+             (set (repo/list-comics test-repo :site-one)))))))
 
 (deftest test-get-and-store-locations
   (testing "returns no results for an empty database"
@@ -135,8 +135,8 @@
   (testing "returns one location"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id "site-one", :name "Site One"}
-            comic {:id "comic-one" :name "Comic One"}]
+      (let [site {:id :site-one, :name "Site One"}
+            comic {:id :comic-one :name "Comic One"}]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:id site) [comic])
         @(repo/store-locations test-repo (:id site) (:id comic)
@@ -149,8 +149,8 @@
   (testing "returns multiple locations"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id "site-one", :name "Site One"}
-            comic {:id "comic-one" :name "Comic One"}]
+      (let [site {:id :site-one, :name "Site One"}
+            comic {:id :comic-one :name "Comic One"}]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:id site) [comic])
         @(repo/store-locations test-repo (:id site) (:id comic)
@@ -166,11 +166,11 @@
   (testing "only returns location for the desired site and comic"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id "site-one", :name "Site One"}
-            other-site {:id "site-two" :name "Site Two"}
-            comic {:id "comic-one" :name "Comic One"}
-            other-comic {:id "comic-other" :name "Comic One"}
-            third-comic {:id "comic-third" :name "Comic Third"}]
+      (let [site {:id :site-one, :name "Site One"}
+            other-site {:id :site-two :name "Site Two"}
+            comic {:id :comic-one :name "Comic One"}
+            other-comic {:id :comic-other :name "Comic One"}
+            third-comic {:id :comic-third :name "Comic Third"}]
 
         @(repo/store-sites test-repo [site other-site])
         @(repo/store-comics test-repo (:id site) [comic third-comic])
@@ -196,8 +196,8 @@
   (testing "Sorts all locations by chapter and page number"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id "site-one", :name "Site One"}
-            comic {:id "comic-one" :name "Comic One"}]
+      (let [site {:id :site-one, :name "Site One"}
+            comic {:id :comic-one :name "Comic One"}]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:id site) [comic])
         @(repo/store-locations test-repo (:id site) (:id comic)
