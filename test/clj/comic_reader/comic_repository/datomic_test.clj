@@ -219,4 +219,25 @@
                  :location/page {:page/number 1 :page/url  "url1"}}
                 {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                  :location/page {:page/number 2 :page/url  "url2"}}]
-               (repo/next-locations test-repo "site-one" "comic-one" nil 100)))))))
+               (repo/next-locations test-repo "site-one" "comic-one" nil 100)))
+
+        (is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 1 :page/url  "url1"}}
+                {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 2 :page/url  "url2"}}
+                {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 3 :page/url  "url3"}}]
+               (repo/next-locations test-repo "site-one" "comic-one" nil 3)))
+
+        (is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 2 :page/url  "url2"}}
+                {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
+                 :location/page {:page/number 3 :page/url  "url3"}}
+                {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
+                 :location/page {:page/number 1 :page/url  "url1"}}]
+               (repo/next-locations test-repo "site-one" "comic-one"
+                                    {:location/chapter {:chapter/title "The Gamer 1"
+                                                        :chapter/number 1}
+                                     :location/page {:page/number 2
+                                                     :page/url "url2"}}
+                                    3)))))))
