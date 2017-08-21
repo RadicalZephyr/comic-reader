@@ -1,5 +1,6 @@
 (ns comic-reader.comic-repository.scraper
   (:require [clojure.string :as str]
+            [clojure.core.async :as async]
             [comic-reader.comic-repository :as repo]
             [comic-reader.site-scraper :as site-scraper]
             [clojure.set :as set]))
@@ -72,10 +73,16 @@
 (defrecord ScraperRepository [scraper]
   repo/ComicRepository
   (list-sites [this]
-    (map format-site (site-scraper/list-sites scraper)))
+    (let [ret (async/chan 5 (map format-site))]
+      (async/thread
+        (async/onto-chan ret (site-scraper/list-sites scraper)))
+      ret))
 
   (list-comics [this site]
-    (map format-comic (site-scraper/list-comics scraper site)))
+    (let [ret (async/chan 100 (map format-comic))]
+      (async/thread
+        (async/onto-chan ret (site-scraper/list-comics scraper site)))
+      ret))
 
   (previous-locations [this site comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]
