@@ -80,13 +80,13 @@
       (map #(format-comic (name site-id) %) (site-scraper/list-comics scraper (name site-id)))))
 
   (previous-locations [this site-id comic-id location n]
-    (let [{page :location/page chapter :location/chapter} location]
+    (let [{:keys [:location/page :location/chapter]} location]
       (when chapter
         (async/thread
           (take n (locations-for :backward scraper (name site-id) comic-id chapter page))))))
 
   (next-locations [this site-id comic-id location n]
-    (let [{page :location/page chapter :location/chapter} location]
+    (let [{:keys [:location/page :location/chapter]} location]
       (async/thread
         (take n (locations-for :forward scraper (name site-id) comic-id chapter page)))))
 
