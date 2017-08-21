@@ -5,7 +5,7 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :site/id
-  :db/valueType :db.type/string
+  :db/valueType :db.type/keyword
   :db/cardinality :db.cardinality/one
   :db/unique :db.unique/identity
   :db.install/_attribute :db.part/db}
@@ -23,7 +23,7 @@
 
  {:db/id #db/id[:db.part/db]
   :db/ident :comic/id
-  :db/valueType :db.type/string
+  :db/valueType :db.type/keyword
   :db/cardinality :db.cardinality/one
   :db/unique :db.unique/identity
   :db.install/_attribute :db.part/db}
