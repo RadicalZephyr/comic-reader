@@ -64,12 +64,10 @@
   {:site/id (keyword site-id)
    :site/name (titleize site-id)})
 
-(defn- format-comic [comic]
-  (-> comic
-      (set/rename-keys {:id :comic/id
-                        :name :comic/name
-                        :url :comic/url})
-      (update :comic/id keyword)))
+(defn- format-comic [site-name comic]
+  {:comic/id (keyword (format "%s/%s" site-name (:id comic)))
+   :comic/name (:name comic)
+   :comic/url (:url comic)})
 
 (defrecord ScraperRepository [scraper]
   repo/ComicRepository
@@ -79,7 +77,7 @@
 
   (list-comics [this site-id]
     (async/thread
-      (map format-comic (site-scraper/list-comics scraper (name site-id)))))
+      (map #(format-comic (name site-id) %) (site-scraper/list-comics scraper (name site-id)))))
 
   (previous-locations [this site-id comic-id location n]
     (let [{page :location/page chapter :location/chapter} location]

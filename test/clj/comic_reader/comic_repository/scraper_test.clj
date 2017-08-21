@@ -53,8 +53,8 @@
                (<!! (repo/list-comics repo "pants")))))
 
     (t/testing "returns comic data for a site"
-      (t/is (= [{:comic/id :the_gamer   :comic/name "The Gamer"   :comic/url "real_url"}
-                {:comic/id :other_comic :comic/name "Other Comic" :comic/url "another_url"}]
+      (t/is (= [{:comic/id :manga-fox/the_gamer   :comic/name "The Gamer"   :comic/url "real_url"}
+                {:comic/id :manga-fox/other_comic :comic/name "Other Comic" :comic/url "another_url"}]
                (<!! (repo/list-comics repo :manga-fox)))))))
 
 (t/deftest test-next-locations
