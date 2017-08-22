@@ -44,3 +44,19 @@
 
       (testing "and stores the data from source into storage"
         (is (= [{:args [sites]}] (spy/calls spy-repo :store-sites)))))))
+
+(deftest test-list-comics
+  (testing "checks storage repo for content first"
+    (let [comics [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
+          [spy-repo test-repo] (spy-mock-system :comics {:site-one comics})]
+      (is (= comics (<!! (repo/list-comics test-repo :site-one))))
+      (is (= 0 (count (spy/calls spy-repo :list-sites))))))
+
+  (testing "when storage repo returns nothing, fetches from source"
+    (let [comics [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
+          [spy-repo test-repo] (mock-spy-system :comics {:site-one comics})]
+      (is (= comics (<!! (repo/list-comics test-repo :site-one))))
+      (is (= [{:args [:site-one]}] (spy/calls spy-repo :list-comics)))
+
+      (testing "and stores the data from source into storage"
+        (is (= [{:args [comics]}] (spy/calls spy-repo :store-comics)))))))

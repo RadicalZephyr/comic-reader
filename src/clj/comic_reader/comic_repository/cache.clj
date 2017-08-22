@@ -14,7 +14,13 @@
             fetched-sites)))))
 
   (-list-comics [this site-id]
-    )
+    (async/go
+      (let [stored-comics (<! (repo/list-comics storage-repo site-id))]
+        (if (seq stored-comics)
+          stored-comics
+          (let [fetched-comics (<! (repo/list-comics source-repo site-id))]
+            (repo/store-comics storage-repo fetched-comics)
+            fetched-comics)))))
 
   (-previous-locations [this comic-id location n]
     )
