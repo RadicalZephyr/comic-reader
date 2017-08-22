@@ -96,7 +96,7 @@
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
       (let [site {:site/id :site-one, :site/name "Site One"}
-            comic {:id :comic-one :name "Comic One"}]
+            comic {:comic/id :comic-one :comic/name "Comic One"}]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:site/id site) [comic])
 
@@ -108,8 +108,8 @@
                            test-repo (:datomic-repo test-system)]
       (let [site {:site/id :site-one, :site/name "Site One"}
             other-site {:site/id :site-two, :site/name "Site Two"}
-            comic {:id :comic-one :name "Comic One"}
-            other-comic {:id "not-good-comic" :name "Not Good Comic"}]
+            comic {:comic/id :comic-one :comic/name "Comic One"}
+            other-comic {:comic/id "not-good-comic" :comic/name "Not Good Comic"}]
         @(repo/store-sites test-repo [site other-site])
         @(repo/store-comics test-repo (:site/id site) [comic])
         @(repo/store-comics test-repo (:site/id other-site) [other-comic])
@@ -121,8 +121,8 @@
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
       (let [site {:site/id :site-one, :site/name "Site One"}
-            comic1 {:id :comic-one :name "Comic One"}
-            comic2 {:id :comic-two :name "Comic Two"}]
+            comic1 {:comic/id :comic-one :comic/name "Comic One"}
+            comic2 {:comic/id :comic-two :comic/name "Comic Two"}]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:site/id site) [comic1 comic2]))
 
@@ -143,8 +143,8 @@
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
       (let [site {:site/id :site-one :site/name "Site One"}
-            comic {:id :comic-one :name "Comic One"}
-            comic-id (make-comic-id (:site/id site) (:id comic))]
+            comic {:comic/id :comic-one :comic/name "Comic One"}
+            comic-id (make-comic-id (:site/id site) (:comic/id comic))]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:site/id site) [comic])
         @(repo/store-locations test-repo comic-id
@@ -158,8 +158,8 @@
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
       (let [site {:site/id :site-one, :site/name "Site One"}
-            comic {:id :comic-one :name "Comic One"}
-            comic-id (make-comic-id (:site/id site) (:id comic))]
+            comic {:comic/id :comic-one :comic/name "Comic One"}
+            comic-id (make-comic-id (:site/id site) (:comic/id comic))]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:site/id site) [comic])
         @(repo/store-locations test-repo comic-id
@@ -177,12 +177,12 @@
                            test-repo (:datomic-repo test-system)]
       (let [site {:site/id :site-one, :site/name "Site One"}
             other-site {:site/id :site-two :site/name "Site Two"}
-            comic {:id :comic-one :name "Comic One"}
-            other-comic {:id :comic-other :name "Comic One"}
-            third-comic {:id :comic-third :name "Comic Third"}
-            comic-id (make-comic-id (:site/id site) (:id comic))
-            other-comic-id (make-comic-id (:site/id other-site) (:id other-comic))
-            third-comic-id (make-comic-id (:site/id site) (:id third-comic))]
+            comic {:comic/id :comic-one :comic/name "Comic One"}
+            other-comic {:comic/id :comic-other :comic/name "Comic One"}
+            third-comic {:comic/id :comic-third :comic/name "Comic Third"}
+            comic-id (make-comic-id (:site/id site) (:comic/id comic))
+            other-comic-id (make-comic-id (:site/id other-site) (:comic/id other-comic))
+            third-comic-id (make-comic-id (:site/id site) (:comic/id third-comic))]
 
         @(repo/store-sites test-repo [site other-site])
         @(repo/store-comics test-repo (:site/id site) [comic third-comic])
@@ -209,8 +209,8 @@
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
       (let [site {:site/id :site-one, :site/name "Site One"}
-            comic {:id :comic-one :name "Comic One"}
-            comic-id (make-comic-id (:site/id site) (:id comic))]
+            comic {:comic/id :comic-one :comic/name "Comic One"}
+            comic-id (make-comic-id (:site/id site) (:comic/id comic))]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:site/id site) [comic])
         @(repo/store-locations test-repo comic-id
