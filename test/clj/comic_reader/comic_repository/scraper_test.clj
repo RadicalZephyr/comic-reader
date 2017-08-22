@@ -24,7 +24,7 @@
     (t/is (not (nil? (:scraper repo))))))
 
 (t/deftest test-list-sites
-  (t/testing "returns nil when no sites are known"
+  (t/testing "returns empty list when no sites are known"
     (let [repo (test-repo (mock-scraper :sites []))]
       (t/is (= []
                (<!! (repo/list-sites repo))))))
@@ -48,9 +48,9 @@
                                    {:id "other_comic"
                                     :name "Other Comic"
                                     :url "another_url"}]}))]
-    (t/testing "returns nil for an unknown site-id"
+    (t/testing "returns empty vector for an unknown site-id"
       (t/is (= []
-               (<!! (repo/list-comics repo "pants")))))
+               (<!! (repo/list-comics repo :pants)))))
 
     (t/testing "returns comic data for a site"
       (t/is (= [{:comic/id :manga-fox/the_gamer   :comic/name "The Gamer"   :comic/url "real_url"}
@@ -94,7 +94,7 @@
 
   (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
                                                  {:the-gamer [{:name "The Gamer 1" :ch-num 1}
-                                                               {:name "The Gamer 2" :ch-num 2}]}}
+                                                              {:name "The Gamer 2" :ch-num 2}]}}
                                       :pages {"manga-fox"
                                               {{:name "The Gamer 1" :ch-num 1}
                                                [{:name "1" :url  "url1"}
@@ -151,7 +151,7 @@
 
   (let [repo (test-repo (mock-scraper :chapters {"manga-fox"
                                                  {:the-gamer [{:name "The Gamer 1" :ch-num 1}
-                                                               {:name "The Gamer 2" :ch-num 2}]}}
+                                                              {:name "The Gamer 2" :ch-num 2}]}}
                                       :pages {"manga-fox"
                                               {{:name "The Gamer 1" :ch-num 1}
                                                [{:name "1" :url  "url1"}
@@ -214,13 +214,13 @@
   (t/testing "returns nil when"
     (let [repo (test-repo (mock-scraper))]
       (t/testing "given a nil location"
-        (t/is (= nil (repo/image-tag repo "manga-fox" nil))))
+        (t/is (= nil (repo/image-tag repo :manga-fox nil))))
 
       (t/testing "given an empty location"
-        (t/is (= nil (repo/image-tag repo "manga-fox" {}))))
+        (t/is (= nil (repo/image-tag repo :manga-fox {}))))
 
       (t/testing "given a location without a page component"
-        (t/is (= nil (repo/image-tag repo "manga-fox" {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}}))))))
+        (t/is (= nil (repo/image-tag repo :manga-fox {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}}))))))
 
   (t/testing "returns a valid image tag"
     (let [repo (test-repo (mock-scraper
@@ -228,4 +228,4 @@
                                     {{:page/number 3 :page/url "url3"} [:img {:src "an-img-url"}]}}))]
 
       (t/is (= [:img {:src "an-img-url"}]
-               (<!! (repo/image-tag repo "manga-fox" {:location/page {:page/number 3 :page/url "url3"}})))))))
+               (<!! (repo/image-tag repo :manga-fox {:location/page {:page/number 3 :page/url "url3"}})))))))
