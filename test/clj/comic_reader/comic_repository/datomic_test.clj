@@ -95,9 +95,10 @@
   (testing "returns one stored comic record"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:site/id :site-one, :site/name "Site One"}]
+      (let [site {:site/id :site-one, :site/name "Site One"}
+            comic {:id :comic-one :name "Comic One"}]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:site/id site) [{:id :comic-one :name "Comic One"}])
+        @(repo/store-comics test-repo (:site/id site) [comic])
 
         (is (= [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
                (repo/list-comics test-repo (:site/id site)))))))
@@ -106,10 +107,12 @@
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
       (let [site {:site/id :site-one, :site/name "Site One"}
-            other-site {:site/id :site-two, :site/name "Site Two"}]
+            other-site {:site/id :site-two, :site/name "Site Two"}
+            comic {:id :comic-one :name "Comic One"}
+            other-comic {:id "not-good-comic" :name "Not Good Comic"}]
         @(repo/store-sites test-repo [site other-site])
-        @(repo/store-comics test-repo (:site/id site) [{:id :comic-one :name "Comic One"}])
-        @(repo/store-comics test-repo (:site/id other-site) [{:id "not-good-comic" :name "Not Good Comic"}])
+        @(repo/store-comics test-repo (:site/id site) [comic])
+        @(repo/store-comics test-repo (:site/id other-site) [other-comic])
 
         (is (= [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
                (repo/list-comics test-repo "site-one"))))))
@@ -117,10 +120,11 @@
   (testing "returns many stored comic records"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:site/id :site-one, :site/name "Site One"}]
+      (let [site {:site/id :site-one, :site/name "Site One"}
+            comic1 {:id :comic-one :name "Comic One"}
+            comic2 {:id :comic-two :name "Comic Two"}]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:site/id site) [{:id :comic-one :name "Comic One"}
-                                                  {:id :comic-two :name "Comic Two"}]))
+        @(repo/store-comics test-repo (:site/id site) [comic1 comic2]))
 
       (is (= #{{:comic/id :site-one/comic-one :comic/name "Comic One"}
                {:comic/id :site-one/comic-two :comic/name "Comic Two"}}
