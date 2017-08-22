@@ -20,7 +20,7 @@
       component/start
       :cache-repo))
 
-(deftest test-list-sites
+(deftest test-fetch-and-store
   (testing "fetches data from the source-repo and stores it in the storage-repo"
     (testing "for list-sites"
       (let [sites [{:site/id "site-one" :site/name "Site One"}]
