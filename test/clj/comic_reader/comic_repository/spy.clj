@@ -1,5 +1,6 @@
 (ns comic-reader.comic-repository.spy
-  (:require [comic-reader.comic-repository :as repo]))
+  (:require [clojure.core.async :as async]
+            [comic-reader.comic-repository :as repo]))
 
 (def ^:private vconj (fnil conj []))
 
@@ -17,19 +18,24 @@
 
   repo/ComicRepository
   (-list-sites [this]
-    (store-call call-log :list-sites []))
+    (store-call call-log :list-sites [])
+    (async/to-chan [[]]))
 
   (-list-comics [this site-id]
-    (store-call call-log :list-comics [site-id]))
+    (store-call call-log :list-comics [site-id])
+    (async/to-chan [[]]))
 
   (-previous-locations [this comic-id location n]
-    (store-call call-log :previous-locations [(namespace comic-id) comic-id location n]))
+    (store-call call-log :previous-locations [(namespace comic-id) comic-id location n])
+    (async/to-chan [[]]))
 
   (-next-locations [this comic-id location n]
-    (store-call call-log :next-locations [(namespace comic-id) comic-id location n]))
+    (store-call call-log :next-locations [(namespace comic-id) comic-id location n])
+    (async/to-chan [[]]))
 
   (-image-tag [this site-id location]
-    (store-call call-log :image-tag [site-id location]))
+    (store-call call-log :image-tag [site-id location])
+    (async/to-chan [[]]))
 
   repo/WritableComicRepository
   (-store-sites [this sites]
