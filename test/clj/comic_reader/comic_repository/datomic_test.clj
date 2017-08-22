@@ -73,15 +73,15 @@
   (testing "returns one stored site record"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (repo/store-sites test-repo [{:id :site-one, :name "Site One"}])
+      (repo/store-sites test-repo [{:site/id :site-one, :site/name "Site One"}])
       (is (= [{:site/id :site-one :site/name "Site One"}]
              (repo/list-sites test-repo)))))
 
   (testing "returns many stored site records"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (repo/store-sites test-repo [{:id :site-one, :name "Site One"}
-                                   {:id :site-two, :name "Site Two"}])
+      (repo/store-sites test-repo [{:site/id :site-one, :site/name "Site One"}
+                                   {:site/id :site-two, :site/name "Site Two"}])
       (is (= [{:site/id :site-one :site/name "Site One"}
               {:site/id :site-two :site/name "Site Two"}]
              (repo/list-sites test-repo))))))
@@ -95,21 +95,21 @@
   (testing "returns one stored comic record"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id :site-one, :name "Site One"}]
+      (let [site {:site/id :site-one, :site/name "Site One"}]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:id site) [{:id :comic-one :name "Comic One"}])
+        @(repo/store-comics test-repo (:site/id site) [{:id :comic-one :name "Comic One"}])
 
         (is (= [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
-               (repo/list-comics test-repo (:id site)))))))
+               (repo/list-comics test-repo (:site/id site)))))))
 
   (testing "returns one stored comic record"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id :site-one, :name "Site One"}
-            other-site {:id :site-two, :name "Site Two"}]
+      (let [site {:site/id :site-one, :site/name "Site One"}
+            other-site {:site/id :site-two, :site/name "Site Two"}]
         @(repo/store-sites test-repo [site other-site])
-        @(repo/store-comics test-repo (:id site) [{:id :comic-one :name "Comic One"}])
-        @(repo/store-comics test-repo (:id other-site) [{:id "not-good-comic" :name "Not Good Comic"}])
+        @(repo/store-comics test-repo (:site/id site) [{:id :comic-one :name "Comic One"}])
+        @(repo/store-comics test-repo (:site/id other-site) [{:id "not-good-comic" :name "Not Good Comic"}])
 
         (is (= [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
                (repo/list-comics test-repo "site-one"))))))
@@ -117,9 +117,9 @@
   (testing "returns many stored comic records"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id :site-one, :name "Site One"}]
+      (let [site {:site/id :site-one, :site/name "Site One"}]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:id site) [{:id :comic-one :name "Comic One"}
+        @(repo/store-comics test-repo (:site/id site) [{:id :comic-one :name "Comic One"}
                                                   {:id :comic-two :name "Comic Two"}]))
 
       (is (= #{{:comic/id :site-one/comic-one :comic/name "Comic One"}
@@ -138,11 +138,11 @@
   (testing "returns one location"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id :site-one :name "Site One"}
+      (let [site {:site/id :site-one :site/name "Site One"}
             comic {:id :comic-one :name "Comic One"}
-            comic-id (make-comic-id (:id site) (:id comic))]
+            comic-id (make-comic-id (:site/id site) (:id comic))]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:id site) [comic])
+        @(repo/store-comics test-repo (:site/id site) [comic])
         @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}])
 
@@ -153,11 +153,11 @@
   (testing "returns multiple locations"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id :site-one, :name "Site One"}
+      (let [site {:site/id :site-one, :site/name "Site One"}
             comic {:id :comic-one :name "Comic One"}
-            comic-id (make-comic-id (:id site) (:id comic))]
+            comic-id (make-comic-id (:site/id site) (:id comic))]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:id site) [comic])
+        @(repo/store-comics test-repo (:site/id site) [comic])
         @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
                                 {:chapter {:name "The Gamer 2" :ch-num 2} :page {:number 2 :url  "url2"}}])
@@ -171,17 +171,17 @@
   (testing "only returns location for the desired site and comic"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id :site-one, :name "Site One"}
-            other-site {:id :site-two :name "Site Two"}
+      (let [site {:site/id :site-one, :site/name "Site One"}
+            other-site {:site/id :site-two :site/name "Site Two"}
             comic {:id :comic-one :name "Comic One"}
             other-comic {:id :comic-other :name "Comic One"}
             third-comic {:id :comic-third :name "Comic Third"}
-            comic-id (make-comic-id (:id site) (:id comic))
-            other-comic-id (make-comic-id (:id other-site) (:id other-comic))
-            third-comic-id (make-comic-id (:id site) (:id third-comic))]
+            comic-id (make-comic-id (:site/id site) (:id comic))
+            other-comic-id (make-comic-id (:site/id other-site) (:id other-comic))
+            third-comic-id (make-comic-id (:site/id site) (:id third-comic))]
 
         @(repo/store-sites test-repo [site other-site])
-        @(repo/store-comics test-repo (:id site) [comic third-comic])
+        @(repo/store-comics test-repo (:site/id site) [comic third-comic])
         @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
                                 {:chapter {:name "The Gamer 2" :ch-num 2} :page {:number 2 :url  "url2"}}])
@@ -190,7 +190,7 @@
                                 {:chapter {:name "The Third 2" :ch-num 2} :page {:number 2 :url  "third-url2"}}])
 
 
-        @(repo/store-comics test-repo (:id other-site) [other-comic])
+        @(repo/store-comics test-repo (:site/id other-site) [other-comic])
         @(repo/store-locations test-repo other-comic-id
                                [{:chapter {:name "The Other 1" :ch-num 1} :page {:number 1 :url  "other-url1"}}
                                 {:chapter {:name "The Other 2" :ch-num 2} :page {:number 2 :url  "other-url2"}}])
@@ -204,11 +204,11 @@
   (testing "Sorts all locations by chapter and page number"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id :site-one, :name "Site One"}
+      (let [site {:site/id :site-one, :site/name "Site One"}
             comic {:id :comic-one :name "Comic One"}
-            comic-id (make-comic-id (:id site) (:id comic))]
+            comic-id (make-comic-id (:site/id site) (:id comic))]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:id site) [comic])
+        @(repo/store-comics test-repo (:site/id site) [comic])
         @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
                                 {:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 2 :url  "url2"}}
