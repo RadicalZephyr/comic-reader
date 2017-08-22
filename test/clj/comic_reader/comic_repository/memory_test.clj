@@ -15,9 +15,9 @@
 (deftest test-comics
   (testing "can store and retrieve comics data"
     (let [test-repo (sut/new-memory-repository)
-          site-id ::site
-          comics [{:comic/id "comic-one" :comic/name "Comic One"}]]
-      (repo/store-comics test-repo site-id comics)
+          site-id :site-one
+          comics [{:comic/id :site-one/comic-one :comic/name "Comic One"}]]
+      (repo/store-comics test-repo comics)
       (is (= comics
              (<!! (repo/list-comics test-repo site-id)))))))
 

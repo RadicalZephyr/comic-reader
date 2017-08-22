@@ -13,7 +13,7 @@
   (-list-comics [this site-id]
     (async/go
       (let [comics (<! (repo/list-comics source-repo site-id))]
-        (repo/store-comics storage-repo site-id comics)
+        (repo/store-comics storage-repo comics)
         comics)))
 
   (-previous-locations [this comic-id location n]

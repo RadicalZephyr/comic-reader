@@ -23,7 +23,7 @@
 (deftest test-fetch-and-store
   (testing "fetches data from the source-repo and stores it in the storage-repo"
     (testing "for list-sites"
-      (let [sites [{:site/id "site-one" :site/name "Site One"}]
+      (let [sites [{:site/id :site-one :site/name "Site One"}]
             spy-repo (spy-repo)
             mock-repo (mock-repo :sites sites)
             test-repo (test-repo mock-repo spy-repo)]
@@ -31,12 +31,12 @@
         (is (= [{:args [sites]}] (spy/calls spy-repo :store-sites)))))
 
     (testing "for list-comics"
-      (let [comics [{:comic/id "comic-one" :comic/name "Comic One"}]
+      (let [comics [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
             spy-repo (spy-repo)
             mock-repo (mock-repo :comics {:site-one comics})
             test-repo (test-repo mock-repo spy-repo)]
         (is (= comics (<!! (repo/list-comics test-repo :site-one))))
-        (is (= [{:args [:site-one comics]}] (spy/calls spy-repo :store-comics)))))
+        (is (= [{:args [comics]}] (spy/calls spy-repo :store-comics)))))
 
     (testing "for previous-locations"
       (let [location [:fake-comic-location]

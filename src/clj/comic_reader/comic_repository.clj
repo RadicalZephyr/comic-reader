@@ -96,7 +96,7 @@
 
 (defprotocol WritableComicRepository
   (-store-sites [this sites] "Store a seq of site records.")
-  (-store-comics [this site-id comics] "Store a seq of comic records.")
+  (-store-comics [this comics] "Store a seq of comic records.")
   (-store-locations [this comic-id locations] "Store a seq of location records."))
 
 (s/def ::writable-repository #(satisfies? WritableComicRepository))
@@ -108,11 +108,11 @@
   :args (s/cat :this ::repository :sites (s/coll-of ::site))
   :ret  ::async/readable-port)
 
-(defn store-comics [this site-id comics]
-  (-store-comics this site-id comics))
+(defn store-comics [this comics]
+  (-store-comics this comics))
 
 (s/fdef store-comics
-  :args (s/cat :this ::repository :site-id :site/id :comics (s/coll-of ::comic))
+  :args (s/cat :this ::repository :comics (s/coll-of ::comic))
   :ret  ::async/readable-port)
 
 (defn store-locations [this comic-id locations]
