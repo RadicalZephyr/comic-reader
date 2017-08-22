@@ -16,16 +16,16 @@
         (repo/store-comics storage-repo site-id comics)
         comics)))
 
-  (-previous-locations [this site-id comic-id location n]
+  (-previous-locations [this comic-id location n]
     (async/go
-      (let [locations (<! (repo/previous-locations source-repo site-id comic-id location n))]
-        (repo/store-locations storage-repo site-id comic-id locations)
+      (let [locations (<! (repo/previous-locations source-repo comic-id location n))]
+        (repo/store-locations storage-repo comic-id locations)
         locations)))
 
-  (-next-locations [this site-id comic-id location n]
+  (-next-locations [this comic-id location n]
     (async/go
-      (let [locations (<! (repo/next-locations source-repo site-id comic-id location n))]
-        (repo/store-locations storage-repo site-id comic-id locations)
+      (let [locations (<! (repo/next-locations source-repo comic-id location n))]
+        (repo/store-locations storage-repo comic-id locations)
         locations)))
 
   (-image-tag [this site-id location]

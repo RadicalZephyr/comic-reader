@@ -44,8 +44,8 @@
 (defprotocol ComicRepository
   (-list-sites         [this] "List all the comic sites available from this repository.")
   (-list-comics        [this site-id] "List all the comics available on this site.")
-  (-previous-locations [this site-id comic-id location n] "Get up-to n locations that precede `location' in a comic.")
-  (-next-locations     [this site-id comic-id location n] "Get up-to n locations that follow `location' in a comic.")
+  (-previous-locations [this comic-id location n] "Get up-to n locations that precede `location' in a comic.")
+  (-next-locations     [this comic-id location n] "Get up-to n locations that follow `location' in a comic.")
   (-image-tag          [this site-id location] "Get the hiccup image tag for this comic location."))
 
 (s/def ::repository #(satisfies? ComicRepository %))
@@ -64,23 +64,21 @@
   :args (s/cat :this ::repository :site-id :site/id)
   :ret  ::async/readable-port)
 
-(defn previous-locations [this site-id comic-id location n]
-  (-previous-locations this site-id comic-id location n))
+(defn previous-locations [this comic-id location n]
+  (-previous-locations this comic-id location n))
 
 (s/fdef previous-locations
   :args (s/cat :this ::repository
-               :site-id :site/id
                :comic-id :comic/id
                :location ::location
                :n int?)
   :ret  ::async/readable-port)
 
-(defn next-locations [this site-id comic-id location n]
-  (-next-locations this site-id comic-id location n))
+(defn next-locations [this comic-id location n]
+  (-next-locations this comic-id location n))
 
 (s/fdef next-locations
   :args (s/cat :this ::repository
-               :site-id :site/id
                :comic-id :comic/id
                :location (s/nilable ::location)
                :n int?)
@@ -99,7 +97,7 @@
 (defprotocol WritableComicRepository
   (-store-sites [this sites] "Store a seq of site records.")
   (-store-comics [this site-id comics] "Store a seq of comic records.")
-  (-store-locations [this site-id comic-id locations] "Store a seq of location records."))
+  (-store-locations [this comic-id locations] "Store a seq of location records."))
 
 (s/def ::writable-repository #(satisfies? WritableComicRepository))
 
@@ -117,12 +115,11 @@
   :args (s/cat :this ::repository :site-id :site/id :comics (s/coll-of ::comic))
   :ret  ::async/readable-port)
 
-(defn store-locations [this site-id comic-id locations]
-  (-store-locations this site-id comic-id locations))
+(defn store-locations [this comic-id locations]
+  (-store-locations this comic-id locations))
 
 (s/fdef store-locations
   :args (s/cat :this ::repository
-               :site-id :site/id
                :comic-id :comic/id
                :locations (s/coll-of ::location))
   :ret  ::async/readable-port)

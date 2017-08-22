@@ -45,8 +45,8 @@
             mock-repo (mock-repo :site-one {:comics {"comic-one" {location {:previous-locations previous-locations}}}})
             test-repo (test-repo mock-repo spy-repo)]
         (is (= previous-locations
-               (<!! (repo/previous-locations test-repo :site-one "comic-one" location 2))))
-        (is (= [{:args [:site-one "comic-one" previous-locations]}]
+               (<!! (repo/previous-locations test-repo :site-one/comic-one location 2))))
+        (is (= [{:args [:site-one/comic-one previous-locations]}]
                (spy/calls spy-repo :store-locations)))))
 
     (testing "for next-locations"
@@ -56,8 +56,8 @@
             mock-repo (mock-repo :site-one {:comics {"comic-one" {location {:next-locations next-locations}}}})
             test-repo (test-repo mock-repo spy-repo)]
         (is (= next-locations
-               (<!! (repo/next-locations test-repo :site-one "comic-one" location 2))))
-        (is (= [{:args [:site-one "comic-one" next-locations]}]
+               (<!! (repo/next-locations test-repo :site-one/comic-one location 2))))
+        (is (= [{:args [:site-one/comic-one next-locations]}]
                (spy/calls spy-repo :store-locations)))))
 
     (testing "for image-tag"
@@ -67,5 +67,4 @@
             mock-repo (mock-repo :site-one {location image-tag})
             test-repo (test-repo mock-repo spy-repo)]
         (is (= image-tag (<!! (repo/image-tag test-repo :site-one location))))
-        #_(is (= [{:args [:site-one location]}] (spy/calls spy-repo :store-image-tag)))))
-    ))
+        #_(is (= [{:args [:site-one location]}] (spy/calls spy-repo :store-image-tag)))))))

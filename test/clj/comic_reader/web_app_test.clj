@@ -47,9 +47,9 @@
                  {:status 200
                   :headers edn-content-type
                   :body ""
-                  :edn-body '({:site/id "site-one"   :site/name "Site One"}
-                              {:site/id "site-two"   :site/name "Site Two"}
-                              {:site/id "site-three" :site/name "Site Three"})}))))
+                  :edn-body '({:site/id :site-one   :site/name "Site One"}
+                              {:site/id :site-two   :site/name "Site Two"}
+                              {:site/id :site-three :site/name "Site Three"})}))))
 
     (t/testing "/:site-name/comics"
       (let [handle (app-routes
@@ -67,10 +67,10 @@
                  {:status 200
                   :headers edn-content-type
                   :body ""
-                  :edn-body '({:comic/id "the_gamer"
+                  :edn-body '({:comic/id :manga-here/the_gamer
                                :comic/name "The Gamer"
                                :comic/url "real_url"}
 
-                              {:comic/id "other_comic"
+                              {:comic/id :manga-here/other_comic
                                :comic/name "Other Comic"
                                :comic/url "another_url"})}))))))

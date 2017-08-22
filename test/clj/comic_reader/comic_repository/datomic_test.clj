@@ -99,7 +99,7 @@
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:id site) [{:id :comic-one :name "Comic One"}])
 
-        (is (= [{:comic/id :comic-one :comic/name "Comic One"}]
+        (is (= [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
                (repo/list-comics test-repo (:id site)))))))
 
   (testing "returns one stored comic record"
@@ -111,7 +111,7 @@
         @(repo/store-comics test-repo (:id site) [{:id :comic-one :name "Comic One"}])
         @(repo/store-comics test-repo (:id other-site) [{:id "not-good-comic" :name "Not Good Comic"}])
 
-        (is (= [{:comic/id :comic-one :comic/name "Comic One"}]
+        (is (= [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
                (repo/list-comics test-repo "site-one"))))))
 
   (testing "returns many stored comic records"
@@ -122,38 +122,43 @@
         @(repo/store-comics test-repo (:id site) [{:id :comic-one :name "Comic One"}
                                                   {:id :comic-two :name "Comic Two"}]))
 
-      (is (= #{{:comic/id :comic-one :comic/name "Comic One"}
-               {:comic/id :comic-two :comic/name "Comic Two"}}
+      (is (= #{{:comic/id :site-one/comic-one :comic/name "Comic One"}
+               {:comic/id :site-one/comic-two :comic/name "Comic Two"}}
              (set (repo/list-comics test-repo :site-one)))))))
+
+(defn make-comic-id [site-id comic-id]
+  (keyword (format "%s/%s" (name site-id) (name comic-id))))
 
 (deftest test-get-and-store-locations
   (testing "returns no results for an empty database"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (is (= [] (repo/next-locations test-repo "site-one" "comic-one" nil 100)))))
+      (is (= [] (repo/next-locations test-repo :site-one/comic-one nil 100)))))
 
   (testing "returns one location"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
-      (let [site {:id :site-one, :name "Site One"}
-            comic {:id :comic-one :name "Comic One"}]
+      (let [site {:id :site-one :name "Site One"}
+            comic {:id :comic-one :name "Comic One"}
+            comic-id (make-comic-id (:id site) (:id comic))]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:id site) [comic])
-        @(repo/store-locations test-repo (:id site) (:id comic)
+        @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}])
 
         (is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                  :location/page {:page/number 1 :page/url  "url1"}}]
-               (repo/next-locations test-repo "site-one" "comic-one" nil 100))))))
+               (repo/next-locations test-repo comic-id nil 100))))))
 
   (testing "returns multiple locations"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
       (let [site {:id :site-one, :name "Site One"}
-            comic {:id :comic-one :name "Comic One"}]
+            comic {:id :comic-one :name "Comic One"}
+            comic-id (make-comic-id (:id site) (:id comic))]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:id site) [comic])
-        @(repo/store-locations test-repo (:id site) (:id comic)
+        @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
                                 {:chapter {:name "The Gamer 2" :ch-num 2} :page {:number 2 :url  "url2"}}])
 
@@ -161,7 +166,7 @@
                  :location/page {:page/number 1 :page/url  "url1"}}
                 {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                  :location/page {:page/number 2 :page/url  "url2"}}]
-               (repo/next-locations test-repo "site-one" "comic-one" nil 100))))))
+               (repo/next-locations test-repo comic-id nil 100))))))
 
   (testing "only returns location for the desired site and comic"
     (dtu/with-test-system [test-system (datomic-test-system)
@@ -170,20 +175,23 @@
             other-site {:id :site-two :name "Site Two"}
             comic {:id :comic-one :name "Comic One"}
             other-comic {:id :comic-other :name "Comic One"}
-            third-comic {:id :comic-third :name "Comic Third"}]
+            third-comic {:id :comic-third :name "Comic Third"}
+            comic-id (make-comic-id (:id site) (:id comic))
+            other-comic-id (make-comic-id (:id other-site) (:id other-comic))
+            third-comic-id (make-comic-id (:id site) (:id third-comic))]
 
         @(repo/store-sites test-repo [site other-site])
         @(repo/store-comics test-repo (:id site) [comic third-comic])
-        @(repo/store-locations test-repo (:id site) (:id comic)
+        @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
                                 {:chapter {:name "The Gamer 2" :ch-num 2} :page {:number 2 :url  "url2"}}])
-        @(repo/store-locations test-repo (:id site) (:id third-comic)
+        @(repo/store-locations test-repo third-comic-id
                                [{:chapter {:name "The Third 1" :ch-num 1} :page {:number 1 :url  "third-url1"}}
                                 {:chapter {:name "The Third 2" :ch-num 2} :page {:number 2 :url  "third-url2"}}])
 
 
         @(repo/store-comics test-repo (:id other-site) [other-comic])
-        @(repo/store-locations test-repo (:id other-site) (:id other-comic)
+        @(repo/store-locations test-repo other-comic-id
                                [{:chapter {:name "The Other 1" :ch-num 1} :page {:number 1 :url  "other-url1"}}
                                 {:chapter {:name "The Other 2" :ch-num 2} :page {:number 2 :url  "other-url2"}}])
 
@@ -191,16 +199,17 @@
                  :location/page {:page/number 1 :page/url  "url1"}}
                 {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                  :location/page {:page/number 2 :page/url  "url2"}}]
-               (repo/next-locations test-repo "site-one" "comic-one" nil 100))))))
+               (repo/next-locations test-repo comic-id nil 100))))))
 
   (testing "Sorts all locations by chapter and page number"
     (dtu/with-test-system [test-system (datomic-test-system)
                            test-repo (:datomic-repo test-system)]
       (let [site {:id :site-one, :name "Site One"}
-            comic {:id :comic-one :name "Comic One"}]
+            comic {:id :comic-one :name "Comic One"}
+            comic-id (make-comic-id (:id site) (:id comic))]
         @(repo/store-sites test-repo [site])
         @(repo/store-comics test-repo (:id site) [comic])
-        @(repo/store-locations test-repo (:id site) (:id comic)
+        @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
                                 {:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 2 :url  "url2"}}
                                 {:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 3 :url  "url3"}}
@@ -219,7 +228,7 @@
                  :location/page {:page/number 1 :page/url  "url1"}}
                 {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                  :location/page {:page/number 2 :page/url  "url2"}}]
-               (repo/next-locations test-repo "site-one" "comic-one" nil 100)))
+               (repo/next-locations test-repo comic-id nil 100)))
 
         (is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                  :location/page {:page/number 1 :page/url  "url1"}}
@@ -227,7 +236,7 @@
                  :location/page {:page/number 2 :page/url  "url2"}}
                 {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                  :location/page {:page/number 3 :page/url  "url3"}}]
-               (repo/next-locations test-repo "site-one" "comic-one" nil 3)))
+               (repo/next-locations test-repo comic-id nil 3)))
 
         (is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                  :location/page {:page/number 2 :page/url  "url2"}}
@@ -235,7 +244,7 @@
                  :location/page {:page/number 3 :page/url  "url3"}}
                 {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                  :location/page {:page/number 1 :page/url  "url1"}}]
-               (repo/next-locations test-repo "site-one" "comic-one"
+               (repo/next-locations test-repo comic-id
                                     {:location/chapter {:chapter/title "The Gamer 1"
                                                         :chapter/number 1}
                                      :location/page {:page/number 2
