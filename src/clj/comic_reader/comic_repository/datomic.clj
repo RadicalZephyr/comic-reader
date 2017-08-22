@@ -9,27 +9,20 @@
             [datomic.api :as d]
             [io.rkn.conformity :as conformity]))
 
-(defn- site-record [site-data & {:keys [temp-id]}]
-  (let [temp-id (if temp-id
+(defn- site-record [site & {:keys [temp-id]}]
+  (let [site (set/rename-keys site {:id :site/id
+                                    :name :site/name})
+        temp-id (if temp-id
                   (d/tempid :db.part/user temp-id)
                   (d/tempid :db.part/user))]
-    (-> site-data
-        (set/rename-keys {:id :site/id
-                          :name :site/name})
-        (assoc :db/id temp-id))))
+    (assoc site :db/id temp-id)))
 
-(defn- make-comic-id [site-id comic-id]
-  (keyword (format "%s/%s" (name site-id) (name comic-id))))
-
-(defn- comic-record [site-id comic]
-  (-> comic
-      (set/rename-keys {:id :comic/id
-                        :name :comic/name})
-      (update :comic/id #(if (qualified-keyword? %)
-                           %
-                           (make-comic-id site-id %)))
-      (assoc :db/id (d/tempid :db.part/user)
-             :comic/site [:site/id site-id])))
+(defn- comic-record [comic]
+  (let [comic (set/rename-keys comic {:id :comic/id
+                                      :name :comic/name})
+        site-id (keyword (namespace (:comic/id comic)))]
+    (assoc comic :db/id (d/tempid :db.part/user)
+           :comic/site [:site/id site-id])))
 
 (defn- location-record [comic-id location]
   (let [chapter-temp-id (d/tempid :db.part/user)
@@ -111,7 +104,7 @@
       (d/q '[:find [(pull ?e [:comic/id :comic/name]) ...]
              :in $ ?site-id
              :where [?seid :site/id ?site-id]
-                    [?e :comic/site ?seid]]
+             [?e :comic/site ?seid]]
            db site-id)))
 
   (-previous-locations [this comic-id location n])
@@ -138,7 +131,7 @@
     (d/transact conn (mapv site-record sites)))
 
   (-store-comics [this site-id comics]
-    (d/transact conn (mapv (partial comic-record site-id) comics)))
+    (d/transact conn (mapv comic-record comics)))
 
   (-store-locations [this comic-id locations]
     (let [comic-db-ref [:comic/id comic-id]]
