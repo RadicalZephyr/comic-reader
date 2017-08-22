@@ -1,5 +1,6 @@
 (ns comic-reader.comic-repository.datomic
   (:require [clojure.tools.logging :as log]
+            [clojure.set :as set]
             [com.stuartsierra.component :as component]
             [comic-reader.comic-repository :as repo]
             [comic-reader.config :as config]
@@ -11,11 +12,11 @@
 (defn- site-record [site-data & {:keys [temp-id]}]
   (let [temp-id (if temp-id
                   (d/tempid :db.part/user temp-id)
-                  (d/tempid :db.part/user))
-        {:keys [id name]} site-data]
-    {:db/id temp-id
-     :site/id id
-     :site/name name}))
+                  (d/tempid :db.part/user))]
+    (-> site-data
+        (set/rename-keys {:id :site/id
+                          :name :site/name})
+        (assoc :db/id temp-id))))
 
 (defn- make-comic-id [site-id comic-id]
   (keyword (format "%s/%s" (name site-id) (name comic-id))))
