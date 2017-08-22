@@ -35,8 +35,8 @@
   (-store-sites [this sites]
     (store-call call-log :store-sites [sites]))
 
-  (-store-comics [this site-id comics]
-    (store-call call-log :store-comics [site-id comics]))
+  (-store-comics [this comics]
+    (store-call call-log :store-comics [comics]))
 
   (-store-locations [this comic-id locations]
     (store-call call-log :store-locations [comic-id locations])))

@@ -98,7 +98,7 @@
       (let [site {:site/id :site-one, :site/name "Site One"}
             comic {:comic/id :site-one/comic-one :comic/name "Comic One"}]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:site/id site) [comic])
+        @(repo/store-comics test-repo [comic])
 
         (is (= [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
                (repo/list-comics test-repo (:site/id site)))))))
@@ -111,8 +111,7 @@
             comic {:comic/id :site-one/comic-one :comic/name "Comic One"}
             other-comic {:comic/id :site-two/not-good-comic :comic/name "Not Good Comic"}]
         @(repo/store-sites test-repo [site other-site])
-        @(repo/store-comics test-repo (:site/id site) [comic])
-        @(repo/store-comics test-repo (:site/id other-site) [other-comic])
+        @(repo/store-comics test-repo [comic other-comic])
 
         (is (= [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
                (repo/list-comics test-repo "site-one"))))))
@@ -124,7 +123,7 @@
             comic1 {:comic/id :site-one/comic-one :comic/name "Comic One"}
             comic2 {:comic/id :site-one/comic-two :comic/name "Comic Two"}]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:site/id site) [comic1 comic2]))
+        @(repo/store-comics test-repo [comic1 comic2]))
 
       (is (= #{{:comic/id :site-one/comic-one :comic/name "Comic One"}
                {:comic/id :site-one/comic-two :comic/name "Comic Two"}}
@@ -146,7 +145,7 @@
             comic {:comic/id :site-one/comic-one :comic/name "Comic One"}
             comic-id (make-comic-id (:site/id site) (:comic/id comic))]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:site/id site) [comic])
+        @(repo/store-comics test-repo [comic])
         @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}])
 
@@ -161,7 +160,7 @@
             comic {:comic/id :site-one/comic-one :comic/name "Comic One"}
             comic-id (make-comic-id (:site/id site) (:comic/id comic))]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:site/id site) [comic])
+        @(repo/store-comics test-repo [comic])
         @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
                                 {:chapter {:name "The Gamer 2" :ch-num 2} :page {:number 2 :url  "url2"}}])
@@ -185,7 +184,7 @@
             third-comic-id (make-comic-id (:site/id site) (:comic/id third-comic))]
 
         @(repo/store-sites test-repo [site other-site])
-        @(repo/store-comics test-repo (:site/id site) [comic third-comic])
+        @(repo/store-comics test-repo [comic third-comic other-comic])
         @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
                                 {:chapter {:name "The Gamer 2" :ch-num 2} :page {:number 2 :url  "url2"}}])
@@ -194,7 +193,6 @@
                                 {:chapter {:name "The Third 2" :ch-num 2} :page {:number 2 :url  "third-url2"}}])
 
 
-        @(repo/store-comics test-repo (:site/id other-site) [other-comic])
         @(repo/store-locations test-repo other-comic-id
                                [{:chapter {:name "The Other 1" :ch-num 1} :page {:number 1 :url  "other-url1"}}
                                 {:chapter {:name "The Other 2" :ch-num 2} :page {:number 2 :url  "other-url2"}}])
@@ -212,7 +210,7 @@
             comic {:comic/id :site-one/comic-one :comic/name "Comic One"}
             comic-id (make-comic-id (:site/id site) (:comic/id comic))]
         @(repo/store-sites test-repo [site])
-        @(repo/store-comics test-repo (:site/id site) [comic])
+        @(repo/store-comics test-repo [comic])
         @(repo/store-locations test-repo comic-id
                                [{:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 1 :url  "url1"}}
                                 {:chapter {:name "The Gamer 1" :ch-num 1} :page {:number 2 :url  "url2"}}

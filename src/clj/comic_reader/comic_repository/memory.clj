@@ -31,8 +31,12 @@
   (-store-sites [this sites]
     (swap! store assoc :sites sites))
 
-  (-store-comics [this site-id comics]
-    (swap! store assoc-in [:comics site-id] comics))
+  (-store-comics [this comics]
+    (let [comics-by-site (group-by #(keyword (namespace (:comic/id %))) comics)]
+      (swap! store (fn [store]
+                     (reduce (fn [store [site-id comics]]
+                               (assoc-in store [:comics site-id] comics))
+                             store comics-by-site)))))
 
   (-store-locations [this comic-id locations]
     (let [sorted-locations (->> locations

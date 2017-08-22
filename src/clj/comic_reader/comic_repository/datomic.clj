@@ -130,7 +130,7 @@
   (-store-sites [this sites]
     (d/transact conn (mapv site-record sites)))
 
-  (-store-comics [this site-id comics]
+  (-store-comics [this comics]
     (d/transact conn (mapv comic-record comics)))
 
   (-store-locations [this comic-id locations]
