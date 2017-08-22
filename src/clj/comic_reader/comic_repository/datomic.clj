@@ -17,10 +17,13 @@
      :site/id id
      :site/name name}))
 
+(defn- make-comic-id [site-id comic-id]
+  (keyword (format "%s/%s" (name site-id) (name comic-id))))
+
 (defn- comic-record [site-id comic]
   {:db/id (d/tempid :db.part/user)
-   :comic/id (:id comic)
-   :comic/site site-id
+   :comic/id (make-comic-id site-id (:id comic))
+   :comic/site [:site/id site-id]
    :comic/name (:name comic)})
 
 (defn- location-record [comic-id location]
@@ -106,19 +109,17 @@
                     [?e :comic/site ?seid]]
            db site-id)))
 
-  (-previous-locations [this site comic-id location n])
+  (-previous-locations [this comic-id location n])
 
-  (-next-locations [this site-id comic-id location n]
+  (-next-locations [this comic-id location n]
     (let [db (d/db conn)]
       (->> (d/q '[:find [(pull ?loc-ent [{:location/chapter [:chapter/title :chapter/number]}
                                          {:location/page [:page/number :page/url]}]) ...]
-                  :in $ ?site-id ?comic-id
+                  :in $ ?comic-id
                   :where
-                  [?site-ent :site/id ?site-id]
                   [?comic-ent :comic/id ?comic-id]
-                  [?comic-ent :comic/site ?site-ent]
                   [?loc-ent :location/comic ?comic-ent]]
-                db site-id comic-id)
+                db comic-id)
            (sort-by #(get-in % [:location/page :page/number]))
            (sort-by #(get-in % [:location/chapter :chapter/number]))
            (drop-while (if location #(not= % location) (constantly false)))
@@ -132,12 +133,11 @@
     (d/transact conn (mapv site-record sites)))
 
   (-store-comics [this site-id comics]
-    (let [site-db-ref [:site/id site-id]]
-      (d/transact conn (mapv (partial comic-record site-db-ref) comics))))
+    (d/transact conn (mapv (partial comic-record site-id) comics)))
 
-  (-store-locations [this site-id comic-id locations]
-    (let [comic-db-id (get-comic-id conn site-id comic-id)]
-      (d/transact conn (mapcat (partial location-record comic-db-id) locations)))))
+  (-store-locations [this comic-id locations]
+    (let [comic-db-ref [:comic/id comic-id]]
+      (d/transact conn (mapcat (partial location-record comic-db-ref) locations)))))
 
 (defn new-datomic-repository []
   (map->DatomicRepository {}))

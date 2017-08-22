@@ -31,7 +31,7 @@
                       {:location/chapter {:chapter/title (str "The Gamer " chapter)
                                           :chapter/number chapter}
                        :location/page {:page/number page :page/url (str "url" page)}})]
-      (repo/store-locations test-repo site-id comic-id locations)
+      (repo/store-locations test-repo comic-id locations)
 
       (is (= [{:location/chapter {:chapter/title "The Gamer 1"  :chapter/number 1}
                :location/page {:page/number 1 :page/url "url1"}}
@@ -39,14 +39,14 @@
                :location/page {:page/number 2 :page/url "url2"}}
               {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                :location/page {:page/number 3 :page/url "url3" }}]
-             (<!! (repo/next-locations test-repo site-id comic-id (first locations) 3))))
+             (<!! (repo/next-locations test-repo comic-id (first locations) 3))))
       (is (= [{:location/chapter {:chapter/title "The Gamer 1"  :chapter/number 1}
                :location/page {:page/number 4 :page/url "url4"}}
               {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                :location/page {:page/number 5 :page/url "url5"}}
               {:location/chapter {:chapter/title "The Gamer 2" :chapter/number 2}
                :location/page {:page/number 1 :page/url "url1" }}]
-             (<!! (repo/next-locations test-repo site-id comic-id (nth locations 3) 3))))
+             (<!! (repo/next-locations test-repo comic-id (nth locations 3) 3))))
 
       (is (= [{:location/chapter {:chapter/title "The Gamer 1"  :chapter/number 1}
                :location/page {:page/number 4 :page/url "url4"}}
@@ -54,9 +54,9 @@
                :location/page {:page/number 3 :page/url "url3" }}
               {:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                :location/page {:page/number 2 :page/url "url2"}}]
-             (<!! (repo/previous-locations test-repo site-id comic-id (nth locations 3) 3))))
+             (<!! (repo/previous-locations test-repo comic-id (nth locations 3) 3))))
       (is (= [{:location/chapter {:chapter/title "The Gamer 1" :chapter/number 1}
                :location/page {:page/number 2 :page/url "url2"}}
               {:location/chapter {:chapter/title "The Gamer 1"  :chapter/number 1}
                :location/page {:page/number 1 :page/url "url1"}}]
-             (<!! (repo/previous-locations test-repo site-id comic-id (nth locations 1) 3)))))))
+             (<!! (repo/previous-locations test-repo comic-id (nth locations 1) 3)))))))

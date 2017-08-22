@@ -10,11 +10,11 @@
   (-list-comics [this site]
     (async/thread (get-in this [:comics site])))
 
-  (-previous-locations [this site comic-id location n]
-    (async/thread (take n (get-in this [site :comics comic-id location :previous-locations]))))
+  (-previous-locations [this comic-id location n]
+    (async/thread (take n (get-in this [(keyword (namespace comic-id)) :comics (name comic-id) location :previous-locations]))))
 
-  (-next-locations [this site comic-id location n]
-    (async/thread (take n (get-in this [site :comics comic-id location :next-locations]))))
+  (-next-locations [this comic-id location n]
+    (async/thread (take n (get-in this [(keyword (namespace comic-id)) :comics (name comic-id) location :next-locations]))))
 
   (-image-tag [this site location]
     (async/thread (get-in this [site location]))))
