@@ -22,10 +22,14 @@
   (keyword (format "%s/%s" (name site-id) (name comic-id))))
 
 (defn- comic-record [site-id comic]
-  {:db/id (d/tempid :db.part/user)
-   :comic/id (make-comic-id site-id (:id comic))
-   :comic/site [:site/id site-id]
-   :comic/name (:name comic)})
+  (-> comic
+      (set/rename-keys {:id :comic/id
+                        :name :comic/name})
+      (update :comic/id #(if (qualified-keyword? %)
+                           %
+                           (make-comic-id site-id %)))
+      (assoc :db/id (d/tempid :db.part/user)
+             :comic/site [:site/id site-id])))
 
 (defn- location-record [comic-id location]
   (let [chapter-temp-id (d/tempid :db.part/user)
