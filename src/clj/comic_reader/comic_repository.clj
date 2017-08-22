@@ -31,15 +31,14 @@
 (s/def ::page (s/keys :req [:page/number :page/url]))
 
 
-(s/def :location/boundary (s/and qualified-keyword?
-                                 #{:boundary/first
-                                   :boundary/last}))
-(s/def :location/chapter (s/keys :req [:chapter/number :chapter/title]))
-(s/def :location/page (s/keys :req [:page/number :page/url]))
+(s/def :location/boundary #{:boundary/first
+                            :boundary/last})
+(s/def :location/chapter ::chapter)
+(s/def :location/page ::page)
 
-(s/def ::location
-  (s/or :present (s/keys :req [:location/chapter :location/chapter])
-        :absent  (s/keys :req [:location/boundary])))
+(s/def ::location (s/keys :opt [:location/boundary
+                                :location/chapter
+                                :location/page]))
 
 
 (defprotocol ComicRepository
@@ -68,29 +67,32 @@
 (defn previous-locations [this site-id comic-id location n]
   (-previous-locations this site-id comic-id location n))
 
-(s/def ::*-locations-args
-  (s/cat :this ::repository
-         :site-id :site/id
-         :comic-id :comic/id
-         :location ::location
-         :n int?))
-
 (s/fdef previous-locations
-  :args ::*-locations-args
+  :args (s/cat :this ::repository
+               :site-id :site/id
+               :comic-id :comic/id
+               :location ::location
+               :n int?)
   :ret  ::async/readable-port)
 
 (defn next-locations [this site-id comic-id location n]
   (-next-locations this site-id comic-id location n))
 
 (s/fdef next-locations
-  :args ::*-locations-args
+  :args (s/cat :this ::repository
+               :site-id :site/id
+               :comic-id :comic/id
+               :location (s/nilable ::location)
+               :n int?)
   :ret  ::async/readable-port)
 
 (defn image-tag [this site-id location]
   (-image-tag this site-id location))
 
 (s/fdef image-tag
-  :args (s/cat :this ::repository :site-id :site/id :location ::location)
+  :args (s/cat :this ::repository
+               :site-id :site/id
+               :location (s/keys :req [:location/page]))
   :ret  ::async/readable-port)
 
 
