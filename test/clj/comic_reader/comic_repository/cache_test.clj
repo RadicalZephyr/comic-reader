@@ -15,14 +15,14 @@
                 (sut/new-caching-repository)
                 [:storage-repo :source-repo])))
 
-(defn mock-spy-system [& mock-data]
+(defn storage-spy-system [& mock-data]
   (let [source-repo (apply mock-repo mock-data)
         storage-repo (spy-repo)]
     (-> (cache-test-system source-repo storage-repo)
         component/start
         ((juxt :storage-repo :cache-repo)))))
 
-(defn spy-mock-system [& mock-data]
+(defn source-spy-system [& mock-data]
   (let [source-repo (spy-repo)
         storage-repo (apply mock-repo mock-data)]
     (-> (cache-test-system source-repo storage-repo)
@@ -32,13 +32,13 @@
 (deftest test-list-sites
   (testing "checks storage repo for content first"
     (let [sites [{:site/id :site-one :site/name "Site One"}]
-          [spy-repo test-repo] (spy-mock-system :sites sites)]
+          [spy-repo test-repo] (source-spy-system :sites sites)]
       (is (= sites (<!! (repo/list-sites test-repo))))
       (is (= 0 (count (spy/calls spy-repo :list-sites))))))
 
   (testing "when storage repo returns nothing, fetches from source"
     (let [sites [{:site/id :site-one :site/name "Site One"}]
-          [spy-repo test-repo] (mock-spy-system :sites sites)]
+          [spy-repo test-repo] (storage-spy-system :sites sites)]
       (is (= sites (<!! (repo/list-sites test-repo))))
       (is (= 1 (count (spy/calls spy-repo :list-sites))))
 
@@ -48,13 +48,13 @@
 (deftest test-list-comics
   (testing "checks storage repo for content first"
     (let [comics [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
-          [spy-repo test-repo] (spy-mock-system :comics {:site-one comics})]
+          [spy-repo test-repo] (source-spy-system :comics {:site-one comics})]
       (is (= comics (<!! (repo/list-comics test-repo :site-one))))
       (is (= 0 (count (spy/calls spy-repo :list-sites))))))
 
   (testing "when storage repo returns nothing, fetches from source"
     (let [comics [{:comic/id :site-one/comic-one :comic/name "Comic One"}]
-          [spy-repo test-repo] (mock-spy-system :comics {:site-one comics})]
+          [spy-repo test-repo] (storage-spy-system :comics {:site-one comics})]
       (is (= comics (<!! (repo/list-comics test-repo :site-one))))
       (is (= [{:args [:site-one]}] (spy/calls spy-repo :list-comics)))
 
