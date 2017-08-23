@@ -1,5 +1,6 @@
 (ns comic-reader.web-app
-  (:require [clojure.string :as str]
+  (:require [clojure.core.async :as async]
+            [clojure.string :as str]
             [clojure.tools.logging :as log]
             [comic-reader.comic-repository :as repo]
             [comic-reader.config :as cfg]
@@ -10,8 +11,7 @@
             [garden.core :as garden]
             [ring.middleware.edn :refer [wrap-edn-params]]
             [ring.middleware.logger :refer [wrap-with-logger]]
-            [ring.middleware.params :refer [wrap-params]]
-            [clojure.core.async :as async]))
+            [ring.middleware.params :refer [wrap-params]]))
 
 (defn- wrap-edn-body [handler]
   (fn [request]

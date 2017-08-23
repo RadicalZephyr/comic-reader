@@ -1,6 +1,6 @@
 (ns comic-reader.comic-repository.cache
-  (:require [comic-reader.comic-repository :as repo]
-            [clojure.core.async :as async :refer [<!]]))
+  (:require [clojure.core.async :as async :refer [<!]]
+            [comic-reader.comic-repository :as repo]))
 
 (defrecord CachingRepository [storage-repo source-repo]
   repo/ComicRepository

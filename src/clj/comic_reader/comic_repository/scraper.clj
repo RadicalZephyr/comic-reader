@@ -1,9 +1,9 @@
 (ns comic-reader.comic-repository.scraper
-  (:require [clojure.string :as str]
-            [clojure.core.async :as async]
+  (:require [clojure.core.async :as async]
+            [clojure.set :as set]
+            [clojure.string :as str]
             [comic-reader.comic-repository :as repo]
-            [comic-reader.site-scraper :as site-scraper]
-            [clojure.set :as set]))
+            [comic-reader.site-scraper :as site-scraper]))
 
 (defn- format-chapter [chapter]
   (set/rename-keys chapter {:name :chapter/title

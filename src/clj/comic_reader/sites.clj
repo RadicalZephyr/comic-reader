@@ -11,8 +11,8 @@
 
 (defn get-normalize-fn [options normalize-fn-key]
   (get {:nothing identity
-        :trim-first (comp clojure.string/trim first)
-        :trim-second (comp clojure.string/trim second)
+        :trim-first  (comp str/trim first)
+        :trim-second (comp str/trim second)
         :concat-with-root-url (fn [segment]
                                 (str (root-url options)
                                      segment))}
