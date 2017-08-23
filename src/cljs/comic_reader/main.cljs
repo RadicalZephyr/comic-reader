@@ -17,13 +17,6 @@
 (defn set-page-key [db page-key]
   (assoc db :page-key page-key))
 
-(defn maybe-load-sites [db]
-  (if (:site-list db)
-    db
-    (do
-      (api/get-sites {:on-success site-list/set})
-      (assoc db :site-list :loading))))
-
 (defn setup! []
   (api/setup!)
   (history/setup!)
@@ -51,10 +44,14 @@
   (re-frame/reg-event-fx
    :view-sites
    (fn [cofx _]
-     {:navigate [:comic-reader/site-list]
-      :db (-> (:db cofx)
-              (set-page-key :site-list)
-              (maybe-load-sites))}))
+     (let [db (:db cofx)]
+       {:api (if-not (seq (:site-list db))
+               [[:get-sites {:on-success site-list/set}]]
+               [])
+        :navigate [:comic-reader/site-list]
+        :db (-> db
+                (set-page-key :site-list)
+                (update :site-list #(or % :loading)))})))
 
   (re-frame/reg-sub
    :site-id
@@ -64,8 +61,8 @@
   (re-frame/reg-event-fx
    :view-comics
    (fn [cofx [_ site-id]]
-     (api/get-comics site-id {:on-success comic-list/set})
-     {:navigate [:comic-reader/comic-list {:site-id site-id}]
+     {:api [[:get-comics site-id {:on-success comic-list/set}]]
+      :navigate [:comic-reader/comic-list {:site-id site-id}]
       :db (-> (:db cofx)
               (set-page-key :comic-list)
               (assoc :site-id site-id
