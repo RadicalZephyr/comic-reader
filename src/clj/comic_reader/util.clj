@@ -22,4 +22,4 @@
        (s/join " ")))
 
 (defn make-comic-id [site-id comic-id]
-  (keyword (format "%s/%s" (name site-id) (name comic-id))))
+  (format "%s/%s" (name site-id) (name comic-id)))
