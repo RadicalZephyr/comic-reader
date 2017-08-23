@@ -1,4 +1,4 @@
-(ns comic-reader.ui.history
+(ns comic-reader.history
   (:refer-clojure :exclude [get])
   (:require [goog.events :as events]
             [goog.history.EventType :as EventType])

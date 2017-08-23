@@ -1,7 +1,7 @@
-(ns comic-reader.ui.routing
+(ns comic-reader.routing
   (:require [bide.core :as routing]
             [clojure.string :as str]
-            [comic-reader.ui.history :as history]
+            [comic-reader.history :as history]
             [re-frame.core :as re-frame]
             [goog.events :as events]
             [goog.events.EventType :as EventType]
