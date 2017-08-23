@@ -29,33 +29,47 @@
    :headers {"Content-Type" "application/edn; charset=utf-8"}
    :edn-body data})
 
-(def accepted-response
-  {:status 202})
+(defn- accepted-response [location]
+  {:status 202
+   :headers {"Location" (str "/api/v1/check/" location)}})
 
-(defn- chan-response [timeout ch]
-  (async/alt!!
-    ch ([value] (edn-response value))
-    (async/timeout timeout) accepted-response))
+(def not-found-response
+  {:status 404})
 
 (defn- make-comic-id [site-id comic-id]
   (keyword (format "%s/%s" site-id comic-id)))
 
 (defn- make-api-routes [timeout repository]
-  (c/routes
-    (c/GET "/sites" []
-      (chan-response timeout (repo/list-sites repository)))
+  (let [request-cache (atom {})
+        chan-response
+        (fn chan-response
+          ([timeout ch] (chan-response timeout ch (str (java.util.UUID/randomUUID))))
+          ([timeout ch id]
+           (async/alt!!
+             ch ([value] (edn-response value))
+             (async/timeout timeout) (do
+                                       (swap! request-cache assoc id ch)
+                                       (accepted-response id)))))]
+   (c/routes
+     (c/GET "/sites" []
+       (chan-response timeout (repo/list-sites repository)))
 
-    (c/GET "/:site-id/comics" [site-id]
-      (chan-response timeout (repo/list-comics repository (keyword site-id))))
+     (c/GET "/:site-id/comics" [site-id]
+       (chan-response timeout (repo/list-comics repository (keyword site-id))))
 
-    (c/POST "/:site-id/image" [site-id location]
-      (chan-response timeout (repo/image-tag repository (keyword site-id) location)))
+     (c/POST "/:site-id/image" [site-id location]
+       (chan-response timeout (repo/image-tag repository (keyword site-id) location)))
 
-    (c/POST "/:site-id/:comic-id/previous" [site-id comic-id location n]
-      (chan-response timeout (repo/previous-locations repository (make-comic-id site-id comic-id) location n)))
+     (c/POST "/:site-id/:comic-id/previous" [site-id comic-id location n]
+       (chan-response timeout (repo/previous-locations repository (make-comic-id site-id comic-id) location n)))
 
-    (c/POST "/:site-id/:comic-id/next" [site-id comic-id location n]
-      (chan-response timeout (repo/next-locations repository (make-comic-id site-id comic-id) location n)))))
+     (c/POST "/:site-id/:comic-id/next" [site-id comic-id location n]
+       (chan-response timeout (repo/next-locations repository (make-comic-id site-id comic-id) location n)))
+
+     (c/GET "/check/:id" [id]
+       (if-let [ch (get @request-cache id)]
+         (chan-response timeout ch id)
+         not-found-response)))))
 
 (defn- render-page [& {:keys [head css js content]}]
   (page/html5
@@ -90,34 +104,35 @@
      ~@js]))
 
 (defn- make-routes [repository config]
-  (c/routes
-    (c/GET "/" []
-      (render-page
-       :content
-       [[:div.row
-         [:div#app.small-12.columns]]
-        [:input#history_state {:type "hidden"}]]
-       :js [(page/include-js "/public/js/main.js")
-            [:script "comic_reader.main.main();"]]))
+  (let [api-routes (cond-> (make-api-routes 400 repository)
+                     :always wrap-with-logger
+                     :always wrap-params
+                     :always wrap-edn-params
+                     (not (cfg/testing? config)) wrap-edn-body)]
+    (c/routes
+      (c/GET "/" []
+        (render-page
+         :content
+         [[:div.row
+           [:div#app.small-12.columns]]
+          [:input#history_state {:type "hidden"}]]
+         :js [(page/include-js "/public/js/main.js")
+              [:script "comic_reader.main.main();"]]))
 
-    (c/GET "/devcards" []
-      (render-page
-       :content
-       [[:div.row
-         [:div#cards.small-12.columns]]]
-       :css [[:style (garden/css
-                      [:.com-rigsomelight-devcards_rendered-card
-                       [:a.button {:color "#FFF !important"}]])]]
-       :js [(page/include-js "/public/js/devcards.js")]))
+      (c/GET "/devcards" []
+        (render-page
+         :content
+         [[:div.row
+           [:div#cards.small-12.columns]]]
+         :css [[:style (garden/css
+                        [:.com-rigsomelight-devcards_rendered-card
+                         [:a.button {:color "#FFF !important"}]])]]
+         :js [(page/include-js "/public/js/devcards.js")]))
 
-    (c/context "/api/v1" []
-      (cond-> (make-api-routes 400 repository)
-        :always wrap-with-logger
-        :always wrap-params
-        :always wrap-edn-params
-        (not (cfg/testing? config)) wrap-edn-body))
+      (c/context "/api/v1" []
+        api-routes)
 
-    (route/resources "/public")))
+      (route/resources "/public"))))
 
 (defrecord WebApp [config routes repository]
   component/Lifecycle
