@@ -1,5 +1,6 @@
 (ns comic-reader.comic-repository.datomic
-  (:require [clojure.tools.logging :as log]
+  (:require [clojure.core.async :as async]
+            [clojure.tools.logging :as log]
             [clojure.set :as set]
             [com.stuartsierra.component :as component]
             [comic-reader.comic-repository :as repo]
@@ -94,36 +95,41 @@
 
   repo/ComicRepository
   (-list-sites [this]
-    (let [db (d/db conn)]
-      (d/q '[:find [(pull ?e [:site/id :site/name]) ...]
-             :where [?e :site/name]]
-           db)))
+    (async/thread
+      (let [db (d/db conn)]
+        (d/q '[:find [(pull ?e [:site/id :site/name]) ...]
+               :where [?e :site/name]]
+             db))))
 
   (-list-comics [this site-id]
-    (let [db (d/db conn)]
-      (d/q '[:find [(pull ?e [:comic/id :comic/name]) ...]
-             :in $ ?site-id
-             :where [?seid :site/id ?site-id]
-             [?e :comic/site ?seid]]
-           db site-id)))
+    (async/thread
+      (let [db (d/db conn)]
+        (d/q '[:find [(pull ?e [:comic/id :comic/name]) ...]
+               :in $ ?site-id
+               :where [?seid :site/id ?site-id]
+               [?e :comic/site ?seid]]
+             db site-id))))
 
-  (-previous-locations [this comic-id location n])
+  (-previous-locations [this comic-id location n]
+    (async/thread []))
 
   (-next-locations [this comic-id location n]
-    (let [db (d/db conn)]
-      (->> (d/q '[:find [(pull ?loc-ent [{:location/chapter [:chapter/title :chapter/number]}
-                                         {:location/page [:page/number :page/url]}]) ...]
-                  :in $ ?comic-id
-                  :where
-                  [?comic-ent :comic/id ?comic-id]
-                  [?loc-ent :location/comic ?comic-ent]]
-                db comic-id)
-           (sort-by #(get-in % [:location/page :page/number]))
-           (sort-by #(get-in % [:location/chapter :chapter/number]))
-           (drop-while (if location #(not= % location) (constantly false)))
-           (take n))))
+    (async/thread
+      (let [db (d/db conn)]
+        (->> (d/q '[:find [(pull ?loc-ent [{:location/chapter [:chapter/title :chapter/number]}
+                                           {:location/page [:page/number :page/url]}]) ...]
+                    :in $ ?comic-id
+                    :where
+                    [?comic-ent :comic/id ?comic-id]
+                    [?loc-ent :location/comic ?comic-ent]]
+                  db comic-id)
+             (sort-by #(get-in % [:location/page :page/number]))
+             (sort-by #(get-in % [:location/chapter :chapter/number]))
+             (drop-while (if location #(not= % location) (constantly false)))
+             (take n)))))
 
-  (-image-tag [this site location])
+  (-image-tag [this site location]
+    (async/thread []))
 
 
   repo/WritableComicRepository
