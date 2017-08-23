@@ -2,7 +2,10 @@
   (:require [clojure.java.io :as io]
             [clojure.string  :as str]
             [clojure.edn     :as edn]
-            [comic-reader.resources :as resources])
+            [comic-reader.resources :as resources]
+            (datomic codec
+                     db
+                     function))
   (:import (java.io File
                     PushbackReader)))
 
@@ -20,9 +23,15 @@
        second
        keyword))
 
+(def datomic-data-readers
+  (merge default-data-readers
+         {'db/id #'datomic.db/id-literal
+          'db/fn #'datomic.function/construct
+          'base64 #'datomic.codec/base-64-literal}))
+
 (defn- norm-content [file]
   (with-open [f (PushbackReader. (io/reader file))]
-    (edn/read {:readers *data-readers*} f)))
+    (edn/read {:readers datomic-data-readers} f)))
 
 (defn- file->norm-entry [file]
   [(norm-name file)
