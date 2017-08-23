@@ -1,7 +1,7 @@
 {
  :site/image-selector [:section#viewer.read_img :a :img]
  :site/manga-list-format "%s/mangalist/"
- :site/comic-list-selector [:li :a.manga_info]
+ :site/comic-list-selector [:div.list_manga :ul :li :a.manga_info]
 
  :site/page-normalize-pattern #"(?:\d+\.html)?$"
  :site/page-normalize-format "%s/%s"
