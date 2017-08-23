@@ -4,21 +4,31 @@
                           [web-app :as web-app]
                           [site-scraper :as site-scraper])
             [comic-reader.config.env :as env-config]
-            [comic-reader.comic-repository.scraper :as scraper-repo]
+            (comic-reader.comic-repository [cache :as cache-repo]
+                                           [datomic :as datomic-repo]
+                                           [scraper :as scraper-repo])
             [com.stuartsierra.component :as component]
             [environ.core :refer [env]]))
 
 (defn comic-reader-system []
   (component/system-map
-   :config (env-config/new-env-config {:server-port 10555})
+   :config (env-config/new-env-config {:database-uri "datomic:mem://comics"
+                                       :norms-dir "database/norms"
+                                       :server-port 10555})
+   :datomic-repo (component/using
+                  (datomic-repo/new-datomic-repository)
+                  [:config])
    :site-scraper (site-scraper/new-site-scraper)
-   :comic-repository (component/using
-                      (scraper-repo/new-scraper-repo)
-                      {:scraper :site-scraper})
+   :scraper-repo (component/using
+                  (scraper-repo/new-scraper-repo)
+                  {:scraper :site-scraper})
+   :repository   (component/using
+                  (cache-repo/new-caching-repository)
+                  {:source-repo  :scraper-repo
+                   :storage-repo :datomic-repo})
    :web-app      (component/using
                   (web-app/new-web-app)
-                  {:config :config
-                   :repository :comic-repository})
+                  [:config :repository])
    :server       (component/using
                   (server/new-server)
                   [:config :web-app])))
