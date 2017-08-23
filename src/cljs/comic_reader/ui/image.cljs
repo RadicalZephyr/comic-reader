@@ -4,31 +4,35 @@
             [comic-reader.api :as api]
             [comic-reader.ui.base :as base]
             [comic-reader.ui.scroll :as scroll]
-            [comic-reader.ui.waypoints :as wp]))
+            [comic-reader.ui.waypoints :as wp]
+            [clairvoyant.core :refer-macros [trace-forms]]
+            [re-frame-tracer.core :refer [tracer]]))
 
 (defn setup! []
-  (re-frame/reg-sub
-   :raw-image
-   (fn [app-db [_ location]]
-     (get-in app-db [:images location])))
+  (trace-forms {:tracer (tracer :color "green")}
+    (re-frame/reg-event-db
+     :store-image
+     (fn store-image-event [app-db [_ location image-tag]]
+       (assoc-in app-db [:images location] image-tag))))
 
-  (re-frame/reg-sub
-   :image
-   (fn [[_ location] _]
-     [(re-frame/subscribe [:site-id])
-      (re-frame/subscribe [:raw-image location])])
+  (trace-forms {:tracer (tracer :color "brown")}
+    (re-frame/reg-sub
+     :raw-image
+     (fn raw-image-sub [app-db [_ location]]
+       (get-in app-db [:images location])))
 
-   (fn [[site-id image] [_ location]]
-     (if image
-       image
-       (when site-id
-         (api/get-image site-id location {:on-success #(re-frame/dispatch [:store-image location %])})
-         :loading))))
+    (re-frame/reg-sub
+     :image
+     (fn image-sub-meta [[_ location] _]
+       [(re-frame/subscribe [:site-id])
+        (re-frame/subscribe [:raw-image location])])
 
-  (re-frame/reg-event-db
-   :store-image
-   (fn [app-db [_ location image-tag]]
-     (assoc-in app-db [:images location] image-tag))))
+     (fn image-sub [[site-id image] [_ location]]
+       (if image
+         image
+         (when site-id
+           (api/get-image site-id location {:on-success #(re-frame/dispatch [:store-image location %])})
+           :loading))))))
 
 (defn comic-image [set-current-comic tag]
   (if (= tag :loading)

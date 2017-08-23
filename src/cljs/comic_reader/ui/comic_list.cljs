@@ -2,7 +2,9 @@
   (:refer-clojure :exclude [get set])
   (:require [clojure.string :as str]
             [re-frame.core :as re-frame]
-            [comic-reader.ui.base :as base]))
+            [comic-reader.ui.base :as base]
+            [clairvoyant.core :refer-macros [trace-forms]]
+            [re-frame-tracer.core :refer [tracer]]))
 
 (defn get* [db]
   (clojure.core/get db :comic-list))
@@ -11,25 +13,27 @@
   (assoc db :comic-list comics))
 
 (defn setup! []
-  (re-frame/reg-sub
-   :comic-list
-   (fn [app-db _]
-     (get* app-db)))
+  (trace-forms {:tracer (tracer :color "green")}
+    (re-frame/reg-event-db
+     :set-comic-list
+     (fn set-comic-list-event [db [_ comics]]
+       (set* db comics)))
 
-  (re-frame/reg-event-db
-   :set-comic-list
-   (fn [db [_ comics]]
-     (set* db comics)))
+    (re-frame/reg-event-db
+     :set-search-data
+     (fn set-search-data-event [db [_ search-data]]
+       (assoc db :search-data search-data))))
 
-  (re-frame/reg-sub
-   :search-data
-   (fn [app-db _]
-     (:search-data app-db)))
+  (trace-forms {:tracer (tracer :color "brown")}
+    (re-frame/reg-sub
+     :comic-list
+     (fn comic-list-sub [app-db _]
+       (get* app-db)))
 
-  (re-frame/reg-event-db
-   :set-search-data
-   (fn [db [_ search-data]]
-     (assoc db :search-data search-data))))
+    (re-frame/reg-sub
+     :search-data
+     (fn search-data-sub [app-db _]
+       (:search-data app-db)))))
 
 (defn get []
   (re-frame/subscribe [:comic-list]))

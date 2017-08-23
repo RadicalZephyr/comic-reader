@@ -2,7 +2,9 @@
   (:require [re-frame.core :as re-frame]
             [ajax.core :refer [GET POST]]
             [ajax.edn]
-            [ajax.ring]))
+            [ajax.ring]
+            [clairvoyant.core :refer-macros [trace-forms]]
+            [re-frame-tracer.core :refer [tracer]]))
 
 (def ^:private errors-db-key :api-errors)
 (def ^:private errors-subscription-key :api-errors)
@@ -31,33 +33,36 @@
   (apply (get @api-fn fn-key null-fn) args))
 
 (defn setup! []
-  (re-frame/reg-fx
-   :api
-   (fn [calls]
-     (doseq [[fn-key & args] calls]
-       (call-api-fn fn-key args))))
+  (trace-forms {:tracer (tracer :color "gold")}
+    (re-frame/reg-fx
+     :api
+     (fn api-fx [calls]
+       (doseq [[fn-key & args] calls]
+         (call-api-fn fn-key args)))))
 
-  (re-frame/reg-sub
-   errors-subscription-key
-   (fn [app-db _]
-     (errors-db-key app-db)))
+  (trace-forms {:tracer (tracer :color "green")}
+    (re-frame/reg-event-db
+     error-handler-key
+     (fn error-event [db [_ error]]
+       (update db errors-db-key add-error error))))
 
-  (re-frame/reg-sub
-   last-error-subscription-key
-   :<- [errors-subscription-key]
-   (fn [errors _]
-     (peek errors)))
+  (trace-forms {:tracer (tracer :color "brown")}
+    (re-frame/reg-sub
+     errors-subscription-key
+     (fn errors-sub [app-db _]
+       (errors-db-key app-db)))
 
-  (re-frame/reg-sub
-   error-count-subscription-key
-   :<- [errors-subscription-key]
-   (fn [errors _]
-     (count errors)))
+    (re-frame/reg-sub
+     last-error-subscription-key
+     :<- [errors-subscription-key]
+     (fn last-error-sub [errors _]
+       (peek errors)))
 
-  (re-frame/reg-event-db
-   error-handler-key
-   (fn [db [_ error]]
-     (update db errors-db-key add-error error))))
+    (re-frame/reg-sub
+     error-count-subscription-key
+     :<- [errors-subscription-key]
+     (fn error-count-sub [errors _]
+       (count errors)))))
 
 (defn api-errors []
   (re-frame/subscribe [errors-subscription-key]))

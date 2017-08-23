@@ -1,7 +1,9 @@
 (ns comic-reader.ui.site-list
   (:refer-clojure :exclude [get set])
   (:require [re-frame.core :as re-frame]
-            [comic-reader.ui.base :as base]))
+            [comic-reader.ui.base :as base]
+            [clairvoyant.core :refer-macros [trace-forms]]
+            [re-frame-tracer.core :refer [tracer]]))
 
 (defn get* [db]
   (clojure.core/get db :site-list))
@@ -10,15 +12,17 @@
   (assoc db :site-list sites))
 
 (defn setup! []
-  (re-frame/reg-sub
-   :site-list
-   (fn [app-db _]
-     (get* app-db)))
+  (trace-forms {:tracer (tracer :color "green")}
+    (re-frame/reg-event-db
+     :set-site-list
+     (fn set-site-list-event [db [_ sites]]
+       (set* db sites))))
 
-  (re-frame/reg-event-db
-   :set-site-list
-   (fn [db [_ sites]]
-     (set* db sites))))
+  (trace-forms {:tracer (tracer :color "brown")}
+    (re-frame/reg-sub
+     :site-list
+     (fn site-list-sub [app-db _]
+       (get* app-db)))))
 
 (defn get []
   (re-frame/subscribe [:site-list]))

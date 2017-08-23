@@ -5,7 +5,9 @@
             [re-frame.core :as re-frame]
             [goog.events :as events]
             [goog.events.EventType :as EventType]
-            [comic-reader.ui.base :as base]))
+            [comic-reader.ui.base :as base]
+            [clairvoyant.core :refer-macros [trace-forms]]
+            [re-frame-tracer.core :refer [tracer]]))
 
 (def router
   (routing/router
@@ -37,21 +39,23 @@
   (reset! dispatch? false))
 
 (defn setup! []
-  (re-frame/reg-cofx
-   :current-route
-   (fn route-cofx [cofx _]
-     (assoc cofx :current-route (match (history/get)))))
+  (trace-forms {:tracer (tracer :color "purple")}
+   (re-frame/reg-cofx
+    :current-route
+    (fn route-cofx [cofx _]
+      (assoc cofx :current-route (match (history/get))))))
 
-  (re-frame/reg-fx
-   :navigate
-   (fn navigate-fx [route-data]
-     (ignore-next-token-change!)
-     (history/set! (route->token (apply routing/resolve router route-data)))))
+  (trace-forms {:tracer (tracer :color "gold")}
+    (re-frame/reg-fx
+     :navigate
+     (fn navigate-fx [route-data]
+       (ignore-next-token-change!)
+       (history/set! (route->token (apply routing/resolve router route-data)))))
 
-  (re-frame/reg-fx
-   :navigate!
-   (fn navigate!-fx [route-data]
-     (ignore-next-token-change!)
-     (history/replace! (route->token (apply routing/resolve router route-data)))))
+    (re-frame/reg-fx
+     :navigate!
+     (fn navigate!-fx [route-data]
+       (ignore-next-token-change!)
+       (history/replace! (route->token (apply routing/resolve router route-data))))))
 
   (history/add-listener! match-and-dispatch-route))
