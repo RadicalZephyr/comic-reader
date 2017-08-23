@@ -71,6 +71,22 @@
 (defn report-error [error-response]
   (re-frame/dispatch [error-handler-key error-response]))
 
+(declare check-async-request)
+
+(defn- get-check-url [response opts]
+  (let [url (get-in response [:headers "location"])]
+    (GET url
+      {:handler (fn [response]
+                  (case (:status response)
+                    200 ((:on-success opts) (:body response))
+                    202 (check-async-request response opts)))
+       :error-handler (or (:on-error opts) report-error)
+       :response-format (ajax.ring/ring-response-format
+                         {:format (ajax.edn/edn-response-format)})})))
+
+(defn- check-async-request [response opts]
+  (.setTimeout js/window #(get-check-url response opts) 2000))
+
 (defn get-sites [opts]
   (GET "/api/v1/sites"
     {:handler (:on-success opts)
@@ -82,7 +98,7 @@
     {:handler (fn [response]
                 (case (:status response)
                   200 ((:on-success opts) (:body response))
-                  202 (.setTimeout js/window (fn [] (get-comics site opts)) 2000)))
+                  202 (check-async-request response opts)))
      :error-handler (or (:on-error opts) report-error)
      :response-format (ajax.ring/ring-response-format
                        {:format (ajax.edn/edn-response-format)})}))
