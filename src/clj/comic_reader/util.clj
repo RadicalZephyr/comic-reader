@@ -20,3 +20,6 @@
        keyword->words
        (map s/capitalize)
        (s/join " ")))
+
+(defn make-comic-id [site-id comic-id]
+  (keyword (format "%s/%s" (name site-id) (name comic-id))))

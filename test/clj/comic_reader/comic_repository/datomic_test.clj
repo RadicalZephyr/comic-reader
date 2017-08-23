@@ -4,6 +4,7 @@
             [comic-reader.comic-repository :as repo]
             [comic-reader.comic-repository.datomic :as sut]
             [comic-reader.database.test-util :as dtu]
+            [comic-reader.util :refer [make-comic-id]]
             [com.stuartsierra.component :as component]
             [datomic.api :as d]))
 
@@ -129,9 +130,6 @@
       (is (= #{{:comic/id :site-one/comic-one :comic/name "Comic One"}
                {:comic/id :site-one/comic-two :comic/name "Comic Two"}}
              (set (<!! (repo/list-comics test-repo :site-one))))))))
-
-(defn make-comic-id [site-id comic-id]
-  (keyword (format "%s/%s" (name site-id) (name comic-id))))
 
 (deftest test-get-and-store-locations
   (testing "returns no results for an empty database"

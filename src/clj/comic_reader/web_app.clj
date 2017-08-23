@@ -4,6 +4,7 @@
             [clojure.tools.logging :as log]
             [comic-reader.comic-repository :as repo]
             [comic-reader.config :as cfg]
+            [comic-reader.util :as util]
             [compojure.core :as c]
             [compojure.route :as route]
             [com.stuartsierra.component :as component]
@@ -36,9 +37,6 @@
 (def not-found-response
   {:status 404})
 
-(defn- make-comic-id [site-id comic-id]
-  (keyword (format "%s/%s" site-id comic-id)))
-
 (defn- make-api-routes [timeout repository]
   (let [request-cache (atom {})
         chan-response
@@ -61,10 +59,10 @@
        (chan-response timeout (repo/image-tag repository (keyword site-id) location)))
 
      (c/POST "/:site-id/:comic-id/previous" [site-id comic-id location n]
-       (chan-response timeout (repo/previous-locations repository (make-comic-id site-id comic-id) location n)))
+       (chan-response timeout (repo/previous-locations repository (util/make-comic-id site-id comic-id) location n)))
 
      (c/POST "/:site-id/:comic-id/next" [site-id comic-id location n]
-       (chan-response timeout (repo/next-locations repository (make-comic-id site-id comic-id) location n)))
+       (chan-response timeout (repo/next-locations repository (util/make-comic-id site-id comic-id) location n)))
 
      (c/GET "/check/:id" [id]
        (if-let [ch (get @request-cache id)]

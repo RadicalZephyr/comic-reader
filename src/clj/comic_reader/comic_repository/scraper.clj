@@ -3,7 +3,8 @@
             [clojure.set :as set]
             [clojure.string :as str]
             [comic-reader.comic-repository :as repo]
-            [comic-reader.site-scraper :as site-scraper]))
+            [comic-reader.site-scraper :as site-scraper]
+            [comic-reader.util :as util]))
 
 (defn- format-chapter [chapter]
   (set/rename-keys chapter {:name :chapter/title
@@ -18,7 +19,7 @@
   (-> page
       (set/rename-keys {:url :page/url
                         :name :page/number})
-      (dissoc :name)
+      (dissoc :url :name)
       (update :page/number parse-number)))
 
 (defn- page-seq [process sentinel scraper site chapters]
@@ -65,9 +66,10 @@
    :site/name (titleize site-id)})
 
 (defn- format-comic [site-name comic]
-  {:comic/id (keyword (format "%s/%s" site-name (:id comic)))
-   :comic/name (:name comic)
-   :comic/url (:url comic)})
+  (let [comic (set/rename-keys comic {:id :comic/id
+                                      :url :comic/url
+                                      :name :comic/name})]
+    (update comic :comic/id #(util/make-comic-id site-name %))))
 
 (defrecord ScraperRepository [scraper]
   repo/ComicRepository
