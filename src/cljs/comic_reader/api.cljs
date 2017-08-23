@@ -78,7 +78,7 @@
      :response-format (ajax.edn/edn-response-format)}))
 
 (defn get-comics [site opts]
-  (GET (str "/api/v1/" site "/comics")
+  (GET (str "/api/v1/" (name site) "/comics")
     {:handler (fn [response]
                 (case (:status response)
                   200 ((:on-success opts) (:body response))
@@ -88,7 +88,7 @@
                        {:format (ajax.edn/edn-response-format)})}))
 
 (defn- get-locations [direction site comic location n opts]
-  (POST (str "/api/v1/" site "/" comic "/" direction)
+  (POST (str "/api/v1/" (name site) "/" (name comic) "/" direction)
     {:params {:location location
               :n n}
      :format (ajax.edn/edn-request-format)
@@ -103,7 +103,7 @@
   (get-locations "next" site comic location n opts))
 
 (defn get-image [site-id location opts]
-  (POST (str "/api/v1/" site-id "/image")
+  (POST (str "/api/v1/" (name site-id) "/image")
     {:params {:location location}
      :format (ajax.edn/edn-request-format)
      :handler (:on-success opts)

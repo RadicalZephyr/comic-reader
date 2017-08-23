@@ -37,22 +37,25 @@
     ch ([value] (edn-response value))
     (async/timeout timeout) accepted-response))
 
+(defn- make-comic-id [site-id comic-id]
+  (keyword (format "%s/%s" site-id comic-id)))
+
 (defn- make-api-routes [timeout repository]
   (c/routes
     (c/GET "/sites" []
       (chan-response timeout (repo/list-sites repository)))
 
     (c/GET "/:site-id/comics" [site-id]
-      (chan-response timeout (repo/list-comics repository site-id)))
+      (chan-response timeout (repo/list-comics repository (keyword site-id))))
 
     (c/POST "/:site-id/image" [site-id location]
-      (chan-response timeout (repo/image-tag repository site-id location)))
+      (chan-response timeout (repo/image-tag repository (keyword site-id) location)))
 
     (c/POST "/:site-id/:comic-id/previous" [site-id comic-id location n]
-      (chan-response timeout (repo/previous-locations repository site-id comic-id location n)))
+      (chan-response timeout (repo/previous-locations repository (make-comic-id site-id comic-id) location n)))
 
     (c/POST "/:site-id/:comic-id/next" [site-id comic-id location n]
-      (chan-response timeout (repo/next-locations repository site-id comic-id location n)))))
+      (chan-response timeout (repo/next-locations repository (make-comic-id site-id comic-id) location n)))))
 
 (defn- render-page [& {:keys [head css js content]}]
   (page/html5
