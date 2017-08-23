@@ -82,7 +82,7 @@
 (require
  '[adzerk.boot-test      :refer [test] :rename {test test-clj}]
  '[adzerk.boot-cljs      :refer [cljs]]
- '[adzerk.boot-cljs-repl :refer [cljs-repl-env start-repl]]
+ '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]]
  '[adzerk.boot-reload    :refer [reload]]
  '[pandeiro.boot-http    :refer [serve]]
  '[crisptrutski.boot-cljs-test :refer [test-cljs]]
@@ -124,7 +124,7 @@
 
 (deftask run []
   (comp (watch)
-        (cljs-repl-env)
+        (cljs-repl)
         (cljs-devtools)
         (reload)
         (run-server)
