@@ -28,7 +28,8 @@
                    :storage-repo :datomic-repo})
    :web-app      (component/using
                   (web-app/new-web-app)
-                  [:config :repository])
+                  {:config :config
+                   :repository :scraper-repo})
    :server       (component/using
                   (server/new-server)
                   [:config :web-app])))
