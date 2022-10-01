@@ -3,7 +3,8 @@
             [clojure.java.io :as io]
             [org.httpkit.client :as http]
             [tempfile.core :refer [tempfile with-tempfile]]
-            [net.cgrand.enlive-html :as html])
+            [net.cgrand.enlive-html :as html]
+            [clojure.tools.logging :as log])
   (:import java.net.URL))
 
 (defn ^:dynamic raise-null-selection-error [html selector]
@@ -11,7 +12,8 @@
                                          :selector selector})))
 
 (defn fetch-url [url]
-  (with-tempfile [html-file (tempfile (:body @(http/get url)))]
+  (let [html-file (tempfile (:body @(http/get url)))]
+    (log/info "TEMP_FILE_NAME" html-file)
     (html/html-resource html-file)))
 
 (defn extract-list [html selector normalize]
