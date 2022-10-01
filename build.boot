@@ -165,8 +165,7 @@
   (comp (testing)
         (development)
         (watch)
-        (test-clj)
-        (test-cljs :js-env :phantom)))
+        (test-clj)))
 
 (deftask production []
   (task-options! cljs {:ids #{"public/js/main"}
